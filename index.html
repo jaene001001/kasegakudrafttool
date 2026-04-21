@@ -77,8 +77,49 @@
   .protect-count{font-size:13px;color:var(--text2);margin-top:6px;line-height:1.6;}
   .protect-warn{display:block;margin-top:4px;padding:5px 10px;border-radius:6px;background:var(--red-light);border:1px solid var(--red-mid);color:var(--red-deep);font-size:13px;font-weight:700;}
 
+  body :where(
+    .toggle-wrap,
+    .btn,
+    .btn-sm,
+    .btn-reset-all,
+    .banpick-collapse-btn,
+    .protect-zone,
+    .protect-slot,
+    .protect-count,
+    .pool-zone,
+    .ban-row,
+    .ban-slot,
+    .pick-slots,
+    .pick-slot,
+    .pick-slot-info,
+    .pick-slot-name,
+    .fearless-zone,
+    .fearless-row,
+    .fearless-slot,
+    .champ-item,
+    .role-tab,
+    .saved-item,
+    .opgg-wrap,
+    .section-label,
+    .pcard-title,
+    .help-update-title,
+    #memoBtn
+  ){
+    -webkit-user-select:none;
+    user-select:none;
+    caret-color:transparent;
+  }
+
+  input,
+  textarea,
+  [contenteditable="true"]{
+    -webkit-user-select:text;
+    user-select:text;
+    caret-color:auto;
+  }
+
   .pool-list{display:flex;flex-direction:column;gap:6px;}
-  .pool-title-input{background:transparent;border:none;border-bottom:1px dashed #3d4e5c;outline:none;font:inherit;font-size:13px;font-weight:700;color:inherit;min-width:2em;cursor:text;transition:border-color .15s;}
+  .pool-title-input{background:transparent;border:none;border-bottom:1px dashed #3d4e5c;outline:none;font:inherit;font-size:13px;font-weight:700;color:inherit;min-width:2em;flex:1 1 auto;cursor:text;transition:border-color .15s;}
   .pool-title-input:focus{border-bottom-color:var(--purple);}
   .pool-title-input::placeholder{font-size:13px;font-weight:700;}
   .pool-label-input{border:none;border-bottom:1px dashed #3d4e5c;background:transparent;font-family:inherit;font-size:14px;color:var(--text2);font-weight:500;padding:2px 0;outline:none;cursor:text;margin-bottom:3px;transition:color .15s,border-color .15s;min-width:4em;}
@@ -86,7 +127,7 @@
   .pool-label-input::placeholder{color:var(--text3);}
   .pool-label-input:hover{color:var(--text);}
   .pool-label-input:focus{color:var(--text);}
-  .pool-zone{min-height:60px;max-height:184px;overflow-y:auto;border:1px dashed var(--border);border-radius:7px;background:var(--surface2);display:flex;flex-wrap:wrap;gap:3px;padding:4px;transition:all .15s;align-content:flex-start;align-items:flex-start;}
+  .pool-zone{min-height:60px;max-height:184px;overflow-y:auto;border:1px dashed var(--border);border-radius:7px;background:var(--surface2);display:flex;flex-wrap:wrap;gap:3px;padding:4px;transition:all .15s;align-content:flex-start;align-items:flex-start;cursor:pointer;user-select:none;caret-color:transparent;}
   .red-col .pool-zone{background:#232121;}
   .pool-zone::-webkit-scrollbar{width:8px;}
   .pool-zone::-webkit-scrollbar-thumb{background:#4a5570;border-radius:3px;}
@@ -1512,6 +1553,7 @@ function resetDraft(){
   }, null, 'リセットする');
 }
 function doResetAll(){
+  currentDraftId = null;
   currentStep=0;history=[];
   state={
     blue:{bans:Array(5).fill(null),picks:Array(5).fill(null)},
@@ -1707,7 +1749,12 @@ function overwriteDraft(){
   if(!currentDraftId) return;
   const saves = getDraftSaves();
   const idx = saves.findIndex(s => s.id === currentDraftId);
-  if(idx === -1){ alert('保存データが見つかりません'); return; }
+  if(idx === -1){
+    currentDraftId = null;
+    renderDraftSavedList();
+    alert('保存データが見つかりません');
+    return;
+  }
   showConfirm(`「${saves[idx].name}」に上書きしますか？`, ()=>{
     saves[idx] = {
       ...saves[idx],
@@ -1729,7 +1776,9 @@ function overwriteDraft(){
 function deleteDraft(idx){
   showConfirm('このドラフトを削除しますか？',()=>{
     const saves=getDraftSaves();
+    const deletedId = saves[idx]?.id || null;
     saves.splice(idx,1);
+    if(deletedId && deletedId === currentDraftId) currentDraftId = null;
     putDraftSaves(saves);
     renderDraftSavedList();
   }, null, '削除する');
@@ -1763,6 +1812,14 @@ function syncSelectedPoolVisual(){
   if(!selectedPool) return;
   const el = document.getElementById(selectedPool.team+'Pool'+selectedPool.idx);
   if(el) el.classList.add('pool-selected');
+}
+
+function blurActiveTextInput(){
+  const active = document.activeElement;
+  if(!active || typeof active.blur !== 'function') return;
+  if(active.matches('input, textarea') || active.isContentEditable){
+    active.blur();
+  }
 }
 
 function autoWidth(el){
@@ -2279,6 +2336,7 @@ function updateGridUsedClasses(){
 }
 
 function selectPoolZone(e, team, idx){
+  blurActiveTextInput();
   if(!banpickCollapsed) return;
   e.stopPropagation();
   if(selectedPool && selectedPool.team===team && selectedPool.idx===idx){
@@ -2310,6 +2368,11 @@ document.addEventListener('click', (e)=>{
   if(!selectedPool) return;
   if(e.target.closest('.champ-grid') || e.target.closest('.pool-zone') || e.target.closest('.role-tabs') || e.target.closest('.champ-search') || e.target.closest('.champ-grid-card')) return;
   clearPoolSelection();
+});
+
+document.addEventListener('pointerdown', (e)=>{
+  if(e.target.closest('input, textarea, [contenteditable="true"]')) return;
+  blurActiveTextInput();
 });
 
 // メモ
