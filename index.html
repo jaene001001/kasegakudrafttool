@@ -127,9 +127,16 @@
   .pool-label-input::placeholder{color:var(--text3);}
   .pool-label-input:hover{color:var(--text);}
   .pool-label-input:focus{color:var(--text);}
-  .pool-zone{min-height:60px;max-height:184px;overflow-y:auto;border:1px dashed var(--border);border-radius:7px;background:var(--surface2);display:flex;flex-wrap:wrap;gap:3px;padding:4px;transition:all .15s;align-content:flex-start;align-items:flex-start;cursor:pointer;user-select:none;caret-color:transparent;}
+  .pool-row-header{display:flex;align-items:center;gap:4px;margin-bottom:2px;}
+  .player-actions{display:flex;align-items:center;gap:4px;flex-shrink:0;}
+  .btn-sm.player-opgg-btn{width:21px;height:21px;padding:0;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:4px;}
+  .btn-sm.player-save-btn{width:21px;height:21px;padding:0;line-height:1;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:4px;}
+  .btn-sm.team-save-open-btn{border-radius:5px;font-size:11px;}
+  .player-save-icon{font-size:12px;line-height:1;display:block;transform:scale(.88);}
+  .pool-zone{min-height:60px;max-height:184px;overflow-y:auto;border:1px dashed var(--border);border-radius:7px;background:var(--surface2);display:flex;flex-wrap:wrap;gap:3px;padding:4px;transition:all .15s;align-content:flex-start;align-items:flex-start;cursor:default;user-select:none;caret-color:transparent;}
+  body.pool-build-mode .pool-zone{cursor:pointer;}
   .red-col .pool-zone{background:#232121;}
-  .pool-zone::-webkit-scrollbar{width:8px;}
+  .pool-zone::-webkit-scrollbar{width:6px;}
   .pool-zone::-webkit-scrollbar-thumb{background:#4a5570;border-radius:3px;}
   .pool-zone:empty{min-height:60px;}
   .pool-zone.drag-over{border-color:var(--blue);background:var(--blue-light);border-style:solid;}
@@ -156,14 +163,16 @@
   .blue-team{background:var(--blue-bg);border:1.5px solid var(--blue-mid);border-top:6px solid var(--blue);}
   .red-team {background:var(--red-bg); border:1.5px solid var(--red-mid); border-top:6px solid var(--red);}
   .team-heading{display:none;}
-  .banpick-collapse-btn{background:none;border:1px solid var(--border);border-radius:5px;color:var(--text3);font-size:11px;padding:2px 8px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+  .banpick-collapse-btn{width:84px;background:none;border:1px solid var(--border);border-radius:5px;color:var(--text3);font-size:11px;padding:2px 8px;cursor:pointer;transition:all .15s;white-space:nowrap;margin-left:auto;display:inline-flex;align-items:center;justify-content:center;}
   .banpick-collapse-btn:hover{border-color:var(--purple);color:var(--purple);}
   .blue-team .banpick-collapse-btn{border-color:var(--blue-mid);background:var(--blue-light);}
   .red-team  .banpick-collapse-btn{border-color:var(--red-mid);background:var(--red-light);}
+  .banpick-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;}
   .banpick-area{overflow:hidden;transition:max-height .25s ease;}
   .blue-team .team-heading{color:var(--blue);border-color:var(--blue-mid);}
   .red-team  .team-heading{color:var(--red); border-color:var(--red-mid);}
   .section-label{font-size:13px;color:var(--text2);margin-bottom:5px;font-weight:700;letter-spacing:.05em;}
+  .section-label-inline{margin-bottom:0;}
 
   /* FEARLESS ZONE */
   .fearless-zone{display:none;margin-bottom:10px;}
@@ -217,7 +226,7 @@
   .champ-search{width:100%;height:38px;margin-bottom:10px;border:1px solid var(--border);border-radius:var(--radius-sm);padding:0 14px;font-size:16px;font-family:inherit;background:var(--surface2);color:var(--text);outline:none;transition:border-color .15s;}
   .champ-search:focus{border-color:var(--purple);}
   .champ-grid{display:flex;flex-wrap:wrap;align-content:flex-start;row-gap:4px;column-gap:5px;max-height:310px;min-height:310px;overflow-y:auto;padding-right:2px;}
-  .champ-grid::-webkit-scrollbar{width:8px;}
+  .champ-grid::-webkit-scrollbar{width:6px;}
   .champ-grid::-webkit-scrollbar-thumb{background:#4a5570;border-radius:3px;}
 
   .champ-item{display:flex;flex-direction:column;align-items:center;width:70px;cursor:pointer;border-radius:9px;padding:4px 2px;transition:background .12s;user-select:none;}
@@ -235,9 +244,9 @@
   [draggable=true]:active{cursor:grabbing;}
 
   /* SAVE/LOAD MODAL */
-  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:4000;align-items:center;justify-content:center;}
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:4000;align-items:center;justify-content:center;overscroll-behavior:contain;}
   .modal-overlay.show{display:flex;}
-  .modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;min-width:320px;max-width:420px;width:90%;}
+  .modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;min-width:320px;max-width:420px;width:90%;overscroll-behavior:contain;}
   .modal-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
   .modal-close{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;line-height:1;padding:0;}
   .modal-close:hover{color:var(--text);}
@@ -245,30 +254,43 @@
   .save-row{display:flex;gap:8px;margin-bottom:10px;}
   .save-input{flex:1;height:34px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:0 10px;font-size:14px;color:var(--text);font-family:inherit;outline:none;}
   .save-input:focus{border-color:var(--purple);}
+  .modal-field-stack{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+  .modal-field-label{font-size:12px;color:var(--text3);font-weight:700;letter-spacing:.04em;}
+  .player-modal-form{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+  .player-modal-row{display:grid;grid-template-columns:56px minmax(0,1fr) 64px;gap:8px;align-items:center;}
+  .player-modal-spacer{width:64px;height:34px;flex-shrink:0;}
+  .player-modal-inline-label{font-size:12px;color:var(--text3);font-weight:700;letter-spacing:.04em;white-space:nowrap;}
+  .player-modal-input{height:34px;}
+  .player-modal-action{height:34px;padding:0 12px;display:flex;align-items:center;justify-content:center;}
   .btn-sm{padding:6px 14px;border-radius:var(--radius-sm);background:transparent;border:1.5px solid var(--border);color:var(--text2);font-family:inherit;font-size:14px;cursor:pointer;transition:all .15s;white-space:nowrap;}
   .btn-sm:hover{background:var(--purple-light);border-color:var(--purple);color:var(--purple);}
   .btn-sm.danger:hover{background:var(--red-light);border-color:var(--red-mid);color:var(--red);}
+  .btn-sm:disabled{opacity:.55;cursor:default;border-style:dashed;color:var(--text3);}
+  .btn-sm:disabled:hover{background:transparent;border-color:var(--border);color:var(--text3);}
+  .btn-opgg{border-color:#2b5f86;color:#9ad9ff;background:rgba(40,96,138,.12);white-space:normal;line-height:1;font-size:7px;}
+  .btn-opgg:hover{background:#12304a;border-color:#5aabff;color:#d9f1ff;}
+  .btn-opgg:disabled{cursor:default;}
+  .opgg-btn-label{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:.82;}
   .saved-list{display:flex;flex-direction:column;gap:5px;max-height:200px;overflow-y:auto;padding-right:4px;}
   .saved-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);}
   .saved-item-name{flex:1;font-size:14px;color:var(--text);}
   .saved-item-date{font-size:11px;color:var(--text3);}
   .empty-msg{font-size:13px;color:var(--text3);text-align:center;padding:16px 0;}
-  .confirm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:5000;align-items:center;justify-content:center;}
+  .confirm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:5000;align-items:center;justify-content:center;overscroll-behavior:contain;}
   .confirm-overlay.show{display:flex;}
   .confirm-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px 24px;min-width:300px;text-align:center;}
   .confirm-msg{font-size:16px;color:var(--text);margin-bottom:22px;line-height:1.6;white-space:pre-line;}
   .confirm-btns{display:flex;gap:10px;justify-content:center;}
   .confirm-btns .btn{min-width:110px;justify-content:center;}
-  .help-modal{max-width:710px;}
+  .help-modal{max-width:710px;max-height:80vh;overflow-y:auto;}
+  .help-modal::-webkit-scrollbar{width:6px;}
+  .help-modal::-webkit-scrollbar-thumb{background:#4a5570;border-radius:3px;}
   .help-section{margin-bottom:14px;}
   .help-section-title{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
   .help-list{display:flex;flex-direction:column;gap:4px;}
   .help-item{font-size:13px;color:var(--text2);line-height:1.6;padding-left:12px;position:relative;}
   .help-item::before{content:'·';position:absolute;left:0;color:var(--purple);}
   .help-update{border-top:1px solid var(--border);padding-top:10px;margin-top:4px;} .help-update+.help-update{border-top:none;}
-  .help-update details[open] > *:not(summary){max-height:100px;overflow-y:auto;}
-  .help-update details[open] > *:not(summary)::-webkit-scrollbar{width:4px;}
-  .help-update details[open] > *:not(summary)::-webkit-scrollbar-thumb{background:#4a5570;border-radius:3px;}
   .help-update-title{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:5px;}
   .help-update-item{font-size:12px;color:var(--text3);padding-left:12px;position:relative;line-height:1.7;}
   .help-update-item::before{content:'·';position:absolute;left:0;}
@@ -330,6 +352,13 @@
       </div>
     </div>
     <div class="help-section">
+      <div class="help-section-title">OP.GGリンクについて</div>
+      <div class="help-list">
+        <div class="help-item">OP.GG関連のリンクを押すと、第三者サービスである OP.GG の該当ページを開きます。</div>
+        <div class="help-item">本ツールは OP.GG 公式の機能ではありません。</div>
+      </div>
+    </div>
+    <div class="help-section">
       <div class="help-section-title">バグ報告・要望・お問い合わせなど</div>
       <div class="help-list">
         <div class="help-item">開発者：じーん</div>
@@ -337,7 +366,6 @@
         <div class="help-item">gmail：<span id="contactEmail"></span></div>
       </div>
     </div>
-    <div style="max-height:130px;overflow-y:auto;padding-right:4px;">
     <div class="help-update">
       <details>
         <summary class="help-update-title" style="cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px;">
@@ -419,7 +447,6 @@
         <div class="help-update-item">チーム呼び出し時のバグ修正</div>
       </details>
     </div>
-    </div>
   </div>
 </div>
 
@@ -431,7 +458,7 @@
     </div>
     <div class="modal-section">名前をつけて保存</div>
     <div class="save-row">
-      <input class="save-input" id="draftSaveNameInput" type="text" placeholder="例: 大会A 第1試合">
+      <input class="save-input" id="draftSaveNameInput" type="text" placeholder="例: 大会A 第1試合" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
       <button class="btn-sm" onclick="saveDraft()">保存</button>
     </div>
     <div class="modal-section">保存済みドラフト</div>
@@ -447,7 +474,7 @@
     </div>
     <div class="modal-section">名前をつけて新規保存</div>
     <div class="save-row">
-      <input class="save-input" id="saveNameInput" type="text" placeholder="例: 大会A 青チーム">
+      <input class="save-input" id="saveNameInput" type="text" placeholder="例: 大会A 青チーム" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
       <button class="btn-sm" onclick="saveTeamData()">保存</button>
     </div>
     <div class="modal-section">保存済みデータ</div>
@@ -465,10 +492,17 @@
       <span id="playerModalTitle">プレイヤー保存/呼び出し</span>
       <button class="modal-close" onclick="closePlayerModal()">✕</button>
     </div>
-    <div class="modal-section">名前をつけて新規保存</div>
-    <div class="save-row">
-      <input class="save-input" id="playerSaveNameInput" type="text" placeholder="例: 大会A ジャングル担当">
-      <button class="btn-sm" onclick="savePlayerData()">保存</button>
+    <div class="player-modal-form">
+      <div class="player-modal-row">
+        <label class="player-modal-inline-label" for="playerDisplayNameInput">表示名</label>
+        <input class="save-input player-modal-input" id="playerDisplayNameInput" type="text" placeholder="表示名" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <button class="btn-sm player-modal-action" type="button" onclick="savePlayerData()">保存</button>
+      </div>
+      <div class="player-modal-row">
+        <label class="player-modal-inline-label" for="playerNameInput">Riot ID</label>
+        <input class="save-input player-modal-input" id="playerNameInput" type="text" placeholder="名前#タグ" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <span class="player-modal-spacer" aria-hidden="true"></span>
+      </div>
     </div>
     <div class="modal-section">保存済みデータ</div>
     <div class="saved-list" id="playerSavedList"></div>
@@ -567,6 +601,7 @@ let state = {
   blueNewbieProtect:[],redNewbieProtect:[],
   bluePools:[[],[],[],[],[]],redPools:[[],[],[],[],[]],
   blueNames:['','','','',''],redNames:['','','','',''],
+  bluePlayerNames:['','','','',''],redPlayerNames:['','','','',''],
   blueLoadedSaveId:null, redLoadedSaveId:null,
   fearlessBlue:[],  // フィアレス：青チームのpick済みチャンプ
   fearlessRed:[]    // フィアレス：赤チームのpick済みチャンプ
@@ -575,6 +610,52 @@ let state = {
 // ─── OP.GG ────────────────────────────────────────────────────
 function opggUrl(id){
   return `https://op.gg/ja/lol/champions/${id.toLowerCase()}/build?region=global&tier=gold_plus`;
+}
+function parseRiotId(value){
+  const raw=(value||'').trim();
+  const hashIdx=raw.indexOf('#');
+  if(hashIdx<=0||hashIdx===raw.length-1) return null;
+  const gameName=raw.slice(0,hashIdx).trim();
+  const tagLine=raw.slice(hashIdx+1).trim();
+  if(!gameName||!tagLine) return null;
+  return {gameName, tagLine};
+}
+function playerOpggUrl(value, region='jp'){
+  const parsed=parseRiotId(value);
+  if(!parsed) return '';
+  const slug=`${parsed.gameName}-${parsed.tagLine}`.toLowerCase();
+  return `https://op.gg/ja/lol/summoners/${region}/${encodeURIComponent(slug)}`;
+}
+function getPlayerDisplayList(team){
+  return team==='blue' ? state.blueNames : state.redNames;
+}
+function getPlayerNameList(team){
+  return team==='blue' ? state.bluePlayerNames : state.redPlayerNames;
+}
+function getPlayerNameValue(team, idx){
+  return (getPlayerNameList(team)[idx]||'').trim();
+}
+function syncPlayerOpggButton(team, idx){
+  const btn=document.getElementById(`${team}OpggBtn${idx}`);
+  if(!btn) return;
+  const enabled=!!parseRiotId(getPlayerNameValue(team, idx));
+  btn.disabled=!enabled;
+  btn.title=enabled ? 'OP.GGで開く' : 'Riot ID（名前#タグ）を入力すると開けます';
+}
+function openPlayerOpgg(team, idx){
+  const url=playerOpggUrl(getPlayerNameValue(team, idx));
+  if(!url){
+    const input=document.getElementById(`${team}PoolLabel${idx}`);
+    if(input) input.focus();
+    alert('OP.GGを開くには Riot ID を「名前#タグ」の形式で入力してください。');
+    return;
+  }
+  window.open(url,'_blank','noopener,noreferrer');
+}
+function playerOpggButtonHtml(team, idx, value){
+  const enabled=!!parseRiotId(value);
+  const title=enabled ? 'OP.GGで開く' : 'Riot ID（名前#タグ）を入力すると開けます';
+  return `<button class="btn-sm btn-opgg player-opgg-btn" id="${team}OpggBtn${idx}" type="button" onclick="openPlayerOpgg('${team}',${idx})" title="${esc(title)}" ${enabled?'':'disabled'}><span class="opgg-btn-label"><span>OP</span><span>GG</span></span></button>`;
 }
 let _opggTimer=null;
 function opggMouseEnter(e,delay=1500){
@@ -743,7 +824,7 @@ const CHAMP_DATA=[
   {id:'Darius',name:'ダリウス',roles:['top','jungle']},
   {id:'Chogath',name:'チョ＝ガス',roles:['top']},
   {id:'TwistedFate',name:'ツイステッド・フェイト',roles:['mid']},
-  {id:'Teemo',name:'ティーモ',roles:['top','jungle']},
+  {id:'Teemo',name:'ティーモ',roles:['top','jungle','support']},
   {id:'Twitch',name:'トゥイッチ',roles:['bot']},
   {id:'Trundle',name:'トランドル',roles:['top','jungle']},
   {id:'Tristana',name:'トリスターナ',roles:['mid','bot']},
@@ -822,7 +903,9 @@ const CHAMP_DATA=[
 
 function init(){
   allChamps=CHAMP_DATA;
+  initModalScrollLock();
   buildLayout();
+  disableInputSuggestions(document);
   renderAll();
   // 一手戻すボタンはトーナメントON時のみ表示
   const undoBtn=document.getElementById('undoBtn');
@@ -848,6 +931,10 @@ function setRoleFilter(role){
   if(grid) grid.scrollTop=0;
 }
 
+function syncPoolBuildModeCursor(){
+  document.body.classList.toggle('pool-build-mode', banpickCollapsed);
+}
+
 
 
 function buildLayout(){
@@ -856,7 +943,7 @@ function buildLayout(){
       <div class="pcard">
         <div class="pcard-title" style="display:flex;align-items:center;justify-content:space-between;gap:6px;white-space:nowrap;">
           <input id="bluePoolTitle" type="text" value="青チーム" class="pool-title-input" placeholder="チーム名入力" autocomplete="off" onfocus="poolTitleFocus(this,'青チーム')" onblur="poolTitleBlur(this,'青チーム')" oninput="autoWidth(this)">
-          <button class="btn-sm" style="font-size:12px;padding:3px 10px;flex-shrink:0;" onclick="openModal('blue')">保存/呼出</button>
+          <button class="btn-sm team-save-open-btn" style="padding:3px 10px;flex-shrink:0;" onclick="openModal('blue')">保存/呼出</button>
         </div>
         <div class="pool-list" id="bluePoolList"></div>
       </div>
@@ -879,11 +966,11 @@ function buildLayout(){
       <div class="teams-row">
         <div class="team-card blue-team">
           <div class="team-heading">ブルーチーム</div>
-          <div style="display:flex;justify-content:flex-end;margin-bottom:6px;">
+          <div class="banpick-head">
+            <div class="section-label section-label-inline ban-section-label">BAN</div>
             <button class="banpick-collapse-btn" id="banpickCollapseBtn" onclick="toggleBanPick()">▲ 折りたたむ</button>
           </div>
           <div id="banpickArea">
-            <div class="section-label">BAN</div>
             <div class="ban-row" id="blueBans"></div>
             <div class="section-label">PICK</div>
             <div class="pick-slots" id="bluePicks"></div>
@@ -895,11 +982,11 @@ function buildLayout(){
         </div>
         <div class="team-card red-team">
           <div class="team-heading">レッドチーム</div>
-          <div style="display:flex;justify-content:flex-end;margin-bottom:6px;">
+          <div class="banpick-head">
+            <div class="section-label section-label-inline ban-section-label">BAN</div>
             <button class="banpick-collapse-btn" id="banpickCollapseBtn2" onclick="toggleBanPick()">▲ 折りたたむ</button>
           </div>
           <div id="banpickArea2">
-            <div class="section-label">BAN</div>
             <div class="ban-row" id="redBans"></div>
             <div class="section-label">PICK</div>
             <div class="pick-slots" id="redPicks"></div>
@@ -943,7 +1030,7 @@ function buildLayout(){
       <div class="pcard">
         <div class="pcard-title" style="display:flex;align-items:center;justify-content:space-between;gap:6px;white-space:nowrap;">
           <input id="redPoolTitle" type="text" value="赤チーム" class="pool-title-input" placeholder="チーム名入力" autocomplete="off" onfocus="poolTitleFocus(this,'赤チーム')" onblur="poolTitleBlur(this,'赤チーム')" oninput="autoWidth(this)">
-          <button class="btn-sm" style="font-size:12px;padding:3px 10px;flex-shrink:0;" onclick="openModal('red')">保存/呼出</button>
+          <button class="btn-sm team-save-open-btn" style="padding:3px 10px;flex-shrink:0;" onclick="openModal('red')">保存/呼出</button>
         </div>
         <div class="pool-list" id="redPoolList"></div>
       </div>
@@ -963,33 +1050,40 @@ function buildLayout(){
       </div>
     </div>`;
   buildPools();
+  disableInputSuggestions(document.getElementById('mainLayout'));
   renderChampGrid();
 }
 
 function buildPools(){
   ['blue','red'].forEach(team=>{
     const list=document.getElementById(team+'PoolList');
-    const names=team==='blue'?state.blueNames:state.redNames;
+    const names=getPlayerDisplayList(team);
+    const playerNames=getPlayerNameList(team);
     list.innerHTML=Array.from({length:5},(_,i)=>{
       const ph=`${team==='blue'?'青':'赤'} プレイヤー${i+1}`;
-      const val=esc(names[i]||'');
-      const displayVal=val||ph;
+      const rawDisplayName=names[i]||'';
+      const rawPlayerName=playerNames[i]||'';
+      const displayVal=esc(rawDisplayName)||ph;
       return `<div class="pool-row">
-        <div style="display:flex;align-items:center;gap:4px;margin-bottom:2px;">
+        <div class="pool-row-header">
           <input class="pool-label-input" id="${team}PoolLabel${i}"
-            type="text" placeholder="プレイヤー名入力" value="${displayVal}" autocomplete="off"
-            oninput="setName('${team}',${i},this.value);autoWidth(this)"
-            onfocus="if(this.value===this.dataset.def)this.value=''"
-            onblur="if(!this.value.trim())this.value=this.dataset.def;"
+            type="text" placeholder="表示名入力" value="${displayVal}" autocomplete="off"
+            oninput="setName('${team}',${i},this.value);autoWidth(this);syncPlayerOpggButton('${team}',${i})"
+            onfocus="if(this.value===this.dataset.def)this.value='';syncPlayerOpggButton('${team}',${i})"
+            onblur="if(!this.value.trim())this.value=this.dataset.def;syncPlayerOpggButton('${team}',${i})"
             data-def="${displayVal}"
             ondragstart="event.stopPropagation()"
             ondragover="event.stopPropagation();event.preventDefault()"
-            style="flex:1;margin-bottom:0;">
-          <button class="btn-sm" style="font-size:11px;padding:2px 7px;flex-shrink:0;" onclick="openPlayerModal('${team}',${i})">💾</button>
+            style="flex:1;min-width:0;margin-bottom:0;">
+          <div class="player-actions">
+            ${playerOpggButtonHtml(team, i, rawPlayerName)}
+            <button class="btn-sm player-save-btn" type="button" onclick="openPlayerModal('${team}',${i})"><span class="player-save-icon">💾</span></button>
+          </div>
         </div>
         <div class="pool-zone" id="${team}Pool${i}" ondragover="onOver(event)" ondragleave="onLeave(event)" ondrop="onDrop(event,'${team}Pool',${i})" onclick="selectPoolZone(event,'${team}',${i})"></div>
       </div>`;
     }).join('');
+    disableInputSuggestions(list);
   });
 }
 
@@ -1501,7 +1595,8 @@ function undoLast(){
 
 // ─── HELPERS ──────────────────────────────────────────────────
 function setName(team,idx,val){
-  (team==='blue'?state.blueNames:state.redNames)[idx]=val;
+  getPlayerDisplayList(team)[idx]=val;
+  getPlayerNameList(team)[idx]=parseRiotId(val) ? val.trim() : '';
   const lbl=document.getElementById(team+'PoolLabel'+idx);
   if(lbl&&lbl!==document.activeElement)lbl.value=val;
 }
@@ -1525,6 +1620,18 @@ function generateResult(){
   if(el) el.value=lines.join('\n').trim();
 }
 
+let confirmCancelHandler = null;
+function closeConfirm(runCancel=false){
+  const overlay=document.getElementById('confirmOverlay');
+  const ok=document.getElementById('confirmOk');
+  const cancel=document.getElementById('confirmCancel');
+  const cancelHandler=confirmCancelHandler;
+  overlay.classList.remove('show');
+  ok.onclick=null;
+  cancel.onclick=null;
+  confirmCancelHandler=null;
+  if(runCancel && cancelHandler) cancelHandler();
+}
 function showConfirm(msg, callback, cancelCallback, okLabel){
   document.getElementById('confirmMsg').textContent=msg||'';
   document.getElementById('confirmOk').textContent=okLabel||'はい';
@@ -1532,12 +1639,9 @@ function showConfirm(msg, callback, cancelCallback, okLabel){
   overlay.classList.add('show');
   const ok=document.getElementById('confirmOk');
   const cancel=document.getElementById('confirmCancel');
-  const cleanup=()=>{
-    overlay.classList.remove('show');
-    ok.onclick=null; cancel.onclick=null;
-  };
-  ok.onclick=()=>{cleanup();callback();};
-  cancel.onclick=()=>{cleanup();if(cancelCallback)cancelCallback();};
+  confirmCancelHandler=cancelCallback||null;
+  ok.onclick=()=>{ closeConfirm(false); callback(); };
+  cancel.onclick=()=>{ closeConfirm(true); };
 }
 function resetDraft(){
   showConfirm('ドラフトをリセットしますか？', ()=>{
@@ -1562,6 +1666,7 @@ function doResetAll(){
     blueNewbieProtect:[],redNewbieProtect:[],
     bluePools:[[],[],[],[],[]],redPools:[[],[],[],[],[]],
     blueNames:['','','','',''],redNames:['','','','',''],
+    bluePlayerNames:['','','','',''],redPlayerNames:['','','','',''],
     blueLoadedSaveId:null, redLoadedSaveId:null,
     fearlessBlue:[], fearlessRed:[]
   };
@@ -1597,6 +1702,7 @@ function hasAnyData(){
   if(state.bluePools.some(p=>p.length)||state.redPools.some(p=>p.length))return true;
   if((state.fearlessBlue||[]).length||(state.fearlessRed||[]).length)return true;
   if(state.blueNames.some(n=>n)||state.redNames.some(n=>n))return true;
+  if((state.bluePlayerNames||[]).some(n=>n)||(state.redPlayerNames||[]).some(n=>n))return true;
   const bpt=document.getElementById('bluePoolTitle');
   const rpt=document.getElementById('redPoolTitle');
   if(bpt&&bpt.value&&bpt.value!=='青チーム')return true;
@@ -1644,6 +1750,53 @@ function putDraftSaves(arr){
   try{ localStorage.setItem('draftTool_drafts', JSON.stringify(arr)); }
   catch(e){ alert('保存容量が上限に達しました。古いデータを削除してください。'); }
 }
+function bindOverlayClose(overlayEl, onClose){
+  let pointerDownOnOverlay = false;
+  overlayEl.addEventListener('pointerdown', e=>{
+    pointerDownOnOverlay = e.target === e.currentTarget;
+  });
+  overlayEl.addEventListener('click', e=>{
+    if(pointerDownOnOverlay && e.target===e.currentTarget) onClose();
+    pointerDownOnOverlay = false;
+  });
+}
+bindOverlayClose(document.getElementById('confirmOverlay'), ()=>{
+  closeConfirm(true);
+});
+function syncModalScrollLock(){
+  const hasOpenOverlay = !!document.querySelector('.modal-overlay.show, .confirm-overlay.show');
+  document.body.classList.toggle('modal-open', hasOpenOverlay);
+}
+function canScrollModalContent(target, deltaY){
+  let el = target instanceof Element ? target : null;
+  while(el && el !== document.body){
+    const style = getComputedStyle(el);
+    const overflowY = style.overflowY;
+    const isScrollable = /(auto|scroll|overlay)/.test(overflowY) && el.scrollHeight > el.clientHeight;
+    if(isScrollable){
+      const atTop = el.scrollTop <= 0;
+      const atBottom = Math.ceil(el.scrollTop + el.clientHeight) >= el.scrollHeight;
+      if(deltaY < 0 && !atTop) return true;
+      if(deltaY > 0 && !atBottom) return true;
+      if(deltaY === 0) return true;
+    }
+    el = el.parentElement;
+  }
+  return false;
+}
+function handleModalWheel(e){
+  if(!document.body.classList.contains('modal-open')) return;
+  if(canScrollModalContent(e.target, e.deltaY)) return;
+  e.preventDefault();
+}
+function initModalScrollLock(){
+  const observer = new MutationObserver(syncModalScrollLock);
+  document.querySelectorAll('.modal-overlay, .confirm-overlay').forEach(el=>{
+    observer.observe(el, {attributes:true, attributeFilter:['class']});
+    el.addEventListener('wheel', handleModalWheel, {passive:false});
+  });
+  syncModalScrollLock();
+}
 
 function openDraftModal(){
   document.getElementById('draftSaveNameInput').value='';
@@ -1651,11 +1804,9 @@ function openDraftModal(){
   document.getElementById('draftSaveModal').classList.add('show');
 }
 function closeDraftModal(){ document.getElementById('draftSaveModal').classList.remove('show'); }
-document.getElementById('draftSaveModal').addEventListener('click',e=>{
-  if(e.target===e.currentTarget) closeDraftModal();
-});
-document.getElementById('helpModal').addEventListener('click',e=>{
-  if(e.target===e.currentTarget) e.currentTarget.classList.remove('show');
+bindOverlayClose(document.getElementById('draftSaveModal'), closeDraftModal);
+bindOverlayClose(document.getElementById('helpModal'), ()=>{
+  document.getElementById('helpModal').classList.remove('show');
 });
 document.querySelectorAll('#helpModal details').forEach(function(el){
   el.addEventListener('toggle',function(){
@@ -1711,6 +1862,7 @@ function loadDraft(idx){
   const saves=getDraftSaves();
   if(!saves[idx])return;
   state=JSON.parse(JSON.stringify(saves[idx].state));
+  normalizeLoadedState(state);
   currentStep=saves[idx].currentStep??0; history=[];
   buildPools();
   renderAll();
@@ -1793,20 +1945,62 @@ function getTeamDefaultName(team){
 function getPlayerDefaultName(team, idx){
   return `${team==='blue'?'青':'赤'} プレイヤー${idx+1}`;
 }
+function disableInputSuggestions(root=document){
+  root.querySelectorAll('input, textarea').forEach(el=>{
+    const type=(el.getAttribute('type')||'text').toLowerCase();
+    if(['checkbox','radio','range','file','color','button','submit','reset','hidden'].includes(type)) return;
+    el.setAttribute('autocomplete','off');
+    el.setAttribute('autocorrect','off');
+    el.setAttribute('autocapitalize','off');
+    el.setAttribute('spellcheck','false');
+  });
+}
+function normalizeStoredPlayerName(playerName, displayName=''){
+  if(typeof playerName==='string') return playerName;
+  return parseRiotId(displayName) ? displayName : '';
+}
 function normalizePoolNames(names){
   return Array.from({length:5}, (_,i)=>typeof names?.[i]==='string' ? names[i] : '');
+}
+function normalizePlayerNameEntries(playerNames, displayNames){
+  return Array.from({length:5}, (_,i)=>{
+    const displayName=typeof displayNames?.[i]==='string' ? displayNames[i] : '';
+    return normalizeStoredPlayerName(playerNames?.[i], displayName);
+  });
 }
 function normalizeTeamPools(pools){
   return Array.from({length:5}, (_,i)=>Array.isArray(pools?.[i]) ? pools[i] : []);
 }
+function getPlayerIdentity(team, idx){
+  const displayName=(getPlayerDisplayList(team)[idx]||'').trim();
+  const playerName=(getPlayerNameList(team)[idx]||'').trim();
+  return {
+    displayName: displayName || playerName,
+    playerName
+  };
+}
+function setPlayerIdentity(team, idx, displayName, playerName){
+  const nextDisplay=(displayName||'').trim();
+  const nextPlayer=(playerName||'').trim();
+  getPlayerDisplayList(team)[idx]=nextDisplay || nextPlayer;
+  getPlayerNameList(team)[idx]=nextPlayer;
+}
+function normalizeLoadedState(targetState){
+  targetState.blueNames=normalizePoolNames(targetState.blueNames);
+  targetState.redNames=normalizePoolNames(targetState.redNames);
+  targetState.bluePlayerNames=normalizePlayerNameEntries(targetState.bluePlayerNames, targetState.blueNames);
+  targetState.redPlayerNames=normalizePlayerNameEntries(targetState.redPlayerNames, targetState.redNames);
+  return targetState;
+}
 function syncPoolLabelInput(team, idx){
   const labelEl = document.getElementById(`${team}PoolLabel${idx}`);
   if(!labelEl) return;
-  const names = team==='blue' ? state.blueNames : state.redNames;
-  const displayVal = names[idx] || getPlayerDefaultName(team, idx);
+  const displayName = getPlayerIdentity(team, idx).displayName;
+  const displayVal = displayName || getPlayerDefaultName(team, idx);
   labelEl.value = displayVal;
   labelEl.dataset.def = displayVal;
   autoWidth(labelEl);
+  syncPlayerOpggButton(team, idx);
 }
 function syncSelectedPoolVisual(){
   if(!selectedPool) return;
@@ -1858,6 +2052,7 @@ function teamSnapshot(team){
     newbieProtect: state[team+'NewbieProtect'],
     pools:         team==='blue'?state.bluePools:state.redPools,
     names:         team==='blue'?state.blueNames:state.redNames,
+    playerNames:   team==='blue'?state.bluePlayerNames:state.redPlayerNames,
   };
 }
 
@@ -1867,9 +2062,11 @@ function applySnapshot(team, snap, snapName){
   if(team==='blue'){
     state.bluePools=normalizeTeamPools(snap.pools);
     state.blueNames=normalizePoolNames(snap.names);
+    state.bluePlayerNames=normalizePlayerNameEntries(snap.playerNames, state.blueNames);
   } else {
     state.redPools=normalizeTeamPools(snap.pools);
     state.redNames=normalizePoolNames(snap.names);
+    state.redPlayerNames=normalizePlayerNameEntries(snap.playerNames, state.redNames);
   }
   // タイトル更新
   const titleEl=document.getElementById(team+'PoolTitle');
@@ -1880,27 +2077,33 @@ function applySnapshot(team, snap, snapName){
   }
   // 対象チームのプールのみ再構築
   const list=document.getElementById(team+'PoolList');
-  const names=team==='blue'?state.blueNames:state.redNames;
+  const names=getPlayerDisplayList(team);
+  const playerNames=getPlayerNameList(team);
   list.innerHTML=Array.from({length:5},(_,i)=>{
     const ph=getPlayerDefaultName(team, i);
-    const val=esc(names[i]||'');
-    const displayVal=val||ph;
+    const rawDisplayName=names[i]||'';
+    const rawPlayerName=playerNames[i]||'';
+    const displayVal=esc(rawDisplayName)||ph;
     return `<div class="pool-row">
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:2px;">
+      <div class="pool-row-header">
         <input class="pool-label-input" id="${team}PoolLabel${i}"
-          type="text" placeholder="プレイヤー名入力" value="${displayVal}" autocomplete="off"
-          oninput="setName('${team}',${i},this.value);autoWidth(this)"
-          onfocus="if(this.value===this.dataset.def)this.value=''"
-          onblur="if(!this.value.trim())this.value=this.dataset.def;"
+          type="text" placeholder="表示名入力" value="${displayVal}" autocomplete="off"
+          oninput="setName('${team}',${i},this.value);autoWidth(this);syncPlayerOpggButton('${team}',${i})"
+          onfocus="if(this.value===this.dataset.def)this.value='';syncPlayerOpggButton('${team}',${i})"
+          onblur="if(!this.value.trim())this.value=this.dataset.def;syncPlayerOpggButton('${team}',${i})"
           data-def="${displayVal}"
           ondragstart="event.stopPropagation()"
           ondragover="event.stopPropagation();event.preventDefault()"
-          style="flex:1;margin-bottom:0;">
-          <button class="btn-sm" style="font-size:11px;padding:2px 7px;flex-shrink:0;" onclick="openPlayerModal('${team}',${i})">💾</button>
+          style="flex:1;min-width:0;margin-bottom:0;">
+        <div class="player-actions">
+          ${playerOpggButtonHtml(team, i, rawPlayerName)}
+          <button class="btn-sm player-save-btn" type="button" onclick="openPlayerModal('${team}',${i})"><span class="player-save-icon">💾</span></button>
+        </div>
       </div>
       <div class="pool-zone" id="${team}Pool${i}" ondragover="onOver(event)" ondragleave="onLeave(event)" ondrop="onDrop(event,'${team}Pool',${i})" onclick="selectPoolZone(event,'${team}',${i})"></div>
     </div>`;
   }).join('');
+  disableInputSuggestions(list);
   renderProtect(team);
   renderPools(team);
   renderNewbieProtect(team);
@@ -1923,26 +2126,34 @@ function clearTeamPool(){
       state.redNewbieProtect=[];
       state.redLoadedSaveId=null;
     }
-    applySnapshot(modalTeam, {pools:modalTeam==='blue'?state.bluePools:state.redPools, names:modalTeam==='blue'?state.blueNames:state.redNames, protect:[], newbieProtect:[]});
+    applySnapshot(modalTeam, {
+      pools:modalTeam==='blue'?state.bluePools:state.redPools,
+      names:modalTeam==='blue'?state.blueNames:state.redNames,
+      playerNames:modalTeam==='blue'?state.bluePlayerNames:state.redPlayerNames,
+      protect:[],
+      newbieProtect:[]
+    });
     closeModal();
   }, null, 'クリアする');
 }
 function clearTeamAll(){
-  showConfirm('チーム名・プレイヤー名を含めてすべてクリアしますか？', ()=>{
+  showConfirm('チーム名・表示名・プレイヤー名を含めてすべてクリアしますか？', ()=>{
     if(modalTeam==='blue'){
       state.bluePools=[[],[],[],[],[]];
       state.blueNames=['','','','',''];
+      state.bluePlayerNames=['','','','',''];
       state.blueProtect=[];
       state.blueNewbieProtect=[];
       state.blueLoadedSaveId=null;
     } else {
       state.redPools=[[],[],[],[],[]];
       state.redNames=['','','','',''];
+      state.redPlayerNames=['','','','',''];
       state.redProtect=[];
       state.redNewbieProtect=[];
       state.redLoadedSaveId=null;
     }
-    applySnapshot(modalTeam, {pools:modalTeam==='blue'?state.bluePools:state.redPools, names:[], protect:[], newbieProtect:[]}, modalTeam==='blue'?'青チーム':'赤チーム');
+    applySnapshot(modalTeam, {pools:modalTeam==='blue'?state.bluePools:state.redPools, names:[], playerNames:[], protect:[], newbieProtect:[]}, modalTeam==='blue'?'青チーム':'赤チーム');
     closeModal();
   }, null, 'クリアする');
 }
@@ -1958,9 +2169,7 @@ function openModal(team){
   document.getElementById('saveModal').classList.add('show');
 }
 function closeModal(){ document.getElementById('saveModal').classList.remove('show'); }
-document.getElementById('saveModal').addEventListener('click',e=>{
-  if(e.target===e.currentTarget) closeModal();
-});
+bindOverlayClose(document.getElementById('saveModal'), closeModal);
 
 function getSaves(){ try{ return JSON.parse(localStorage.getItem('draftTool_saves')||'[]'); }catch(e){return[];} }
 function putSaves(arr){
@@ -2061,20 +2270,24 @@ function putPlayerSaves(arr){
 function openPlayerModal(team, idx){
   playerModalTeam = team;
   playerModalIdx  = idx;
-  const name = (team==='blue'?state.blueNames:state.redNames)[idx] || `${team==='blue'?'青':'赤'} プレイヤー${idx+1}`;
-  document.getElementById('playerModalTitle').textContent = `${name} — 保存/呼び出し`;
-  document.getElementById('playerSaveNameInput').value = name;
+  const player = getPlayerIdentity(team, idx);
+  const displayName = player.displayName || getPlayerDefaultName(team, idx);
+  document.getElementById('playerModalTitle').textContent = `${displayName} — 保存/呼び出し`;
+  document.getElementById('playerDisplayNameInput').value = displayName;
+  document.getElementById('playerNameInput').value = player.playerName;
   renderPlayerSavedList();
   document.getElementById('playerSaveModal').classList.add('show');
 }
 function clearPlayerPool(){
-  showConfirm('プレイヤープール・名前をクリアしますか？', ()=>{
+  showConfirm('プレイヤープール・表示名・プレイヤー名をクリアしますか？', ()=>{
     if(playerModalTeam==='blue'){
       state.bluePools[playerModalIdx]=[];
       state.blueNames[playerModalIdx]='';
+      state.bluePlayerNames[playerModalIdx]='';
     } else {
       state.redPools[playerModalIdx]=[];
       state.redNames[playerModalIdx]='';
+      state.redPlayerNames[playerModalIdx]='';
     }
     syncPoolLabelInput(playerModalTeam, playerModalIdx);
     renderPools(playerModalTeam);
@@ -2085,24 +2298,51 @@ function clearPlayerPool(){
 function closePlayerModal(){
   document.getElementById('playerSaveModal').classList.remove('show');
 }
-document.getElementById('playerSaveModal').addEventListener('click', e=>{
-  if(e.target===e.currentTarget) closePlayerModal();
-});
+bindOverlayClose(document.getElementById('playerSaveModal'), closePlayerModal);
 
 function playerSnapshot(){
   const pool = (playerModalTeam==='blue'?state.bluePools:state.redPools)[playerModalIdx] || [];
-  const name = (playerModalTeam==='blue'?state.blueNames:state.redNames)[playerModalIdx] || '';
-  return { pool, name };
+  const player = getPlayerIdentity(playerModalTeam, playerModalIdx);
+  return { pool, name: player.displayName, displayName: player.displayName, playerName: player.playerName };
+}
+function getSavedPlayerIdentity(save){
+  const snap = save?.data || {};
+  const displayName = (snap.displayName ?? snap.name ?? save?.displayName ?? save?.name ?? '').trim();
+  const playerName = (typeof snap.playerName === 'string'
+    ? snap.playerName
+    : normalizeStoredPlayerName(save?.playerName, displayName)).trim();
+  return {
+    displayName: displayName || playerName,
+    playerName
+  };
 }
 
 function savePlayerData(){
-  const saveName = document.getElementById('playerSaveNameInput').value.trim();
-  if(!saveName){ document.getElementById('playerSaveNameInput').focus(); return; }
+  const displayInput = document.getElementById('playerDisplayNameInput');
+  const playerInput = document.getElementById('playerNameInput');
+  const nextDisplayName = displayInput.value.trim();
+  const nextPlayerName = playerInput.value.trim();
+  const finalDisplayName = nextDisplayName || nextPlayerName;
+  if(!finalDisplayName){ displayInput.focus(); return; }
+  setPlayerIdentity(playerModalTeam, playerModalIdx, finalDisplayName, nextPlayerName);
+  const snapshot = playerSnapshot();
   const saves = getPlayerSaves();
   const id = crypto.randomUUID();
-  saves.unshift({ id, name: saveName, date: new Date().toLocaleString('ja-JP'), data: playerSnapshot() });
+  saves.unshift({
+    id,
+    name: snapshot.displayName,
+    displayName: snapshot.displayName,
+    playerName: snapshot.playerName,
+    date: new Date().toLocaleString('ja-JP'),
+    data: snapshot
+  });
   putPlayerSaves(saves.slice(0, 50));
-  document.getElementById('playerSaveNameInput').value = '';
+  displayInput.value = snapshot.displayName || '';
+  playerInput.value = snapshot.playerName || '';
+  syncPoolLabelInput(playerModalTeam, playerModalIdx);
+  renderPools(playerModalTeam);
+  renderChampGrid();
+  document.getElementById('playerModalTitle').textContent = `${snapshot.displayName || getPlayerDefaultName(playerModalTeam, playerModalIdx)} — 保存/呼び出し`;
   renderPlayerSavedList();
 }
 
@@ -2110,28 +2350,31 @@ function renderPlayerSavedList(){
   const saves = getPlayerSaves();
   const el = document.getElementById('playerSavedList');
   if(!saves.length){ el.innerHTML='<div class="empty-msg">保存済みデータがありません</div>'; return; }
-  el.innerHTML = saves.map((s,i)=>`
-    <div class="saved-item">
-      <div style="flex:1;min-width:0;">
-        <div class="saved-item-name">${esc(s.name)}</div>
-        <div class="saved-item-date">${esc(s.date)}</div>
-      </div>
-      <button class="btn-sm" style="font-size:12px;" onclick="loadPlayerSave(${i})">呼び出し</button>
-      <button class="btn-sm danger" style="font-size:12px;" onclick="deletePlayerSave(${i})">削除</button>
-    </div>`).join('');
+  el.innerHTML = saves.map((s,i)=>{
+    const saved = getSavedPlayerIdentity(s);
+    return `
+      <div class="saved-item">
+        <div style="flex:1;min-width:0;">
+          <div class="saved-item-name">${esc(saved.displayName || '（名称なし）')}</div>
+          <div class="saved-item-date">${esc(s.date)}</div>
+        </div>
+        <button class="btn-sm" style="font-size:12px;" onclick="loadPlayerSave(${i})">呼び出し</button>
+        <button class="btn-sm danger" style="font-size:12px;" onclick="deletePlayerSave(${i})">削除</button>
+      </div>`;
+  }).join('');
 }
 
 function loadPlayerSave(listIdx){
   const saves = getPlayerSaves();
   if(!saves[listIdx]) return;
-  const snap = saves[listIdx].data;
-  const nameToUse = snap.name || saves[listIdx].name;
+  const snap = saves[listIdx].data || {};
+  const saved = getSavedPlayerIdentity(saves[listIdx]);
   if(playerModalTeam==='blue'){
     state.bluePools[playerModalIdx] = Array.isArray(snap.pool) ? snap.pool : [];
-    state.blueNames[playerModalIdx] = nameToUse || '';
+    setPlayerIdentity('blue', playerModalIdx, saved.displayName, saved.playerName);
   } else {
     state.redPools[playerModalIdx] = Array.isArray(snap.pool) ? snap.pool : [];
-    state.redNames[playerModalIdx] = nameToUse || '';
+    setPlayerIdentity('red', playerModalIdx, saved.displayName, saved.playerName);
   }
   syncPoolLabelInput(playerModalTeam, playerModalIdx);
   renderPools(playerModalTeam);
@@ -2234,12 +2477,18 @@ document.getElementById('fearlessToggle').addEventListener('change',()=>{
 let banpickCollapsed = false;
 function toggleBanPick(){
   banpickCollapsed = !banpickCollapsed;
+  syncPoolBuildModeCursor();
   const areas = [document.getElementById('banpickArea'), document.getElementById('banpickArea2')];
   const btns  = [document.getElementById('banpickCollapseBtn'), document.getElementById('banpickCollapseBtn2')];
+  const labels = document.querySelectorAll('.ban-section-label');
   const grid  = document.getElementById('champGrid');
   areas.forEach(el => {
     if(!el) return;
     el.style.display = banpickCollapsed ? 'none' : '';
+  });
+  labels.forEach(label => {
+    if(!label) return;
+    label.style.display = banpickCollapsed ? 'none' : '';
   });
   btns.forEach(btn => {
     if(!btn) return;
@@ -2265,9 +2514,13 @@ function openSaveManager(){
 function closeSaveManager(){
   document.getElementById('saveManagerModal').classList.remove('show');
 }
-document.getElementById('saveManagerModal').addEventListener('click', e=>{
-  if(e.target===e.currentTarget) closeSaveManager();
-});
+bindOverlayClose(document.getElementById('saveManagerModal'), closeSaveManager);
+function closeTosModal(){
+  document.getElementById('tosModal').classList.remove('show');
+}
+function closePrivacyModal(){
+  document.getElementById('privacyModal').classList.remove('show');
+}
 function renderSaveManager(){
   const draftSaves  = getDraftSaves();
   const teamSaves   = getSaves();
@@ -2391,6 +2644,7 @@ function saveMemo(){
   localStorage.setItem('draftTool_memo', document.getElementById('memoTextarea').value);
 }
 init();
+syncPoolBuildModeCursor();
 (function loadMemo(){
   const v = localStorage.getItem('draftTool_memo');
   if(v) document.getElementById('memoTextarea').value = v;
@@ -2414,11 +2668,11 @@ document.querySelectorAll('.pool-label-input').forEach(el=>autoWidth(el));
 </div>
 
 <!-- 利用規約モーダル -->
-<div id="tosModal" class="modal-overlay" onclick="if(event.target===this)this.classList.remove('show')" style="z-index:2000;">
+<div id="tosModal" class="modal-overlay" style="z-index:2000;">
   <div class="modal-box" style="max-width:600px;max-height:80vh;overflow-y:auto;">
     <div class="modal-header">
       <span class="modal-title">利用規約</span>
-      <button class="modal-close" onclick="document.getElementById('tosModal').classList.remove('show')">✕</button>
+      <button class="modal-close" onclick="closeTosModal()">✕</button>
     </div>
     <div style="padding:16px;font-size:13px;color:var(--text2);line-height:1.8;">
       <p style="margin-bottom:12px;">本ツール（K Draft Planner）をご利用いただく前に、以下の利用規約をお読みください。ご利用をもって本規約に同意したものとみなします。</p>
@@ -2446,11 +2700,11 @@ document.querySelectorAll('.pool-label-input').forEach(el=>autoWidth(el));
 </div>
 
 <!-- プライバシーポリシーモーダル -->
-<div id="privacyModal" class="modal-overlay" onclick="if(event.target===this)this.classList.remove('show')" style="z-index:2000;">
+<div id="privacyModal" class="modal-overlay" style="z-index:2000;">
   <div class="modal-box" style="max-width:600px;max-height:80vh;overflow-y:auto;">
     <div class="modal-header">
       <span class="modal-title">プライバシーポリシー</span>
-      <button class="modal-close" onclick="document.getElementById('privacyModal').classList.remove('show')">✕</button>
+      <button class="modal-close" onclick="closePrivacyModal()">✕</button>
     </div>
     <div style="padding:16px;font-size:13px;color:var(--text2);line-height:1.8;">
       <p style="margin-bottom:12px;">K Draft Planner（以下「本ツール」）における個人情報・データの取り扱いについて説明します。</p>
@@ -2482,6 +2736,10 @@ document.querySelectorAll('.pool-label-input').forEach(el=>autoWidth(el));
     </div>
   </div>
 </div>
+<script>
+bindOverlayClose(document.getElementById('tosModal'), closeTosModal);
+bindOverlayClose(document.getElementById('privacyModal'), closePrivacyModal);
+</script>
 <!-- メモパネル -->
 <button id="memoBtn" onclick="toggleMemo()" title="メモ">
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round">
