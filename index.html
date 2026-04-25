@@ -458,7 +458,7 @@
     </div>
     <div class="modal-section">名前をつけて保存</div>
     <div class="save-row">
-      <input class="save-input" id="draftSaveNameInput" type="text" placeholder="例: 大会A 第1試合" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <input class="save-input" id="draftSaveNameInput" type="text" placeholder="青チーム名 vs 赤チーム名" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onblur="draftSaveNameBlur(this)">
       <button class="btn-sm" onclick="saveDraft()">保存</button>
     </div>
     <div class="modal-section">保存済みドラフト</div>
@@ -474,7 +474,7 @@
     </div>
     <div class="modal-section">名前をつけて新規保存</div>
     <div class="save-row">
-      <input class="save-input" id="saveNameInput" type="text" placeholder="例: 大会A 青チーム" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <input class="save-input" id="saveNameInput" type="text" placeholder="例: 大会A 青チーム" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onfocus="teamSaveNameFocus(this)" onblur="teamSaveNameBlur(this)">
       <button class="btn-sm" onclick="saveTeamData()">保存</button>
     </div>
     <div class="modal-section">保存済みデータ</div>
@@ -495,7 +495,7 @@
     <div class="player-modal-form">
       <div class="player-modal-row">
         <label class="player-modal-inline-label" for="playerDisplayNameInput">表示名</label>
-        <input class="save-input player-modal-input" id="playerDisplayNameInput" type="text" placeholder="表示名" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <input class="save-input player-modal-input" id="playerDisplayNameInput" type="text" placeholder="表示名" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onfocus="playerDisplayNameFocus(this)" onblur="playerDisplayNameBlur(this)">
         <button class="btn-sm player-modal-action" type="button" onclick="savePlayerData()">保存</button>
       </div>
       <div class="player-modal-row">
@@ -1799,7 +1799,10 @@ function initModalScrollLock(){
 }
 
 function openDraftModal(){
-  document.getElementById('draftSaveNameInput').value='';
+  const input=document.getElementById('draftSaveNameInput');
+  const defaultName=getDraftDefaultName();
+  input.dataset.def=defaultName;
+  input.value=defaultName;
   renderDraftSavedList();
   document.getElementById('draftSaveModal').classList.add('show');
 }
@@ -1815,9 +1818,19 @@ document.querySelectorAll('#helpModal details').forEach(function(el){
   });
 });
 
+function getCurrentTeamTitle(team){
+  return document.getElementById(team+'PoolTitle')?.value.trim() || getTeamDefaultName(team);
+}
+function getDraftDefaultName(){
+  return `${getCurrentTeamTitle('blue')} vs ${getCurrentTeamTitle('red')}`;
+}
+function draftSaveNameBlur(el){
+  if(!el.value.trim()) el.value=el.dataset.def||getDraftDefaultName();
+}
+
 function saveDraft(){
-  const name=document.getElementById('draftSaveNameInput').value.trim();
-  if(!name){ document.getElementById('draftSaveNameInput').focus(); return; }
+  const input=document.getElementById('draftSaveNameInput');
+  const name=input.value.trim() || input.dataset.def || getDraftDefaultName();
   const saves=getDraftSaves();
   saves.unshift({
     id: crypto.randomUUID(),
@@ -1832,7 +1845,8 @@ function saveDraft(){
     fearlessOn: document.getElementById('fearlessToggle')?.checked||false,
   });
   putDraftSaves(saves.slice(0,30));
-  document.getElementById('draftSaveNameInput').value='';
+  input.dataset.def=getDraftDefaultName();
+  input.value=input.dataset.def;
   renderDraftSavedList();
 }
 
@@ -2162,7 +2176,9 @@ function openModal(team){
   const tn=team==='blue'?'青チーム':'赤チーム';
   document.getElementById('modalTitle').textContent=`${tn} — 保存/呼び出し`;
   const teamTitle=document.getElementById(team+'PoolTitle')?.value||'';
-  document.getElementById('saveNameInput').value=teamTitle;
+  const saveNameInput=document.getElementById('saveNameInput');
+  saveNameInput.dataset.def=getTeamDefaultName(team);
+  saveNameInput.value=teamTitle||saveNameInput.dataset.def;
   document.getElementById('clearTeamPoolBtn').textContent=`${tn}のチャンピオンをクリア`;
   document.getElementById('clearTeamAllBtn').textContent=`${tn}をオールリセット`;
   renderSavedList();
@@ -2170,6 +2186,13 @@ function openModal(team){
 }
 function closeModal(){ document.getElementById('saveModal').classList.remove('show'); }
 bindOverlayClose(document.getElementById('saveModal'), closeModal);
+
+function teamSaveNameFocus(el){
+  if(el.value===el.dataset.def) el.value='';
+}
+function teamSaveNameBlur(el){
+  if(!el.value.trim()) el.value=el.dataset.def||'';
+}
 
 function getSaves(){ try{ return JSON.parse(localStorage.getItem('draftTool_saves')||'[]'); }catch(e){return[];} }
 function putSaves(arr){
@@ -2271,12 +2294,21 @@ function openPlayerModal(team, idx){
   playerModalTeam = team;
   playerModalIdx  = idx;
   const player = getPlayerIdentity(team, idx);
-  const displayName = player.displayName || getPlayerDefaultName(team, idx);
+  const defaultDisplayName = getPlayerDefaultName(team, idx);
+  const displayName = player.displayName || defaultDisplayName;
   document.getElementById('playerModalTitle').textContent = `${displayName} — 保存/呼び出し`;
-  document.getElementById('playerDisplayNameInput').value = displayName;
+  const displayInput = document.getElementById('playerDisplayNameInput');
+  displayInput.dataset.def = defaultDisplayName;
+  displayInput.value = displayName;
   document.getElementById('playerNameInput').value = player.playerName;
   renderPlayerSavedList();
   document.getElementById('playerSaveModal').classList.add('show');
+}
+function playerDisplayNameFocus(el){
+  if(el.value===el.dataset.def) el.value='';
+}
+function playerDisplayNameBlur(el){
+  if(!el.value.trim()) el.value=el.dataset.def||'';
 }
 function clearPlayerPool(){
   showConfirm('プレイヤープール・表示名・プレイヤー名をクリアしますか？', ()=>{
@@ -2467,7 +2499,7 @@ document.getElementById('fearlessToggle').addEventListener('change',()=>{
   }
   showConfirm(
     'フィアレスドラフトをONにします。\n\n通常ドラフトに戻す際はオールリセットが必要になるため、現在のデータを保存しておくことを推奨します。',
-    ()=>{ renderFearless(); },
+    ()=>{ if(banpickCollapsed) toggleBanPick(); else renderFearless(); },
     ()=>{ document.getElementById('fearlessToggle').checked=false; if(btn)btn.style.display='none'; },
     'ONにする'
   );
