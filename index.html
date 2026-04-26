@@ -194,7 +194,10 @@
   .ban-slot.drag-over{border-color:var(--red);border-style:solid;background:var(--red-light);}
   .ban-slot img{width:44px;height:44px;border-radius:6px;object-fit:cover;}
   .ban-slot .ban-img-wrap{position:relative;display:inline-block;width:44px;height:44px;}
-  .ban-slot .ban-img-wrap::after{content:'';position:absolute;top:50%;left:50%;width:75%;height:2px;background:rgba(232, 232, 250, 0.9);transform:translate(-50%,-50%) rotate(50deg);pointer-events:none;}
+.ban-slot .ban-img-wrap::before,
+.ban-slot .ban-img-wrap::after{content:'';position:absolute;top:50%;left:50%;border-radius:999px;transform:translate(-50%,-50%) rotate(50deg);pointer-events:none;}
+.ban-slot .ban-img-wrap::before{width:76.5%;height:3px;background:rgba(112, 116, 132, 0.5);box-shadow:0 0 1px rgba(0,0,0,0.22);}
+.ban-slot .ban-img-wrap::after{width:75%;height:2px;background:rgba(245, 245, 255, 0.96);}
 
   /* PICK SLOTS */
   .pick-slots{display:flex;flex-direction:column;gap:6px;}
@@ -1801,8 +1804,10 @@ function initModalScrollLock(){
 function openDraftModal(){
   const input=document.getElementById('draftSaveNameInput');
   const defaultName=getDraftDefaultName();
-  input.dataset.def=defaultName;
-  input.value=defaultName;
+  const currentSave=getCurrentDraftSave();
+  const initialName=currentSave?.name || defaultName;
+  input.dataset.def=initialName;
+  input.value=initialName;
   renderDraftSavedList();
   document.getElementById('draftSaveModal').classList.add('show');
 }
@@ -1823,6 +1828,16 @@ function getCurrentTeamTitle(team){
 }
 function getDraftDefaultName(){
   return `${getCurrentTeamTitle('blue')} vs ${getCurrentTeamTitle('red')}`;
+}
+function getCurrentDraftSave(){
+  if(!currentDraftId) return null;
+  return getDraftSaves().find(s=>s.id===currentDraftId) || null;
+}
+function hasFearlessDraftData(draftState){
+  return !!((draftState?.fearlessBlue||[]).length || (draftState?.fearlessRed||[]).length);
+}
+function isFearlessDraftSave(save){
+  return !!(save?.fearlessOn || hasFearlessDraftData(save?.state));
 }
 function draftSaveNameBlur(el){
   if(!el.value.trim()) el.value=el.dataset.def||getDraftDefaultName();
@@ -1857,10 +1872,11 @@ function renderDraftSavedList(){
   el.innerHTML=saves.map((s,i)=>{
     const isLoaded=s.id&&s.id===currentDraftId;
     const highlight=isLoaded?'border-color:var(--purple);background:#1e2430;':'';
+    const modeText=isFearlessDraftSave(s)?' - フィアレスモード':'';
     return `<div class="saved-item" style="${highlight}">
       <div style="flex:1;min-width:0;">
         <div class="saved-item-name">${esc(s.name)}</div>
-        <div class="saved-item-date">${esc(s.date)}</div>
+        <div class="saved-item-date">${esc(s.date)}${modeText}</div>
       </div>
       <button class="btn-sm" style="font-size:12px;width:72px;" onclick="loadDraft(${i})">呼び出し</button>
       ${isLoaded
@@ -1897,7 +1913,7 @@ function loadDraft(idx){
   const undoBtn = document.getElementById('undoBtn');
   const nextGameBtn = document.getElementById('nextGameBtn');
   const savedTournament = saves[idx].tournamentOn||false;
-  const savedFearless = saves[idx].fearlessOn||false;
+  const savedFearless = saves[idx].fearlessOn||hasFearlessDraftData(state);
 
   if(draftOrderToggle) draftOrderToggle.checked = savedTournament;
   if(undoBtn) undoBtn.style.display = savedTournament ? '' : 'none';
@@ -2240,6 +2256,7 @@ function renderSavedList(){
   const el=document.getElementById('savedList');
   if(!saves.length){ el.innerHTML='<div class="empty-msg">保存済みデータがありません</div>'; return; }
   const loadedId=state[modalTeam+'LoadedSaveId'];
+  const targetColor=modalTeam==='blue'?'var(--blue)':'var(--red)';
   el.innerHTML=saves.map((s,i)=>{
     const isLoaded=s.id&&s.id===loadedId;
     const highlight=isLoaded?'border-color:var(--purple);background:#1e2430;':'';
@@ -2253,8 +2270,7 @@ function renderSavedList(){
         </div>
         <div class="saved-item-date">${esc(s.date)}</div>
       </div>
-      <button class="btn-sm" style="font-size:12px;color:var(--blue);" onclick="loadSave(${i},'blue')">青へ</button>
-      <button class="btn-sm" style="font-size:12px;color:var(--red);"  onclick="loadSave(${i},'red')">赤へ</button>
+      <button class="btn-sm" style="font-size:12px;color:${targetColor};" onclick="loadSave(${i},'${modalTeam}')">呼び出し</button>
       ${actionBtn}
     </div>`;
   }).join('');
