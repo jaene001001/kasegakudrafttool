@@ -2,10 +2,11 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="robots" content="noindex, nofollow">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>K Draft Planner</title>
+<title>K Draft Planner - League of Legends ドラフトシミュレーションツール</title>
+<meta name="description" content="League of Legends（LoL）のドラフトを管理できるツール。BAN・PICK・チャンピオンプール・フィアレスドラフトに対応。また、LTK3のルールにも対応。">
+
 <style>
   :root {
     --blue:#5aabff;   --blue-light:#1a2e4a; --blue-mid:#2a4a6e; --blue-deep:#99d0ff; --blue-bg:#111c2a;
@@ -38,6 +39,11 @@
   #settingsPanel .toggle-wrap input:checked+.toggle-track::after{left:19px;}
 
   .protect-cfg{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--purple-light);border:1px solid var(--purple-mid);border-radius:var(--radius-sm);padding:7px 14px;font-size:15px;color:var(--purple);}
+  .mode-seg{display:flex;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;flex-shrink:0;}
+  .mode-seg-btn{padding:4px 13px;font-size:12px;background:transparent;border:none;border-right:1px solid var(--border);color:var(--text3);cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;}
+  .mode-seg-btn:last-child{border-right:none;}
+  .mode-seg-btn.active{background:var(--surface2);color:var(--text);font-weight:600;}
+  .mode-seg-btn:hover:not(.active){background:var(--purple-light);color:var(--text2);}
   .protect-cfg label{display:flex;align-items:center;gap:5px;}
   .protect-cfg input[type=number]{width:48px;height:30px;border:1px solid var(--purple-mid);border-radius:5px;text-align:center;font-size:15px;background:var(--surface2);color:var(--text);font-family:inherit;}
 
@@ -52,7 +58,7 @@
   .btn:disabled:hover{background:transparent;border-color:var(--border);color:var(--text2);}
 
   /* STEP BAR */
-  .step-bar{text-align:center;padding:10px 16px;font-size:16px;background:var(--surface);border-bottom:1px solid var(--border);color:var(--text2);min-height:36px;}
+  .step-bar{display:flex;align-items:center;justify-content:center;gap:8px;padding:7px 16px;font-size:16px;background:var(--surface);border-bottom:1px solid var(--border);color:var(--text2);min-height:36px;}
 
   /* MAIN */
   .main{display:grid;grid-template-columns:254px 1fr 254px;gap:10px;padding:10px;max-width:1336px;margin:0 auto;}
@@ -155,6 +161,7 @@
   .opgg-overlay{position:absolute;inset:0;border-radius:7px;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .15s;z-index:10;}
   .opgg-overlay.show{opacity:1;}
   .opgg-overlay span{color:#f8f9fb;font-size:11px;font-weight:700;letter-spacing:.04em;line-height:1;pointer-events:none;}
+
 
   /* CENTER */
   .center{display:flex;flex-direction:column;gap:10px;}
@@ -306,11 +313,18 @@
   #memoTextarea{width:100%;height:460px;background:var(--surface2);border:none;outline:none;resize:none;padding:12px 14px;font-size:13px;color:var(--text);font-family:inherit;box-sizing:border-box;line-height:1.6;}
   #memoFooter{padding:6px 14px;font-size:11px;color:var(--text3);border-top:1px solid var(--border);}
 
+  /* LTK モード */
+
+  #ltkRankWrap select{height:22px;font-size:12px;background:var(--surface2);border:1px solid var(--border);border-radius:5px;color:var(--text2);padding:0 6px;font-family:inherit;cursor:pointer;outline:none;}
+  #ltkRankWrap select:focus{border-color:var(--purple);}
   /* SCOUT MODAL */
 </style>
 </head>
 <body>
-
+<h1 style="display:none;">K Draft Planner</h1>
+<p style="display:none;">
+League of Legendsの大会・練習向けドラフトツール
+</p>
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
     <div class="confirm-msg" id="confirmMsg"></div>
@@ -341,8 +355,8 @@
       <div class="help-list">
         <div class="help-item">フリーモード → 自由にバンピックできる基本モード。</div>
         <div class="help-item">プール構築モード → バンピックエリアを折りたたむと切替。プール選択から一括追加ができる。</div>
-        <div class="help-item">トーナメントモード → 設定から切替。実際のドラフト順で進行。「1手戻す」のみ対応。</div>
         <div class="help-item">フィアレスモード → 設定から切替。フィアレスルールに対応。</div>
+        <div class="help-item">LTK3モード → LTK3ルール用。NEXTとCOREのプール・バンピックを分けて管理できる。</div>
       </div>
     </div>
     <div class="help-section">
@@ -526,21 +540,21 @@
 <div class="topbar">
   <div class="topbar-title">Draft Planner</div>
   <button class="btn-sm" style="font-size:12px;padding:3px 10px;flex-shrink:0;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:var(--text);" onclick="document.getElementById('helpModal').classList.add('show')">使い方</button>
+
+  <div class="mode-seg">
+    <button class="mode-seg-btn active" id="modeFree"     onclick="setMode('free')">フリー</button>
+    <button class="mode-seg-btn"        id="modeFearless" onclick="setMode('fearless')">フィアレス</button>
+    <button class="mode-seg-btn"        id="modeLtk"      onclick="setMode('ltk')">LTK3</button>
+  </div>
   <button class="btn-sm" id="settingsBtn" onclick="toggleSettings()" style="font-size:12px;padding:3px 10px;flex-shrink:0;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:var(--text);">⚙ 設定</button>
+  <div id="ltkRankWrap" style="display:none;align-items:center;gap:4px;">
+    <select id="ltkRankSelect">
+      <option value="next">NEXT</option>
+      <option value="core">CORE</option>
+    </select>
+  </div>
 
   <div id="settingsPanel" style="display:none;align-items:center;gap:10px;flex-wrap:wrap;">
-    <div class="topbar-sep"></div>
-    <label class="toggle-wrap" style="gap:5px;">
-      <input type="checkbox" id="draftOrderToggle">
-      <span class="toggle-track" style="width:34px;height:18px;border-radius:9px;"></span>
-      <span class="toggle-label" style="font-size:12px;">トーナメント</span>
-    </label>
-    <div class="topbar-sep"></div>
-    <label class="toggle-wrap" style="gap:5px;">
-      <input type="checkbox" id="fearlessToggle">
-      <span class="toggle-track" style="width:34px;height:18px;border-radius:9px;"></span>
-      <span class="toggle-label" style="font-size:12px;">フィアレス</span>
-    </label>
     <div class="topbar-sep"></div>
     <div class="protect-cfg" style="font-size:12px;padding:4px 10px;gap:7px;">
       <label>プロテクト <input type="number" id="blueProtectMax" value="3" min="0" max="8" oninput="syncProtectCfg()" style="width:36px;height:22px;font-size:12px;"></label>
@@ -552,6 +566,7 @@
   </div>
   <div class="topbar-btns">
     <button class="btn btn-undo" id="undoBtn" onclick="undoLast()" disabled style="display:none">← 1手戻す</button>
+    <button class="btn" id="ltkNavBtn" onclick="ltkNavAction()" style="display:none;"></button>
     <button class="btn" id="nextGameBtn" onclick="nextGame()" style="display:none;">次のゲームへ</button>
     <button class="btn" onclick="openDraftModal()">ドラフト保存/呼出</button>
     <button class="btn btn-reset" onclick="resetDraft()">ドラフトリセット</button>
@@ -559,7 +574,7 @@
   </div>
 </div>
 
-<div class="step-bar" id="stepBar">チャンピオンをクリックまたはドラッグしてください</div>
+<div class="step-bar" id="stepBar"><span style="color:var(--text);font-weight:600">フリーモード</span></div>
 
 <div class="main" id="mainLayout">
   <div class="loading">
@@ -569,32 +584,7 @@
 </div>
 
 <script>
-const DRAFT_ORDER = [
-  {team:'blue',type:'ban',idx:0},{team:'red',type:'ban',idx:0},
-  {team:'blue',type:'ban',idx:1},{team:'red',type:'ban',idx:1},
-  {team:'blue',type:'ban',idx:2},{team:'red',type:'ban',idx:2},
-  {team:'blue',type:'pick',idx:0},{team:'red',type:'pick',idx:0},
-  {team:'red',type:'pick',idx:1},{team:'blue',type:'pick',idx:1},
-  {team:'blue',type:'pick',idx:2},{team:'red',type:'pick',idx:2},
-  {team:'red',type:'ban',idx:3},{team:'blue',type:'ban',idx:3},
-  {team:'red',type:'ban',idx:4},{team:'blue',type:'ban',idx:4},
-  {team:'red',type:'pick',idx:3},{team:'blue',type:'pick',idx:3},
-  {team:'blue',type:'pick',idx:4},{team:'red',type:'pick',idx:4}
-];
-const STEP_LABELS = [
-  'ブルーチーム 1st BAN','レッドチーム 1st BAN',
-  'ブルーチーム 2nd BAN','レッドチーム 2nd BAN',
-  'ブルーチーム 3rd BAN','レッドチーム 3rd BAN',
-  'ブルーチーム 1st PICK','レッドチーム 1st PICK',
-  'レッドチーム 2nd PICK','ブルーチーム 2nd PICK',
-  'ブルーチーム 3rd PICK','レッドチーム 3rd PICK',
-  'レッドチーム 4th BAN','ブルーチーム 4th BAN',
-  'レッドチーム 5th BAN','ブルーチーム 5th BAN',
-  'レッドチーム 4th PICK','ブルーチーム 4th PICK',
-  'ブルーチーム 5th PICK','レッドチーム 5th PICK'
-];
-
-let allChamps=[], currentStep=0, dragData=null, history=[];
+let allChamps=[], dragData=null, history=[];
 let currentRoleFilter='all';
 
 let state = {
@@ -606,8 +596,12 @@ let state = {
   blueNames:['','','','',''],redNames:['','','','',''],
   bluePlayerNames:['','','','',''],redPlayerNames:['','','','',''],
   blueLoadedSaveId:null, redLoadedSaveId:null,
-  fearlessBlue:[],  // フィアレス：青チームのpick済みチャンプ
-  fearlessRed:[]    // フィアレス：赤チームのpick済みチャンプ
+  fearlessBlue:[],
+  fearlessRed:[],
+  ltkNextSnapshot:null,
+  ltkCoreSnapshot:null,
+  ltkNextDraft:null,
+  ltkCoreDraft:null,
 };
 
 // ─── OP.GG ────────────────────────────────────────────────────
@@ -643,7 +637,6 @@ function syncPlayerOpggButton(team, idx){
   if(!btn) return;
   const enabled=!!parseRiotId(getPlayerNameValue(team, idx));
   btn.disabled=!enabled;
-  btn.title=enabled ? 'OP.GGで開く' : 'Riot ID（名前#タグ）を入力すると開けます';
 }
 function openPlayerOpgg(team, idx){
   const url=playerOpggUrl(getPlayerNameValue(team, idx));
@@ -657,8 +650,7 @@ function openPlayerOpgg(team, idx){
 }
 function playerOpggButtonHtml(team, idx, value){
   const enabled=!!parseRiotId(value);
-  const title=enabled ? 'OP.GGで開く' : 'Riot ID（名前#タグ）を入力すると開けます';
-  return `<button class="btn-sm btn-opgg player-opgg-btn" id="${team}OpggBtn${idx}" type="button" onclick="openPlayerOpgg('${team}',${idx})" title="${esc(title)}" ${enabled?'':'disabled'}><span class="opgg-btn-label"><span>OP</span><span>GG</span></span></button>`;
+  return `<button class="btn-sm btn-opgg player-opgg-btn" id="${team}OpggBtn${idx}" type="button" onclick="openPlayerOpgg('${team}',${idx})" ${enabled?'':'disabled'}><span class="opgg-btn-label"><span>OP</span><span>GG</span></span></button>`;
 }
 let _opggTimer=null;
 function opggMouseEnter(e,delay=1500){
@@ -711,6 +703,7 @@ function poolSpanClick(e,id,name){
   }
   // pool構築モード: バブルアップ → selectPoolZoneへ
 }
+
 
 const usedIds=()=>{
   const s=new Set();
@@ -910,9 +903,7 @@ function init(){
   buildLayout();
   disableInputSuggestions(document);
   renderAll();
-  // 一手戻すボタンはトーナメントON時のみ表示
-  const undoBtn=document.getElementById('undoBtn');
-  if(undoBtn) undoBtn.style.display='none';
+  document.getElementById('undoBtn').style.display='';
   // ロールアイコンをセット（buildLayout後に要素が存在するので安全）
   document.getElementById('roleIconTop').src=ROLE_ICONS.top;
   document.getElementById('roleIconJungle').src=ROLE_ICONS.jungle;
@@ -950,9 +941,9 @@ function buildLayout(){
         </div>
         <div class="pool-list" id="bluePoolList"></div>
       </div>
-      <div class="pcard">
+      <div class="pcard" id="blueProtectCard">
         <div class="pcard-title" style="display:flex;align-items:center;justify-content:space-between;">
-          <span>青 プロテクト</span>
+          <span>青 プロテクト<span id="blueProtect3rdLabel" style="font-size:10px;font-weight:400;color:var(--text3);margin-left:5px;display:none;">（6thピックまで）</span></span>
         </div>
         <div class="protect-zone" id="blueProtect" ondragover="onOver(event)" ondragleave="onLeave(event)" ondrop="onDrop(event,'blueProtect')"></div>
         <div class="protect-count" id="blueProtectCount"></div>
@@ -1000,6 +991,7 @@ function buildLayout(){
           </div>
         </div>
       </div>
+
       <div class="champ-grid-card">
         <div class="role-tabs" id="roleTabs">
           <button class="role-tab active" onclick="setRoleFilter('all')">ALL</button>
@@ -1037,9 +1029,9 @@ function buildLayout(){
         </div>
         <div class="pool-list" id="redPoolList"></div>
       </div>
-      <div class="pcard">
+      <div class="pcard" id="redProtectCard">
         <div class="pcard-title" style="display:flex;align-items:center;justify-content:space-between;">
-          <span>赤 プロテクト</span>
+          <span>赤 プロテクト<span id="redProtect3rdLabel" style="font-size:10px;font-weight:400;color:var(--text3);margin-left:5px;display:none;">（6thピックまで）</span></span>
         </div>
         <div class="protect-zone" id="redProtect" ondragover="onOver(event)" ondragleave="onLeave(event)" ondrop="onDrop(event,'redProtect')"></div>
         <div class="protect-count" id="redProtectCount"></div>
@@ -1099,7 +1091,6 @@ function renderAll(){
   renderChampGrid();
   checkDuplicates();
   renderStepBar();
-  highlightActive();
   updateUndo();
 }
 
@@ -1126,14 +1117,13 @@ function removeFromPool(team,poolIdx,champId){
   if(banpickCollapsed) renderChampGrid();
 }
 function renderBanPick(){
-  const on=document.getElementById('draftOrderToggle')?.checked;
   ['blue','red'].forEach(team=>{
     document.getElementById(team+'Bans').innerHTML=Array.from({length:5},(_,i)=>{
       const c=state[team].bans[i];
       return `<div class="ban-slot" id="${team}Ban${i}" ondragover="onOver(event)" ondragleave="onLeave(event)" ondrop="onDrop(event,'${team}Ban',${i})">
         ${c?opggWrap(`<div class="ban-img-wrap"><img src="${img(c.id)}" alt="${esc(c.name)}"
           onclick="opggImgClick(event,'${c.id}','${esc(c.name)}')"
-          ${!on?`draggable="true" ondragstart="startDrag(event,'ban','${c.id}','${esc(c.name)}','${team}Ban',${i})" oncontextmenu="event.preventDefault();removeFromSlot('${team}','ban',${i})" style="cursor:context-menu;"`:''}>` + `</div>`,c.id):i+1}
+          draggable="true" ondragstart="startDrag(event,'ban','${c.id}','${esc(c.name)}','${team}Ban',${i})" oncontextmenu="event.preventDefault();removeFromSlot('${team}','ban',${i})" style="cursor:context-menu;">` + `</div>`,c.id):i+1}
       </div>`;
     }).join('');
     document.getElementById(team+'Picks').innerHTML=Array.from({length:5},(_,i)=>{
@@ -1142,7 +1132,7 @@ function renderBanPick(){
       return `<div class="pick-slot" id="${team}Pick${i}" ondragover="onOver(event)" ondragleave="onLeave(event)" ondrop="onDrop(event,'${team}Pick',${i})">
         ${c?opggWrap(`<img src="${img(c.id)}" alt="${esc(c.name)}"
           onclick="opggImgClick(event,'${c.id}','${esc(c.name)}')"
-          ${!on?`draggable="true" ondragstart="startDrag(event,'pick','${c.id}','${esc(c.name)}','${team}Pick',${i})" oncontextmenu="event.preventDefault();removeFromSlot('${team}','pick',${i})" style="cursor:context-menu;"`:''}>`,c.id):''}
+          draggable="true" ondragstart="startDrag(event,'pick','${c.id}','${esc(c.name)}','${team}Pick',${i})" oncontextmenu="event.preventDefault();removeFromSlot('${team}','pick',${i})" style="cursor:context-menu;">`,c.id):''}
         <div class="pick-slot-info">
           <div style="font-size:12px;color:var(--text2);font-weight:500;">PICK ${nums[i]}</div>
           ${c?`<div class="pick-slot-name">${esc(c.name)}</div>`:''}
@@ -1150,7 +1140,6 @@ function renderBanPick(){
       </div>`;
     }).join('');
   });
-  highlightActive();
 }
 
 function getProtectMax(team){
@@ -1158,31 +1147,46 @@ function getProtectMax(team){
 }
 
 function renderProtect(team){
-  const used=usedIds();
   const max=getProtectMax(team);
   const protect=state[team+'Protect'];
   const zone=document.getElementById(team+'Protect');
+  const expired=isLtkProtectExpired();
 
   zone.innerHTML=Array.from({length:max},(_,i)=>{
     const c=protect[i]||null;
-    const u=c&&used.has(c.id);
     return `<div class="protect-slot" id="${team}ProtectSlot${i}"
-      ondragover="onOver(event)" ondragleave="onLeave(event)"
-      ondrop="onDropProtectSlot(event,'${team}',${i})">
+      ondragover="${expired?'':'onOver(event)'}" ondragleave="${expired?'':'onLeave(event)'}"
+      ondrop="${expired?'':'onDropProtectSlot(event,\''+team+'\','+i+')'}">
       ${c
         ?opggWrap(`<img src="${img(c.id)}" alt="${esc(c.name)}"
-            draggable="true"
-            ondragstart="startDrag(event,'protect','${c.id}','${esc(c.name)}','${team}Protect',${i})"
-            style="${u?'opacity:.3;filter:grayscale(1);':''}cursor:context-menu;"
-            oncontextmenu="event.preventDefault();removeFromProtect('${team}','${c.id}')"
-            onclick="${u?'':'opggImgClick(event,\''+c.id+'\',\''+esc(c.name)+'\')'}">`,c.id)
+            draggable="${expired?'false':'true'}"
+            ${expired?'':'ondragstart="startDrag(event,\'protect\',\''+c.id+'\',\''+esc(c.name)+'\',\''+team+'Protect\','+i+')"'}
+            style="${expired?'opacity:.25;filter:grayscale(1);pointer-events:none;':''}cursor:${expired?'default':'context-menu'};"
+            ${expired?'':'oncontextmenu="event.preventDefault();removeFromProtect(\''+team+'\',\''+c.id+'\')"'}
+            onclick="${expired?'':'opggImgClick(event,\''+c.id+'\',\''+esc(c.name)+'\')'}">`,c.id)
         : i+1
       }
     </div>`;
   }).join('');
 
+  const card=document.getElementById(team+'ProtectCard');
+  if(card){
+    card.style.opacity = expired ? '0.45' : '';
+    card.style.pointerEvents = expired ? 'none' : '';
+    const title=card.querySelector('.pcard-title span');
+    if(title){
+      if(expired){
+        if(!title.querySelector('.ltk-expired-label')){
+          title.insertAdjacentHTML('beforeend','<span class="ltk-expired-label" style="font-size:10px;font-weight:400;color:var(--text3);margin-left:6px;">（無効）</span>');
+        }
+      } else {
+        card.querySelector('.ltk-expired-label')?.remove();
+      }
+    }
+  }
+
   const countEl=document.getElementById(team+'ProtectCount');
-  countEl.innerHTML='';
+  if(countEl) countEl.innerHTML='';
 }
 
 function renderNewbieProtect(team){
@@ -1294,14 +1298,17 @@ function checkDuplicates(){
 }
 
 function getProtectWarnings(){
+  if(isLtkProtectExpired()) return [];
   const warns=[];
   ['blue','red'].forEach(team=>{
-    const max=parseInt(document.getElementById('protectBanMax')?.value)||1;
+    const ltkNext = isLtkOn() && getLtkRank()==='next';
+    const maxEl = document.getElementById('protectBanMax');
+    const max = ltkNext ? 0 : (maxEl ? parseInt(maxEl.value) : 1);
     const protect=state[team+'Protect'];
     const protectIds=new Set(protect.map(c=>c.id));
     const opponent=team==='blue'?'red':'blue';
-    const banned=state[opponent].bans.filter(c=>c&&protectIds.has(c.id)).length;
-    if(banned>max) warns.push(`⚠ プロテクトBAN超過！(${banned}/${max})`);
+    const banned=state[opponent].bans.slice(0,3).filter(c=>c&&protectIds.has(c.id)).length;
+    if(banned>max) warns.push(ltkNext ? `⚠ プロテクト違反！` : `⚠ プロテクトBAN超過！(${banned}/${max})`);
 
     const newbieArr=state[team+'NewbieProtect'];
     if(newbieArr.length>0){
@@ -1325,35 +1332,40 @@ function renderStepBar(){
   }
   bar.style.background='';
 
-  const on=document.getElementById('draftOrderToggle').checked;
-  if(!on){
-    if(banpickCollapsed){
-      bar.innerHTML='<span style="color:var(--purple);font-weight:700">プール構築モード</span> — プール枠をクリックして選択し、チャンピオンをクリックでまとめて追加';
-      return;
+  if(banpickCollapsed){
+    const mode = getCurrentMode();
+    if(mode==='ltk'){
+      const rank = getLtkRank();
+      bar.innerHTML=`<span style="color:var(--purple);font-weight:700">プール構築モード</span>
+        <span class="mode-seg" style="margin-left:10px;">
+          <button class="mode-seg-btn${rank==='next'?' active':''}" onclick="setLtkRank('next')">NEXT</button>
+          <button class="mode-seg-btn${rank==='core'?' active':''}" onclick="setLtkRank('core')">CORE</button>
+        </span>`;
+    } else {
+      bar.innerHTML='<span style="color:var(--purple);font-weight:700">プール構築モード</span>';
     }
-    bar.innerHTML='<span style="color:var(--text);font-weight:600">フリーモード</span> — チャンピオンをクリックまたはドラッグしてください';return;
+    return;
   }
-  if(currentStep>=DRAFT_ORDER.length){bar.innerHTML='<span style="color:var(--green);font-weight:600">ドラフト完了！</span>';return;}
-  const step=DRAFT_ORDER[currentStep];
-  const tc=step.team==='blue'?'var(--blue)':'var(--red)';
-  const isBan=step.type==='ban';
-  bar.innerHTML=`<span style="color:${tc};font-weight:700">${STEP_LABELS[currentStep]}</span>`;
-}
-
-function highlightActive(){
-  document.querySelectorAll('.ban-slot,.pick-slot').forEach(el=>{
-    el.classList.remove('active','active-blue');
-  });
-  const on=document.getElementById('draftOrderToggle')?.checked;
-  if(!on||currentStep>=DRAFT_ORDER.length)return;
-  const s=DRAFT_ORDER[currentStep];
-  const el=document.getElementById(s.team+(s.type==='ban'?'Ban':'Pick')+s.idx);
-  if(!el)return;
-  el.classList.add(s.team==='blue'?'active-blue':'active');
+  const mode = getCurrentMode();
+  if(mode==='ltk'){
+    const rank = getLtkRank();
+    bar.innerHTML=`<span style="color:var(--green);font-weight:600">LTK3モード</span>
+      <span class="mode-seg" style="margin-left:10px;">
+        <button class="mode-seg-btn${rank==='next'?' active':''}" onclick="setLtkRank('next')">NEXT</button>
+        <button class="mode-seg-btn${rank==='core'?' active':''}" onclick="setLtkRank('core')">CORE</button>
+      </span>`;
+  } else if(mode==='fearless'){
+    bar.innerHTML='<span style="color:var(--text);font-weight:600">フリーモード（フィアレス）</span>';
+  } else {
+    bar.innerHTML='<span style="color:var(--text);font-weight:600">フリーモード</span>';
+  }
 }
 
 function updateUndo(){
-  document.getElementById('undoBtn').disabled=history.length===0;
+  const btn = document.getElementById('undoBtn');
+  if(!btn) return;
+  btn.disabled = history.length === 0;
+  btn.style.display = history.length > 0 ? '' : 'none';
 }
 
 // ─── CLICK ───────────────────────────────────────────────────
@@ -1373,52 +1385,34 @@ function onChampClick(e,id,name){
   if(banpickCollapsed) return;
   const showAll=document.getElementById('showAllToggle')?.checked;
   if(usedIds().has(id))return;
-  const on=document.getElementById('draftOrderToggle').checked;
-  if(on&&currentStep<DRAFT_ORDER.length){
-    // ドラフト順モード：現在のステップに即座に入れる
-    const s=DRAFT_ORDER[currentStep];
-    applySlot(s.team+(s.type==='ban'?'Ban':'Pick'),s.idx,id,name);
-  } else {
-    // フリーモード：次の空きスロットに自動で入れる（BAN優先→PICK順）
-    const freeSlots=[
-      {zone:'blueBan',idx:0},{zone:'redBan',idx:0},
-      {zone:'blueBan',idx:1},{zone:'redBan',idx:1},
-      {zone:'blueBan',idx:2},{zone:'redBan',idx:2},
-      {zone:'bluePick',idx:0},{zone:'redPick',idx:0},
-      {zone:'redPick',idx:1},{zone:'bluePick',idx:1},
-      {zone:'bluePick',idx:2},{zone:'redPick',idx:2},
-      {zone:'redBan',idx:3},{zone:'blueBan',idx:3},
-      {zone:'redBan',idx:4},{zone:'blueBan',idx:4},
-      {zone:'redPick',idx:3},{zone:'bluePick',idx:3},
-      {zone:'bluePick',idx:4},{zone:'redPick',idx:4},
-    ];
-    for(const{zone,idx}of freeSlots){
-      const team=zone.startsWith('blue')?'blue':'red';
-      const isBan=zone.includes('Ban');
-      const slot=isBan?state[team].bans[idx]:state[team].picks[idx];
-      if(!slot){applySlot(zone,idx,id,name);return;}
-    }
+  const freeSlots=[
+    {zone:'blueBan',idx:0},{zone:'redBan',idx:0},
+    {zone:'blueBan',idx:1},{zone:'redBan',idx:1},
+    {zone:'blueBan',idx:2},{zone:'redBan',idx:2},
+    {zone:'bluePick',idx:0},{zone:'redPick',idx:0},
+    {zone:'redPick',idx:1},{zone:'bluePick',idx:1},
+    {zone:'bluePick',idx:2},{zone:'redPick',idx:2},
+    {zone:'redBan',idx:3},{zone:'blueBan',idx:3},
+    {zone:'redBan',idx:4},{zone:'blueBan',idx:4},
+    {zone:'redPick',idx:3},{zone:'bluePick',idx:3},
+    {zone:'bluePick',idx:4},{zone:'redPick',idx:4},
+  ];
+  for(const{zone,idx}of freeSlots){
+    const team=zone.startsWith('blue')?'blue':'red';
+    const isBan=zone.includes('Ban');
+    const slot=isBan?state[team].bans[idx]:state[team].picks[idx];
+    if(!slot){applySlot(zone,idx,id,name);return;}
   }
 }
 
 function applySlot(zone,idx,champId,champName){
-  const showAll=document.getElementById('showAllToggle')?.checked;
   if(usedIds().has(champId))return;
   const isBan=zone.includes('Ban');
   const team=zone.startsWith('blue')?'blue':'red';
   const slot=isBan?state[team].bans:state[team].picks;
-  const on=document.getElementById('draftOrderToggle').checked;
-  if(slot[idx]&&on)return;
-  if(on&&currentStep<DRAFT_ORDER.length){
-    const s=DRAFT_ORDER[currentStep];
-    if(s.type!==(isBan?'ban':'pick')||s.team!==team||s.idx!==idx){flashEl(document.getElementById(zone+idx));return;}
-  }
+  if(slot[idx])return;
   saveHistory();
   slot[idx]={id:champId,name:champName};
-  if(on&&currentStep<DRAFT_ORDER.length){
-    const s=DRAFT_ORDER[currentStep];
-    if(s.type===(isBan?'ban':'pick')&&s.team===team&&s.idx===idx)currentStep++;
-  }
   renderAll();
 }
 
@@ -1529,6 +1523,7 @@ function onDrop(e,tz,ti){
     if(arr.find(c=>c.id===id))return;
     arr.push({id,name});renderNewbieProtect(team);checkDuplicates();renderStepBar();return;
   }
+
   if(tz==='bluePool'||tz==='redPool'){
     const arr=tz==='bluePool'?state.bluePools[ti]:state.redPools[ti];
     if(arr.find(c=>c.id===id))return; // 同じプール内の重複のみ防ぐ
@@ -1539,29 +1534,9 @@ function onDrop(e,tz,ti){
     return;
   }
   if(['blueBan','redBan','bluePick','redPick'].includes(tz)){
-    const showAll=document.getElementById('showAllToggle')?.checked;
     const isBan=tz.includes('Ban');
     const team=tz.startsWith('blue')?'blue':'red';
     const slot=isBan?state[team].bans:state[team].picks;
-    const on=document.getElementById('draftOrderToggle').checked;
-    // トーナメントモードでは既存スロットからの移動不可
-    if(on){
-      if(slot[ti])return;
-      if(currentStep<DRAFT_ORDER.length){
-        const s=DRAFT_ORDER[currentStep];
-        if(s.type!==(isBan?'ban':'pick')||s.team!==team||s.idx!==ti){flashEl(e.currentTarget);return;}
-      }
-      if(usedIds().has(id))return;
-      saveHistory();
-      slot[ti]={id,name};
-      if(currentStep<DRAFT_ORDER.length){
-        const s=DRAFT_ORDER[currentStep];
-        if(s.type===(isBan?'ban':'pick')&&s.team===team&&s.idx===ti)currentStep++;
-      }
-      renderAll();
-      return;
-    }
-    // フリードラフト：ban/pickスロットからの移動は元を空にする（指名済み表示ON/OFFに関わらず）
     if(usedIds().has(id)&&!(src==='ban'||src==='pick'))return;
     saveHistory();
     // 移動元がban/pickスロットなら空にする
@@ -1580,7 +1555,6 @@ function onDrop(e,tz,ti){
 // ─── UNDO ─────────────────────────────────────────────────────
 function saveHistory(){
   history.push({
-    step:currentStep,
     blue:{bans:[...state.blue.bans],picks:[...state.blue.picks]},
     red: {bans:[...state.red.bans], picks:[...state.red.picks]}
   });
@@ -1589,7 +1563,6 @@ function saveHistory(){
 function undoLast(){
   if(!history.length)return;
   const p=history.pop();
-  currentStep=p.step;
   state.blue.bans=p.blue.bans; state.blue.picks=p.blue.picks;
   state.red.bans=p.red.bans;   state.red.picks=p.red.picks;
   renderAll();
@@ -1648,7 +1621,7 @@ function showConfirm(msg, callback, cancelCallback, okLabel){
 }
 function resetDraft(){
   showConfirm('ドラフトをリセットしますか？', ()=>{
-    currentStep=0;history=[];
+    history=[];
     state.blue.bans=Array(5).fill(null);
     state.blue.picks=Array(5).fill(null);
     state.red.bans=Array(5).fill(null);
@@ -1661,7 +1634,7 @@ function resetDraft(){
 }
 function doResetAll(){
   currentDraftId = null;
-  currentStep=0;history=[];
+  history=[];
   state={
     blue:{bans:Array(5).fill(null),picks:Array(5).fill(null)},
     red: {bans:Array(5).fill(null),picks:Array(5).fill(null)},
@@ -1671,7 +1644,8 @@ function doResetAll(){
     blueNames:['','','','',''],redNames:['','','','',''],
     bluePlayerNames:['','','','',''],redPlayerNames:['','','','',''],
     blueLoadedSaveId:null, redLoadedSaveId:null,
-    fearlessBlue:[], fearlessRed:[]
+    fearlessBlue:[], fearlessRed:[],
+    ltkNextSnapshot:null, ltkCoreSnapshot:null, ltkNextDraft:null, ltkCoreDraft:null,
   };
   buildPools();
   const bpt=document.getElementById('bluePoolTitle');if(bpt)bpt.value='青チーム';
@@ -1684,16 +1658,22 @@ function doResetAll(){
   localStorage.removeItem('draftTool_memo');
   const memoEl = document.getElementById('memoTextarea');
   if(memoEl) memoEl.value = '';
-  // トーナメントモード・フィアレスモードをリセット
-  const draftOrderToggle = document.getElementById('draftOrderToggle');
-  if(draftOrderToggle) draftOrderToggle.checked = false;
-  const undoBtn = document.getElementById('undoBtn');
-  if(undoBtn) undoBtn.style.display = 'none';
-  const fearlessToggle = document.getElementById('fearlessToggle');
-  if(fearlessToggle) fearlessToggle.checked = false;
-  const fearlessBtn = document.getElementById('nextGameBtn');
-  if(fearlessBtn) fearlessBtn.style.display = 'none';
+  // モードをフリーにリセット
+  ['free','fearless','ltk'].forEach(m=>{
+    document.getElementById('mode'+m.charAt(0).toUpperCase()+m.slice(1))?.classList.toggle('active', m==='free');
+  });
+  const ltkRankWrap = document.getElementById('ltkRankWrap');
+  if(ltkRankWrap) ltkRankWrap.style.display = 'none';
+  ['blue','red'].forEach(t=>{
+    const pc = document.getElementById(t+'ProtectCard');
+    const nc = document.getElementById(t+'NewbieCard');
+    const lb = document.getElementById(t+'Protect3rdLabel');
+    if(pc) pc.style.display = '';
+    if(nc) nc.style.display = '';
+    if(lb) lb.style.display = 'none';
+  });
   renderFearless();
+  updateGameButtons();
   renderAll();
 }
 function hasAnyData(){
@@ -1718,28 +1698,6 @@ function resetAll(){
     doResetAll();
   }, null, 'リセットする');
 }
-document.getElementById('draftOrderToggle').addEventListener('change',()=>{
-  const on=document.getElementById('draftOrderToggle').checked;
-  const undoBtn=document.getElementById('undoBtn');
-  if(undoBtn) undoBtn.style.display=on ? '' : 'none';
-  if(on){
-    // トーナメントモードに切り替えるとき、何か入っていたら確認
-    const hasData=[...state.blue.bans,...state.blue.picks,...state.red.bans,...state.red.picks].some(Boolean);
-    if(hasData){
-      showConfirm('トーナメントに切り替えます。現在のドラフトはリセットされます。',()=>{
-        currentStep=0;history=[];
-        state.blue.bans=Array(5).fill(null);state.blue.picks=Array(5).fill(null);
-        state.red.bans=Array(5).fill(null);state.red.picks=Array(5).fill(null);
-        renderAll();
-      }, ()=>{
-        // キャンセルしたらトグルを戻す
-        document.getElementById('draftOrderToggle').checked=false;
-      }, '切り替える');
-      return;
-    }
-  }
-  currentStep=0;history=[];renderAll();
-});
 function syncProtectCfg(){
   const v=document.getElementById('blueProtectMax')?.value||3;
   document.getElementById('redProtectMax').value=v;
@@ -1852,12 +1810,12 @@ function saveDraft(){
     name,
     date: new Date().toLocaleDateString('ja-JP', {year:'numeric',month:'2-digit',day:'2-digit'}),
     state: JSON.parse(JSON.stringify(state)),
-    currentStep: currentStep,
     blueTitle: document.getElementById('bluePoolTitle')?.value||'青チーム',
     redTitle:  document.getElementById('redPoolTitle')?.value||'赤チーム',
     memo: localStorage.getItem('draftTool_memo')||'',
-    tournamentOn: document.getElementById('draftOrderToggle')?.checked||false,
-    fearlessOn: document.getElementById('fearlessToggle')?.checked||false,
+    fearlessOn: isFearlessOn(),
+    ltkOn: isLtkOn(),
+    ltkRank: getLtkRank(),
   });
   putDraftSaves(saves.slice(0,30));
   input.dataset.def=getDraftDefaultName();
@@ -1872,7 +1830,7 @@ function renderDraftSavedList(){
   el.innerHTML=saves.map((s,i)=>{
     const isLoaded=s.id&&s.id===currentDraftId;
     const highlight=isLoaded?'border-color:var(--purple);background:#1e2430;':'';
-    const modeText=isFearlessDraftSave(s)?' - フィアレスモード':'';
+    const modeText=s.ltkOn?' - LTK3モード':(isFearlessDraftSave(s)?' - フィアレスモード':' - フリーモード');
     return `<div class="saved-item" style="${highlight}">
       <div style="flex:1;min-width:0;">
         <div class="saved-item-name">${esc(s.name)}</div>
@@ -1893,7 +1851,7 @@ function loadDraft(idx){
   if(!saves[idx])return;
   state=JSON.parse(JSON.stringify(saves[idx].state));
   normalizeLoadedState(state);
-  currentStep=saves[idx].currentStep??0; history=[];
+  history=[];
   buildPools();
   renderAll();
   const bt=saves[idx].blueTitle||'青チーム';
@@ -1907,20 +1865,21 @@ function loadDraft(idx){
   const memoEl2 = document.getElementById('memoTextarea'); if(memoEl2) memoEl2.value = memo;
   currentDraftId = saves[idx].id || null;
 
-  // トグル状態を復元（確認なし）
-  const draftOrderToggle = document.getElementById('draftOrderToggle');
-  const fearlessToggle = document.getElementById('fearlessToggle');
-  const undoBtn = document.getElementById('undoBtn');
-  const nextGameBtn = document.getElementById('nextGameBtn');
-  const savedTournament = saves[idx].tournamentOn||false;
-  const savedFearless = saves[idx].fearlessOn||hasFearlessDraftData(state);
-
-  if(draftOrderToggle) draftOrderToggle.checked = savedTournament;
-  if(undoBtn) undoBtn.style.display = savedTournament ? '' : 'none';
-
-  if(fearlessToggle) fearlessToggle.checked = savedFearless;
-  if(nextGameBtn) nextGameBtn.style.display = savedFearless ? '' : 'none';
+  // モード状態を復元
+  const savedLtkOn   = saves[idx].ltkOn || false;
+  const savedLtkRank = saves[idx].ltkRank || 'next';
+  const savedFearless = saves[idx].fearlessOn || hasFearlessDraftData(state);
+  const savedMode = savedLtkOn ? 'ltk' : (savedFearless ? 'fearless' : 'free');
+  ['free','fearless','ltk'].forEach(m=>{
+    document.getElementById('mode'+m.charAt(0).toUpperCase()+m.slice(1))?.classList.toggle('active', m===savedMode);
+  });
+  const ltkRankSelect = document.getElementById('ltkRankSelect');
+  const ltkRankWrap   = document.getElementById('ltkRankWrap');
+  if(ltkRankSelect) ltkRankSelect.value = savedLtkRank;
+  if(ltkRankWrap) ltkRankWrap.style.display = savedLtkOn ? 'flex' : 'none';
   renderFearless();
+  applyLtkModeEffects();
+  updateGameButtons();
 
   renderDraftSavedList();
   if(banpickCollapsed) toggleBanPick();
@@ -1942,12 +1901,12 @@ function overwriteDraft(){
       ...saves[idx],
       date: new Date().toLocaleDateString('ja-JP', {year:'numeric',month:'2-digit',day:'2-digit'}),
       state: JSON.parse(JSON.stringify(state)),
-      currentStep: currentStep,
       blueTitle: document.getElementById('bluePoolTitle')?.value||'青チーム',
       redTitle:  document.getElementById('redPoolTitle')?.value||'赤チーム',
       memo: localStorage.getItem('draftTool_memo')||'',
-      tournamentOn: document.getElementById('draftOrderToggle')?.checked||false,
-      fearlessOn: document.getElementById('fearlessToggle')?.checked||false,
+      fearlessOn: isFearlessOn(),
+      ltkOn: isLtkOn(),
+      ltkRank: getLtkRank(),
     };
     putDraftSaves(saves);
     renderDraftSavedList();
@@ -2225,6 +2184,7 @@ function saveTeamData(){
   putSaves(saves.slice(0,30));
   document.getElementById('saveNameInput').value='';
   state[modalTeam+'LoadedSaveId']=id;
+  _updateCurrentModeSnapshot();
   const titleEl=document.getElementById(modalTeam+'PoolTitle');
   if(titleEl){titleEl.value=name;}
   renderSavedList();
@@ -2238,13 +2198,11 @@ function overwriteSaveTeamData(){
   if(idx===-1){ alert('上書き元のデータが見つかりません。新規保存してください。'); return; }
   const currentTitle = document.getElementById(modalTeam+'PoolTitle')?.value || saves[idx].name;
   showConfirm(`「${saves[idx].name}」に上書きしますか？`, ()=>{
-    const newId = crypto.randomUUID();
-    saves[idx].id   = newId;
     saves[idx].name = currentTitle;
     saves[idx].data = teamSnapshot(modalTeam);
     saves[idx].date = new Date().toLocaleString('ja-JP');
     putSaves(saves);
-    state[modalTeam+'LoadedSaveId'] = newId;
+    _updateCurrentModeSnapshot();
     const titleEl=document.getElementById(modalTeam+'PoolTitle');
     if(titleEl) titleEl.value=currentTitle;
     closeModal();
@@ -2281,6 +2239,7 @@ function loadSave(listIdx, targetTeam){
   if(!saves[listIdx])return;
   applySnapshot(targetTeam, saves[listIdx].data, saves[listIdx].name);
   state[targetTeam+'LoadedSaveId']=saves[listIdx].id||null;
+  _updateCurrentModeSnapshot();
   closeModal();
 }
 
@@ -2388,6 +2347,7 @@ function savePlayerData(){
   displayInput.value = snapshot.displayName || '';
   playerInput.value = snapshot.playerName || '';
   syncPoolLabelInput(playerModalTeam, playerModalIdx);
+  _updateCurrentModeSnapshot();
   renderPools(playerModalTeam);
   renderChampGrid();
   document.getElementById('playerModalTitle').textContent = `${snapshot.displayName || getPlayerDefaultName(playerModalTeam, playerModalIdx)} — 保存/呼び出し`;
@@ -2425,6 +2385,7 @@ function loadPlayerSave(listIdx){
     setPlayerIdentity('red', playerModalIdx, saved.displayName, saved.playerName);
   }
   syncPoolLabelInput(playerModalTeam, playerModalIdx);
+  _updateCurrentModeSnapshot();
   renderPools(playerModalTeam);
   renderChampGrid();
   closePlayerModal();
@@ -2439,9 +2400,44 @@ function deletePlayerSave(listIdx){
   }, null, '削除する');
 }
 
+// ─── モード管理 ───────────────────────────────────────────────
+function getCurrentMode(){
+  if(document.getElementById('modeLtk')?.classList.contains('active')) return 'ltk';
+  if(document.getElementById('modeFearless')?.classList.contains('active')) return 'fearless';
+  return 'free';
+}
+function setMode(mode){
+  const prev = getCurrentMode();
+  if(prev === mode) return;
+  if(mode==='free' && prev==='fearless'){
+    clearFearless();
+  }
+  ['free','fearless','ltk'].forEach(m=>{
+    document.getElementById('mode'+m.charAt(0).toUpperCase()+m.slice(1))?.classList.toggle('active', m===mode);
+  });
+  if(mode==='ltk'){
+    applyLtkModeEffects();
+  } else {
+    const ltkRankWrap = document.getElementById('ltkRankWrap');
+    if(ltkRankWrap) ltkRankWrap.style.display='none';
+    const blueMax = document.getElementById('blueProtectMax');
+    if(blueMax){ blueMax.value = 3; syncProtectCfg(); }
+    const banMax = document.getElementById('protectBanMax');
+    if(banMax) banMax.value = 1;
+    applyLtkModeEffects();
+  }
+  renderFearless();
+  updateGameButtons();
+  renderStepBar();
+}
+
 // ─── フィアレスドラフト ────────────────────────────────────────
 function isFearlessOn(){
-  return document.getElementById('fearlessToggle')?.checked;
+  const m = getCurrentMode();
+  return m==='fearless' || m==='ltk';
+}
+function isLtkOn(){
+  return getCurrentMode()==='ltk';
 }
 
 function renderFearless(){
@@ -2450,7 +2446,7 @@ function renderFearless(){
     const zone = document.getElementById(team+'FearlessZone');
     const row  = document.getElementById(team+'FearlessRow');
     if(!zone||!row) return;
-    if(on){
+    if(on && !banpickCollapsed){
       zone.classList.add('active');
       const fearList = state[key]||[];
       if(fearList.length===0){
@@ -2481,7 +2477,7 @@ function nextGame(){
     state.fearlessBlue = [...(state.fearlessBlue||[]), ...bluePicks];
     state.fearlessRed  = [...(state.fearlessRed||[]),  ...redPicks];
     // ピックとBANをリセット（フィアレスは残す）
-    currentStep=0; history=[];
+    history=[];
     state.blue.bans = Array(5).fill(null);
     state.blue.picks = Array(5).fill(null);
     state.red.bans  = Array(5).fill(null);
@@ -2498,28 +2494,6 @@ function clearFearless(){
   renderFearless();
 }
 
-// フィアレストグル変更時
-document.getElementById('fearlessToggle').addEventListener('change',()=>{
-  const on = isFearlessOn();
-  const btn = document.getElementById('nextGameBtn');
-  if(btn) btn.style.display = on ? '' : 'none';
-  if(!on){
-    if(!hasAnyData()){ doResetAll(); return; }
-    showConfirm(
-      '通常ドラフトに戻す場合はオールリセットが必要です。\n今すぐオールリセットしますか？',
-      ()=>{ document.getElementById('fearlessToggle').checked=false; doResetAll(); },
-      ()=>{ document.getElementById('fearlessToggle').checked=true; if(btn)btn.style.display=''; renderFearless(); },
-      'リセットする'
-    );
-    return;
-  }
-  showConfirm(
-    'フィアレスドラフトをONにします。\n\n通常ドラフトに戻す際はオールリセットが必要になるため、現在のデータを保存しておくことを推奨します。',
-    ()=>{ if(banpickCollapsed) toggleBanPick(); else renderFearless(); },
-    ()=>{ document.getElementById('fearlessToggle').checked=false; if(btn)btn.style.display='none'; },
-    'ONにする'
-  );
-});
 
 // ─── BAN/PICK 折りたたみ ─────────────────────────────────────
 let banpickCollapsed = false;
@@ -2536,7 +2510,8 @@ function toggleBanPick(){
   });
   labels.forEach(label => {
     if(!label) return;
-    label.style.display = banpickCollapsed ? 'none' : '';
+    label.textContent = banpickCollapsed ? 'BAN/PICK' : 'BAN';
+    label.style.display = '';
   });
   btns.forEach(btn => {
     if(!btn) return;
@@ -2612,6 +2587,226 @@ function toggleSettings(){
   btn.style.borderColor  = open ? 'rgba(255,255,255,.2)' : 'var(--purple)';
   btn.style.color        = open ? 'var(--text)' : 'var(--purple)';
 }
+
+// ─── LTKモード ────────────────────────────────────────────────
+function getLtkRank(){
+  return document.getElementById('ltkRankSelect')?.value || 'next';
+}
+function _snapshotPools(){
+  return {
+    bluePools:          JSON.parse(JSON.stringify(state.bluePools)),
+    redPools:           JSON.parse(JSON.stringify(state.redPools)),
+    blueNames:          [...state.blueNames],
+    redNames:           [...state.redNames],
+    bluePlayerNames:    [...state.bluePlayerNames],
+    redPlayerNames:     [...state.redPlayerNames],
+    blueLoadedSaveId:   state.blueLoadedSaveId,
+    redLoadedSaveId:    state.redLoadedSaveId,
+    blueTitle:          document.getElementById('bluePoolTitle')?.value || '青チーム',
+    redTitle:           document.getElementById('redPoolTitle')?.value  || '赤チーム',
+    blueProtect:        JSON.parse(JSON.stringify(state.blueProtect       || [])),
+    redProtect:         JSON.parse(JSON.stringify(state.redProtect        || [])),
+    blueNewbieProtect:  JSON.parse(JSON.stringify(state.blueNewbieProtect || [])),
+    redNewbieProtect:   JSON.parse(JSON.stringify(state.redNewbieProtect  || [])),
+  };
+}
+function _restorePools(snap){
+  state.bluePools          = snap ? snap.bluePools         : [[],[],[],[],[]];
+  state.redPools           = snap ? snap.redPools          : [[],[],[],[],[]];
+  state.blueNames          = snap ? snap.blueNames         : ['','','','',''];
+  state.redNames           = snap ? snap.redNames          : ['','','','',''];
+  state.bluePlayerNames    = snap ? snap.bluePlayerNames   : ['','','','',''];
+  state.redPlayerNames     = snap ? snap.redPlayerNames    : ['','','','',''];
+  state.blueLoadedSaveId   = snap ? snap.blueLoadedSaveId  : null;
+  state.redLoadedSaveId    = snap ? snap.redLoadedSaveId   : null;
+  state.blueProtect        = snap ? JSON.parse(JSON.stringify(snap.blueProtect       || [])) : [];
+  state.redProtect         = snap ? JSON.parse(JSON.stringify(snap.redProtect        || [])) : [];
+  state.blueNewbieProtect  = snap ? JSON.parse(JSON.stringify(snap.blueNewbieProtect || [])) : [];
+  state.redNewbieProtect   = snap ? JSON.parse(JSON.stringify(snap.redNewbieProtect  || [])) : [];
+  // DOM（プールリスト・ラベル・ボタン等）を再構築（タイトルも含む）
+  ['blue','red'].forEach(team=>{
+    const title = snap ? snap[team+'Title'] : (team==='blue'?'青チーム':'赤チーム');
+    applySnapshot(team, teamSnapshot(team), title);
+  });
+}
+function _updateCurrentModeSnapshot(){
+  if(!isLtkOn()) return;
+  if(getLtkRank()==='next') state.ltkNextSnapshot = _snapshotPools();
+  else                      state.ltkCoreSnapshot = _snapshotPools();
+}
+function setLtkRank(rank){
+  const current = getLtkRank();
+  if(current === rank) return;
+  // 現在のプールを保存して切り替え先のプールを復元
+  if(current === 'next'){
+    state.ltkNextSnapshot = _snapshotPools();
+    _restorePools(state.ltkCoreSnapshot);
+  } else {
+    state.ltkCoreSnapshot = _snapshotPools();
+    _restorePools(state.ltkNextSnapshot);
+  }
+  const sel = document.getElementById('ltkRankSelect');
+  if(sel) sel.value = rank;
+  applyLtkModeEffects();
+  renderAll();
+}
+function isLtkProtectExpired(){
+  if(!isLtkOn() || getLtkRank()!=='next') return false;
+  const pickCount = state.blue.picks.filter(Boolean).length + state.red.picks.filter(Boolean).length;
+  return pickCount >= 6;
+}
+function updateGameButtons(){
+  const fearlessOn = isFearlessOn();
+  const ltkOn = isLtkOn();
+  const rank = getLtkRank();
+  const nextGameBtn = document.getElementById('nextGameBtn');
+  const ltkNavBtn   = document.getElementById('ltkNavBtn');
+  if(ltkOn){
+    if(nextGameBtn) nextGameBtn.style.display = 'none';
+    if(ltkNavBtn){
+      ltkNavBtn.style.display = '';
+      if(rank==='next'){
+        ltkNavBtn.textContent = 'COREへ進む';
+        ltkNavBtn.style.borderColor = 'var(--red-mid)';
+        ltkNavBtn.style.color = 'var(--red-deep)';
+      } else {
+        ltkNavBtn.textContent = 'NEXTへ戻る';
+        ltkNavBtn.style.borderColor = '';
+        ltkNavBtn.style.color = '';
+      }
+    }
+  } else {
+    if(ltkNavBtn)   ltkNavBtn.style.display   = 'none';
+    if(nextGameBtn) nextGameBtn.style.display  = fearlessOn ? '' : 'none';
+  }
+}
+
+function applyLtkModeEffects(){
+  const on = isLtkOn();
+  const rank = getLtkRank();
+  const rankWrap = document.getElementById('ltkRankWrap');
+  if(rankWrap) rankWrap.style.display = 'none';
+
+  // CORE: フィアレスを自動ON（すでにisFearlessOnはtrue相当だが念のためrenderFearless）
+  if(on && rank==='core'){
+    renderFearless();
+  }
+
+  // NEXT: プロテクト最大数を1に制限、BAN上限を0に固定
+  if(on && rank==='next'){
+    const blueMax = document.getElementById('blueProtectMax');
+    if(blueMax && parseInt(blueMax.value) > 1){ blueMax.value = 1; syncProtectCfg(); }
+    const banMax = document.getElementById('protectBanMax');
+    if(banMax) banMax.value = 0;
+  }
+
+  // プロテクトカード・初心者プロテクトカードの表示切り替え
+  const showProtect   = !on || rank==='next';
+  const showNewbie    = !on;
+  const showNextLabel = on && rank==='next';
+  ['blue','red'].forEach(t=>{
+    const pc = document.getElementById(t+'ProtectCard');
+    const nc = document.getElementById(t+'NewbieCard');
+    const lb = document.getElementById(t+'Protect3rdLabel');
+    if(pc) pc.style.display = showProtect ? '' : 'none';
+    if(nc) nc.style.display = showNewbie  ? '' : 'none';
+    if(lb) lb.style.display = showNextLabel ? '' : 'none';
+  });
+
+  updateGameButtons();
+  renderChampGrid();
+}
+function ltkNavAction(){
+  if(getLtkRank()==='next') ltkAdvanceToCore();
+  else ltkNextGame();
+}
+function ltkNextGame(){
+  showConfirm('NEXTモードに戻します。フィアレスBANはクリアされます。', ()=>{
+    // COREのバンピック状態を保存
+    state.ltkCoreDraft = {
+      blueBans:  JSON.parse(JSON.stringify(state.blue.bans)),
+      bluePicks: JSON.parse(JSON.stringify(state.blue.picks)),
+      redBans:   JSON.parse(JSON.stringify(state.red.bans)),
+      redPicks:  JSON.parse(JSON.stringify(state.red.picks)),
+      history:   JSON.parse(JSON.stringify(history||[])),
+    };
+    // COREプールを保存してNEXTプールを復元
+    state.ltkCoreSnapshot = _snapshotPools();
+    _restorePools(state.ltkNextSnapshot);
+
+    const ltkRankSelect = document.getElementById('ltkRankSelect');
+    if(ltkRankSelect) ltkRankSelect.value = 'next';
+    clearFearless();
+    // NEXTのバンピック状態を復元（COREへ進む前の状態）
+    if(state.ltkNextDraft){
+      state.blue.bans  = JSON.parse(JSON.stringify(state.ltkNextDraft.blueBans));
+      state.blue.picks = JSON.parse(JSON.stringify(state.ltkNextDraft.bluePicks));
+      state.red.bans   = JSON.parse(JSON.stringify(state.ltkNextDraft.redBans));
+      state.red.picks  = JSON.parse(JSON.stringify(state.ltkNextDraft.redPicks));
+      history = JSON.parse(JSON.stringify(state.ltkNextDraft.history));
+    } else {
+      history=[];
+      state.blue.bans  = Array(5).fill(null);
+      state.blue.picks = Array(5).fill(null);
+      state.red.bans   = Array(5).fill(null);
+      state.red.picks  = Array(5).fill(null);
+    }
+    clearPoolSelection();
+    applyLtkModeEffects();
+    renderAll();
+  }, null, 'NEXTへ戻る');
+}
+function ltkAdvanceToCore(){
+  const bluePicks = state.blue.picks.filter(Boolean);
+  const redPicks  = state.red.picks.filter(Boolean);
+  const total = bluePicks.length + redPicks.length;
+  const msg = total > 0
+    ? `このNEXT試合のピック（${total}体）をフィアレスBANに追加し、COREモードへ移行しますか？`
+    : 'COREモードへ移行しますか？';
+  showConfirm(msg, ()=>{
+    // NEXTのピックをフィアレスBANに追加（青は青、赤は赤）
+    state.fearlessBlue = [...(state.fearlessBlue||[]), ...bluePicks];
+    state.fearlessRed  = [...(state.fearlessRed||[]),  ...redPicks];
+
+    // NEXTのバンピック状態を保存
+    state.ltkNextDraft = {
+      blueBans:  JSON.parse(JSON.stringify(state.blue.bans)),
+      bluePicks: JSON.parse(JSON.stringify(state.blue.picks)),
+      redBans:   JSON.parse(JSON.stringify(state.red.bans)),
+      redPicks:  JSON.parse(JSON.stringify(state.red.picks)),
+      history:   JSON.parse(JSON.stringify(history||[])),
+    };
+
+    // NEXTプールを保存してCOREプールを復元
+    state.ltkNextSnapshot = _snapshotPools();
+    _restorePools(state.ltkCoreSnapshot);
+
+    // COREランクに切り替え
+    const ltkRankSelect = document.getElementById('ltkRankSelect');
+    if(ltkRankSelect) ltkRankSelect.value = 'core';
+
+    // COREのバンピック状態を復元（あれば）、なければリセット
+    if(state.ltkCoreDraft){
+      state.blue.bans  = JSON.parse(JSON.stringify(state.ltkCoreDraft.blueBans));
+      state.blue.picks = JSON.parse(JSON.stringify(state.ltkCoreDraft.bluePicks));
+      state.red.bans   = JSON.parse(JSON.stringify(state.ltkCoreDraft.redBans));
+      state.red.picks  = JSON.parse(JSON.stringify(state.ltkCoreDraft.redPicks));
+      history = JSON.parse(JSON.stringify(state.ltkCoreDraft.history));
+    } else {
+      history=[];
+      state.blue.bans  = Array(5).fill(null);
+      state.blue.picks = Array(5).fill(null);
+      state.red.bans   = Array(5).fill(null);
+      state.red.picks  = Array(5).fill(null);
+    }
+    clearPoolSelection();
+
+    applyLtkModeEffects();
+    renderAll();
+    renderFearless();
+  }, null, 'COREへ進む');
+}
+document.getElementById('ltkRankSelect').addEventListener('change', applyLtkModeEffects);
 
 // ─── ピックプール構築モード ───────────────────────────────────
 let selectedPool = null; // {team, idx} or null
