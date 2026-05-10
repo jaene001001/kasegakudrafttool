@@ -668,9 +668,9 @@ function playerOpggButtonHtml(team, idx, value){
   const enabled=!!parseRiotId(value);
   return `<button class="btn-sm btn-opgg player-opgg-btn" id="${team}OpggBtn${idx}" type="button" onclick="openPlayerOpgg('${team}',${idx})" ${enabled?'':'disabled'}><span class="opgg-btn-label"><span>OP</span><span>GG</span></span></button>`;
 }
-let champOpggEnabled = true;
+let champOpggEnabled = false;
 function initChampOpggSetting(){
-  champOpggEnabled = localStorage.getItem('draftTool_champOpggEnabled') !== 'false';
+  champOpggEnabled = localStorage.getItem('draftTool_champOpggEnabled') === 'true';
   const toggle=document.getElementById('champOpggToggle');
   if(toggle) toggle.checked=champOpggEnabled;
 }
@@ -775,7 +775,7 @@ const CHAMP_DATA=[
   {id:'MonkeyKing',name:'ウーコン',roles:['top','jungle']},
   {id:'Aatrox',name:'エイトロックス',roles:['top','jungle']},
   {id:'Ekko',name:'エコー',roles:['jungle','mid']},
-  {id:'Ezreal',name:'エズリアル',roles:['bot','support']},
+  {id:'Ezreal',name:'エズリアル',roles:['bot']},
   {id:'Elise',name:'エリス',roles:['jungle','support']},
   {id:'Olaf',name:'オラフ',roles:['top','jungle']},
   {id:'Orianna',name:'オリアナ',roles:['mid']},
