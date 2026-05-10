@@ -387,6 +387,16 @@ League of Legendsの大会・練習向けドラフトツール
       <details>
         <summary class="help-update-title" style="cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px;">
           <span style="transition:transform .2s;display:inline-block;" class="help-update-arrow">＋</span>
+          <span>v1.0.1 更新内容</span>
+        </summary>
+        <div class="help-update-item">LTK3プロテクトの判定・編集まわりを調整</div>
+        <div class="help-update-item">チャンピオンOP.GG表示のON/OFF設定を追加</div>
+      </details>
+    </div>
+    <div class="help-update">
+      <details>
+        <summary class="help-update-title" style="cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px;">
+          <span style="transition:transform .2s;display:inline-block;" class="help-update-arrow">＋</span>
           <span>v1.0.0 更新内容</span>
         </summary>
         <div class="help-update-item">BANアイコンに斜線を追加</div>
@@ -556,6 +566,12 @@ League of Legendsの大会・練習向けドラフトツール
 
   <div id="settingsPanel" style="display:none;align-items:center;gap:10px;flex-wrap:wrap;">
     <div class="topbar-sep"></div>
+    <label class="toggle-wrap" style="gap:5px;">
+      <input type="checkbox" id="champOpggToggle" onchange="setChampOpggEnabled(this.checked)">
+      <span class="toggle-track" style="width:34px;height:18px;border-radius:9px;"></span>
+      <span class="toggle-label" style="font-size:12px;">チャンプOP.GG</span>
+    </label>
+    <div class="topbar-sep"></div>
     <div class="protect-cfg" style="font-size:12px;padding:4px 10px;gap:7px;">
       <label>プロテクト <input type="number" id="blueProtectMax" value="3" min="0" max="8" oninput="syncProtectCfg()" style="width:36px;height:22px;font-size:12px;"></label>
       <label>BAN上限 <input type="number" id="protectBanMax" value="1" min="0" max="8" oninput="syncProtectCfg()" style="width:36px;height:22px;font-size:12px;"></label>
@@ -652,10 +668,26 @@ function playerOpggButtonHtml(team, idx, value){
   const enabled=!!parseRiotId(value);
   return `<button class="btn-sm btn-opgg player-opgg-btn" id="${team}OpggBtn${idx}" type="button" onclick="openPlayerOpgg('${team}',${idx})" ${enabled?'':'disabled'}><span class="opgg-btn-label"><span>OP</span><span>GG</span></span></button>`;
 }
+let champOpggEnabled = true;
+function initChampOpggSetting(){
+  champOpggEnabled = localStorage.getItem('draftTool_champOpggEnabled') !== 'false';
+  const toggle=document.getElementById('champOpggToggle');
+  if(toggle) toggle.checked=champOpggEnabled;
+}
+function setChampOpggEnabled(enabled){
+  champOpggEnabled = !!enabled;
+  localStorage.setItem('draftTool_champOpggEnabled', champOpggEnabled ? 'true' : 'false');
+  if(!champOpggEnabled) opggHideAll();
+}
+function isChampOpggEnabled(){
+  return champOpggEnabled;
+}
 let _opggTimer=null;
 function opggMouseEnter(e,delay=1500){
+  if(!isChampOpggEnabled()) return;
   const wrap=e.currentTarget;
   _opggTimer=setTimeout(()=>{
+    if(!isChampOpggEnabled()) return;
     wrap.querySelector('.opgg-overlay')?.classList.add('show');
     wrap._opggActive=true;
   },delay);
@@ -676,7 +708,7 @@ function opggHideAll(){
 // クリック時: OP.GG表示中→OP.GGへ、それ以外→指名
 function opggImgClick(e,id,name){
   const wrap=e.currentTarget.closest('.opgg-wrap');
-  if(wrap&&wrap._opggActive){
+  if(isChampOpggEnabled()&&wrap&&wrap._opggActive){
     window.open(opggUrl(id),'_blank','noopener,noreferrer');
     e.stopPropagation();
     return;
@@ -693,7 +725,7 @@ function poolOpggWrap(imgHtml,id,name,radius='7px',delay=1500){
 }
 function poolSpanClick(e,id,name){
   const wrap=e.currentTarget; // opgg-wrap span そのもの
-  if(wrap._opggActive){
+  if(isChampOpggEnabled()&&wrap._opggActive){
     window.open(opggUrl(id),'_blank','noopener,noreferrer');
     e.stopPropagation();
     return;
@@ -901,6 +933,7 @@ function init(){
   allChamps=CHAMP_DATA;
   initModalScrollLock();
   buildLayout();
+  initChampOpggSetting();
   disableInputSuggestions(document);
   renderAll();
   document.getElementById('undoBtn').style.display='';
@@ -943,7 +976,7 @@ function buildLayout(){
       </div>
       <div class="pcard" id="blueProtectCard">
         <div class="pcard-title" style="display:flex;align-items:center;justify-content:space-between;">
-          <span>青 プロテクト<span id="blueProtect3rdLabel" style="font-size:10px;font-weight:400;color:var(--text3);margin-left:5px;display:none;">（6thピックまで）</span></span>
+          <span>青 プロテクト<span id="blueProtect3rdLabel" style="font-size:10px;font-weight:400;color:var(--text3);margin-left:5px;display:none;">（6thピックまで保護）</span></span>
         </div>
         <div class="protect-zone" id="blueProtect" ondragover="onOver(event)" ondragleave="onLeave(event)" ondrop="onDrop(event,'blueProtect')"></div>
         <div class="protect-count" id="blueProtectCount"></div>
@@ -1031,7 +1064,7 @@ function buildLayout(){
       </div>
       <div class="pcard" id="redProtectCard">
         <div class="pcard-title" style="display:flex;align-items:center;justify-content:space-between;">
-          <span>赤 プロテクト<span id="redProtect3rdLabel" style="font-size:10px;font-weight:400;color:var(--text3);margin-left:5px;display:none;">（6thピックまで）</span></span>
+          <span>赤 プロテクト<span id="redProtect3rdLabel" style="font-size:10px;font-weight:400;color:var(--text3);margin-left:5px;display:none;">（6thピックまで保護）</span></span>
         </div>
         <div class="protect-zone" id="redProtect" ondragover="onOver(event)" ondragleave="onLeave(event)" ondrop="onDrop(event,'redProtect')"></div>
         <div class="protect-count" id="redProtectCount"></div>
@@ -1150,20 +1183,19 @@ function renderProtect(team){
   const max=getProtectMax(team);
   const protect=state[team+'Protect'];
   const zone=document.getElementById(team+'Protect');
-  const expired=isLtkProtectExpired();
 
   zone.innerHTML=Array.from({length:max},(_,i)=>{
     const c=protect[i]||null;
     return `<div class="protect-slot" id="${team}ProtectSlot${i}"
-      ondragover="${expired?'':'onOver(event)'}" ondragleave="${expired?'':'onLeave(event)'}"
-      ondrop="${expired?'':'onDropProtectSlot(event,\''+team+'\','+i+')'}">
+      ondragover="onOver(event)" ondragleave="onLeave(event)"
+      ondrop="onDropProtectSlot(event,'${team}',${i})">
       ${c
         ?opggWrap(`<img src="${img(c.id)}" alt="${esc(c.name)}"
-            draggable="${expired?'false':'true'}"
-            ${expired?'':'ondragstart="startDrag(event,\'protect\',\''+c.id+'\',\''+esc(c.name)+'\',\''+team+'Protect\','+i+')"'}
-            style="${expired?'opacity:.25;filter:grayscale(1);pointer-events:none;':''}cursor:${expired?'default':'context-menu'};"
-            ${expired?'':'oncontextmenu="event.preventDefault();removeFromProtect(\''+team+'\',\''+c.id+'\')"'}
-            onclick="${expired?'':'opggImgClick(event,\''+c.id+'\',\''+esc(c.name)+'\')'}">`,c.id)
+            draggable="true"
+            ondragstart="startDrag(event,'protect','${c.id}','${esc(c.name)}','${team}Protect',${i})"
+            style="cursor:context-menu;"
+            oncontextmenu="event.preventDefault();removeFromProtect('${team}','${c.id}')"
+            onclick="opggImgClick(event,'${c.id}','${esc(c.name)}')">`,c.id)
         : i+1
       }
     </div>`;
@@ -1171,18 +1203,9 @@ function renderProtect(team){
 
   const card=document.getElementById(team+'ProtectCard');
   if(card){
-    card.style.opacity = expired ? '0.45' : '';
-    card.style.pointerEvents = expired ? 'none' : '';
-    const title=card.querySelector('.pcard-title span');
-    if(title){
-      if(expired){
-        if(!title.querySelector('.ltk-expired-label')){
-          title.insertAdjacentHTML('beforeend','<span class="ltk-expired-label" style="font-size:10px;font-weight:400;color:var(--text3);margin-left:6px;">（無効）</span>');
-        }
-      } else {
-        card.querySelector('.ltk-expired-label')?.remove();
-      }
-    }
+    card.style.opacity = '';
+    card.style.pointerEvents = '';
+    card.querySelector('.ltk-expired-label')?.remove();
   }
 
   const countEl=document.getElementById(team+'ProtectCount');
@@ -1298,7 +1321,6 @@ function checkDuplicates(){
 }
 
 function getProtectWarnings(){
-  if(isLtkProtectExpired()) return [];
   const warns=[];
   ['blue','red'].forEach(team=>{
     const ltkNext = isLtkOn() && getLtkRank()==='next';
@@ -1483,11 +1505,28 @@ function onPoolItemDrop(e,team,poolIdx,itemIdx){
 }
 function onDropProtectSlot(e,team,idx){
   e.preventDefault();
+  e.stopPropagation();
   e.currentTarget.classList.remove('drag-over');
   dropped=true;
   if(!dragData)return;
-  const{id,name}=dragData;dragData=null;
+  const{id,name,src,zone,idx:fromIdx}=dragData;dragData=null;
   const arr=state[team+'Protect'];
+  if(src==='protect'&&zone===team+'Protect'){
+    if(idx===fromIdx)return;
+    if(fromIdx===undefined||!arr[fromIdx])return;
+    if(arr[idx]){
+      const tmp=arr[idx];
+      arr[idx]=arr[fromIdx];
+      arr[fromIdx]=tmp;
+    } else {
+      arr[idx]=arr[fromIdx];
+      arr[fromIdx]=null;
+      state[team+'Protect']=arr.filter(Boolean);
+    }
+    renderProtect(team);
+    checkDuplicates();renderStepBar();
+    return;
+  }
   if(arr.find(c=>c.id===id))return;
   // 指定スロットに入れる（配列の該当インデックスに）
   arr[idx]={id,name};
@@ -2198,10 +2237,13 @@ function overwriteSaveTeamData(){
   if(idx===-1){ alert('上書き元のデータが見つかりません。新規保存してください。'); return; }
   const currentTitle = document.getElementById(modalTeam+'PoolTitle')?.value || saves[idx].name;
   showConfirm(`「${saves[idx].name}」に上書きしますか？`, ()=>{
+    const newId = crypto.randomUUID();
+    saves[idx].id = newId;
     saves[idx].name = currentTitle;
     saves[idx].data = teamSnapshot(modalTeam);
     saves[idx].date = new Date().toLocaleString('ja-JP');
     putSaves(saves);
+    state[modalTeam+'LoadedSaveId'] = newId;
     _updateCurrentModeSnapshot();
     const titleEl=document.getElementById(modalTeam+'PoolTitle');
     if(titleEl) titleEl.value=currentTitle;
@@ -2907,7 +2949,7 @@ document.querySelectorAll('.pool-label-input').forEach(el=>autoWidth(el));
     <a href="#" onclick="document.getElementById('tosModal').classList.add('show');return false;" style="color:#5a7a9a;text-decoration:underline;margin:0 8px;">利用規約</a>
     <a href="#" onclick="document.getElementById('privacyModal').classList.add('show');return false;" style="color:#5a7a9a;text-decoration:underline;margin:0 8px;">プライバシーポリシー</a>
   </div>
-  <div style="margin-top:4px;">v1.0.0  |  更新日: 2026-04-19</div>
+  <div style="margin-top:4px;">v1.0.1  |  更新日: 2026-05-10</div>
 </div>
 
 <!-- 利用規約モーダル -->
