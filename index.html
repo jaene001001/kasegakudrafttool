@@ -61,7 +61,18 @@
   .step-bar{display:flex;align-items:center;justify-content:center;gap:8px;padding:7px 16px;font-size:16px;background:var(--surface);border-bottom:1px solid var(--border);color:var(--text2);min-height:36px;}
 
   /* MAIN */
-  .main{display:grid;grid-template-columns:254px 1fr 254px;gap:10px;padding:10px;max-width:1336px;margin:0 auto;}
+  .main{--blue-col-width:254px;--red-col-width:254px;--center-col-width:788px;--main-gap:10px;--side-balance-offset:0px;--side-expand-arrow-top:300px;--side-expand-arrow-outset:15px;--side-expand-arrow-size:24px;--side-expand-arrow-opacity:.80;--side-expand-arrow-hover-opacity:.90;--side-expand-click-width:36px;display:grid;grid-template-columns:var(--blue-col-width) var(--center-col-width) var(--red-col-width);gap:var(--main-gap);padding:10px;width:calc(var(--blue-col-width) + var(--center-col-width) + var(--red-col-width) + 40px);max-width:none;margin:0 auto;position:relative;transform:translateX(var(--side-balance-offset));}
+  .col-resizer{position:absolute;top:10px;bottom:10px;width:var(--side-expand-click-width);z-index:45;cursor:pointer;touch-action:manipulation;border-radius:999px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;color:rgba(232,237,246,.34);font-size:var(--side-expand-arrow-size);font-weight:700;line-height:1;transition:color .15s,opacity .15s;}
+  .col-resizer-left{left:-12px;}
+  .col-resizer-right{right:-12px;}
+  .col-resizer::after{position:absolute;top:var(--side-expand-arrow-top);opacity:var(--side-expand-arrow-opacity);transition:opacity .15s,color .15s,transform .15s;text-shadow:0 1px 4px rgba(0,0,0,.55);}
+  .col-resizer-left::after{content:'←';left:calc(var(--side-expand-arrow-outset) * -1);}
+  .col-resizer-right::after{content:'→';right:calc(var(--side-expand-arrow-outset) * -1);}
+  .col-resizer:hover::after{opacity:var(--side-expand-arrow-hover-opacity);color:var(--purple);}
+  .col-resizer-left:hover::after{transform:translateX(-1px);}
+  .col-resizer-right:hover::after{transform:translateX(1px);}
+  body.side-col-resizing{cursor:col-resize;}
+  body.side-col-resizing *{user-select:none!important;cursor:col-resize!important;}
 
   /* SIDE CARDS */
   .pcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:10px;}
@@ -178,13 +189,13 @@
   .banpick-area{overflow:hidden;transition:max-height .25s ease;}
   .blue-team .team-heading{color:var(--blue);border-color:var(--blue-mid);}
   .red-team  .team-heading{color:var(--red); border-color:var(--red-mid);}
-  .section-label{font-size:13px;color:var(--text2);margin-bottom:5px;font-weight:700;letter-spacing:.05em;}
+  .section-label{font-size:11px;color:var(--text2);margin-bottom:5px;font-weight:700;letter-spacing:.05em;}
   .section-label-inline{margin-bottom:0;}
 
   /* FEARLESS ZONE */
   .fearless-zone{display:none;margin-bottom:10px;}
   .fearless-zone.active{display:block;}
-  .fearless-label{font-size:13px;color:var(--text3);margin-bottom:5px;font-weight:700;letter-spacing:.05em;}
+  .fearless-label{font-size:11px;color:var(--text3);margin-bottom:5px;font-weight:700;letter-spacing:.05em;}
   .fearless-row{display:grid;grid-template-columns:repeat(5,44px);gap:5px;}
   .fearless-slot{width:44px;height:44px;border-radius:5px;overflow:hidden;position:relative;flex-shrink:0;}
   .fearless-slot img{width:44px;height:44px;object-fit:cover;opacity:.7;filter:grayscale(0.6);}
@@ -391,6 +402,8 @@ League of Legendsの大会・練習向けドラフトツール
         </summary>
         <div class="help-update-item">LTK3プロテクトの判定・編集まわりを調整</div>
         <div class="help-update-item">チャンピオンOP.GG表示のON/OFF設定を追加</div>
+        <div class="help-update-item">エズリアルのロールを調整</div>
+        <div class="help-update-item">プール列を4列～7列まで調整できる機能を追加</div>
       </details>
     </div>
     <div class="help-update">
@@ -619,6 +632,72 @@ let state = {
   ltkNextDraft:null,
   ltkCoreDraft:null,
 };
+
+const SIDE_COLUMN_DEFAULT_WIDTH = 254; // 左右プール列の初期幅。広くしたい場合はここを変更する
+const SIDE_COLUMN_EXPAND_STEP = 52; // 矢印ボタン1クリックごとに広げる幅
+const SIDE_COLUMN_MIN_WIDTH = 220;
+const SIDE_COLUMN_MAX_WIDTH = 430;
+const SIDE_COLUMN_EXPAND_MAX_LEVEL = 3;
+const CENTER_COLUMN_WIDTH = 788;
+let sideColumnResizeReady = false;
+let sideColumnPreferredWidth = SIDE_COLUMN_DEFAULT_WIDTH;
+let sideColumnExpandLevel = 0;
+
+function getSideColumnWidth(side='blue'){
+  const main = document.getElementById('mainLayout');
+  if(!main) return SIDE_COLUMN_DEFAULT_WIDTH;
+  const raw = getComputedStyle(main).getPropertyValue(`--${side}-col-width`);
+  const parsed = parseInt(raw, 10);
+  return Number.isFinite(parsed) ? parsed : SIDE_COLUMN_DEFAULT_WIDTH;
+}
+function getSideColumnMaxWidth(){
+  const viewportWidth = document.documentElement?.clientWidth || window.innerWidth || 1366;
+  const visibleOuterWidth = Math.floor((viewportWidth - CENTER_COLUMN_WIDTH) / 2) - 20;
+  return Math.min(SIDE_COLUMN_MAX_WIDTH, Math.max(SIDE_COLUMN_MIN_WIDTH, visibleOuterWidth));
+}
+function clampSideColumnWidth(width){
+  const maxWidth = getSideColumnMaxWidth();
+  const minWidth = Math.min(SIDE_COLUMN_MIN_WIDTH, maxWidth);
+  const numericWidth = Number.isFinite(width) ? width : SIDE_COLUMN_DEFAULT_WIDTH;
+  return Math.max(minWidth, Math.min(maxWidth, Math.round(numericWidth)));
+}
+function applySideColumnWidth(side, width, persist=false, remember=true){
+  const main = document.getElementById('mainLayout');
+  if(!main) return SIDE_COLUMN_DEFAULT_WIDTH;
+  const nextWidth = clampSideColumnWidth(width);
+  if(remember) sideColumnPreferredWidth = nextWidth;
+  main.style.setProperty('--blue-col-width', `${nextWidth}px`);
+  main.style.setProperty('--red-col-width', `${nextWidth}px`);
+  updateSideColumnBalance();
+  return nextWidth;
+}
+function updateSideColumnBalance(){
+  const main = document.getElementById('mainLayout');
+  if(!main) return;
+  const offset = (getSideColumnWidth('red') - getSideColumnWidth('blue')) / 2;
+  main.style.setProperty('--side-balance-offset', `${offset}px`);
+}
+function initSideColumnResize(){
+  sideColumnExpandLevel = 0;
+  sideColumnPreferredWidth = SIDE_COLUMN_DEFAULT_WIDTH;
+  applySideColumnWidth('both', sideColumnPreferredWidth, false, false);
+
+  if(sideColumnResizeReady) return;
+  sideColumnResizeReady = true;
+  window.addEventListener('resize', ()=>{
+    applySideColumnWidth('both', sideColumnPreferredWidth, false, false);
+  });
+}
+function expandSideColumnWidth(side){
+  if(side !== 'blue' && side !== 'red') return;
+  sideColumnExpandLevel = (sideColumnExpandLevel + 1) % (SIDE_COLUMN_EXPAND_MAX_LEVEL + 1);
+  const nextWidth = SIDE_COLUMN_DEFAULT_WIDTH + SIDE_COLUMN_EXPAND_STEP * sideColumnExpandLevel;
+  applySideColumnWidth('both', nextWidth, false);
+}
+function resetSideColumnWidth(side){
+  sideColumnExpandLevel = 0;
+  applySideColumnWidth('both', SIDE_COLUMN_DEFAULT_WIDTH, false);
+}
 
 // ─── OP.GG ────────────────────────────────────────────────────
 function opggUrl(id){
@@ -932,6 +1011,7 @@ const CHAMP_DATA=[
 function init(){
   allChamps=CHAMP_DATA;
   initModalScrollLock();
+  initSideColumnResize();
   buildLayout();
   initChampOpggSetting();
   disableInputSuggestions(document);
@@ -989,6 +1069,7 @@ function buildLayout(){
         </div>
       </div>
     </div>
+    <div class="col-resizer col-resizer-left" data-side="blue" title="クリックでプールが1列ずつ広がる" onclick="expandSideColumnWidth('blue')"></div>
     <div class="center">
       <div class="teams-row">
         <div class="team-card blue-team">
@@ -1054,6 +1135,7 @@ function buildLayout(){
           placeholder="「テキスト出力」ボタンを押すと結果が表示されます"></textarea>
       </div>
     </div>
+    <div class="col-resizer col-resizer-right" data-side="red" title="クリックでプールを1列ずつ広げる" onclick="expandSideColumnWidth('red')"></div>
     <div class="red-col">
       <div class="pcard">
         <div class="pcard-title" style="display:flex;align-items:center;justify-content:space-between;gap:6px;white-space:nowrap;">
