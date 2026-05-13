@@ -24,7 +24,6 @@
   /* TOP BAR */
   .topbar{background:var(--surface);border-bottom:1.5px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.4);}
   .topbar-title{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:600;color:#e8edf6;letter-spacing:.05em;flex:none;}
-  .topbar-sep{width:1px;height:28px;background:var(--border);}
 
   .toggle-wrap{display:flex;align-items:center;gap:8px;cursor:pointer;}
   .toggle-wrap input[type=checkbox]{display:none;}
@@ -34,23 +33,18 @@
   .toggle-wrap input:checked+.toggle-track::after{left:24px;background:#f8f9fb;}
   .toggle-label{font-size:16px;color:var(--text2);}
   /* 設定パネル内の小さいトグル */
-  #settingsPanel .toggle-track{width:34px;height:18px;border-radius:9px;}
-  #settingsPanel .toggle-track::after{top:3px;left:3px;width:12px;height:12px;}
-  #settingsPanel .toggle-wrap input:checked+.toggle-track::after{left:19px;}
+  #settingsModal .toggle-track{width:34px;height:18px;border-radius:9px;}
+  #settingsModal .toggle-track::after{top:3px;left:3px;width:12px;height:12px;}
+  #settingsModal .toggle-wrap input:checked+.toggle-track::after{left:19px;}
 
-  .protect-cfg{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--purple-light);border:1px solid var(--purple-mid);border-radius:var(--radius-sm);padding:7px 14px;font-size:15px;color:var(--purple);}
   .mode-seg{display:flex;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;flex-shrink:0;}
   .mode-seg-btn{padding:4px 13px;font-size:12px;background:transparent;border:none;border-right:1px solid var(--border);color:var(--text3);cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;}
   .mode-seg-btn:last-child{border-right:none;}
   .mode-seg-btn.active{background:var(--surface2);color:var(--text);font-weight:600;}
   .mode-seg-btn:hover:not(.active){background:var(--purple-light);color:var(--text2);}
-  .protect-cfg label{display:flex;align-items:center;gap:5px;}
-  .protect-cfg input[type=number]{width:48px;height:30px;border:1px solid var(--purple-mid);border-radius:5px;text-align:center;font-size:15px;background:var(--surface2);color:var(--text);font-family:inherit;}
-
   .topbar-btns{display:flex;gap:8px;margin-left:auto;}
   .btn{padding:8px 18px;border-radius:var(--radius-sm);background:transparent;border:1.5px solid var(--border);color:var(--text2);font-family:inherit;font-size:15px;cursor:pointer;transition:all .15s;}
   .btn:hover{background:var(--surface2);border-color:var(--purple-mid);color:var(--purple);}
-  .btn-undo:hover{background:var(--purple-light);border-color:var(--purple);color:var(--purple);}
   .btn-reset:hover{background:var(--red-light);border-color:var(--red-mid);color:var(--red);}
   .btn-reset-all{padding:8px 18px;border-radius:var(--radius-sm);background:var(--red-light);border:1.5px solid var(--red-mid);color:var(--red-deep);font-family:inherit;font-size:15px;cursor:pointer;transition:all .15s;}
   .btn-reset-all:hover{background:var(--red);border-color:var(--red);color:#f8f9fb;}
@@ -61,18 +55,7 @@
   .step-bar{display:flex;align-items:center;justify-content:center;gap:8px;padding:7px 16px;font-size:16px;background:var(--surface);border-bottom:1px solid var(--border);color:var(--text2);min-height:36px;}
 
   /* MAIN */
-  .main{--blue-col-width:254px;--red-col-width:254px;--center-col-width:788px;--main-gap:10px;--side-balance-offset:0px;--side-expand-arrow-top:300px;--side-expand-arrow-outset:15px;--side-expand-arrow-size:24px;--side-expand-arrow-opacity:.80;--side-expand-arrow-hover-opacity:.90;--side-expand-click-width:36px;display:grid;grid-template-columns:var(--blue-col-width) var(--center-col-width) var(--red-col-width);gap:var(--main-gap);padding:10px;width:calc(var(--blue-col-width) + var(--center-col-width) + var(--red-col-width) + 40px);max-width:none;margin:0 auto;position:relative;transform:translateX(var(--side-balance-offset));}
-  .col-resizer{position:absolute;top:10px;bottom:10px;width:var(--side-expand-click-width);z-index:45;cursor:pointer;touch-action:manipulation;border-radius:999px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;color:rgba(232,237,246,.34);font-size:var(--side-expand-arrow-size);font-weight:700;line-height:1;transition:color .15s,opacity .15s;}
-  .col-resizer-left{left:-12px;}
-  .col-resizer-right{right:-12px;}
-  .col-resizer::after{position:absolute;top:var(--side-expand-arrow-top);opacity:var(--side-expand-arrow-opacity);transition:opacity .15s,color .15s,transform .15s;text-shadow:0 1px 4px rgba(0,0,0,.55);}
-  .col-resizer-left::after{content:'←';left:calc(var(--side-expand-arrow-outset) * -1);}
-  .col-resizer-right::after{content:'→';right:calc(var(--side-expand-arrow-outset) * -1);}
-  .col-resizer:hover::after{opacity:var(--side-expand-arrow-hover-opacity);color:var(--purple);}
-  .col-resizer-left:hover::after{transform:translateX(-1px);}
-  .col-resizer-right:hover::after{transform:translateX(1px);}
-  body.side-col-resizing{cursor:col-resize;}
-  body.side-col-resizing *{user-select:none!important;cursor:col-resize!important;}
+  .main{--blue-col-width:254px;--red-col-width:254px;--center-col-width:788px;--main-gap:10px;--side-balance-offset:0px;display:grid;grid-template-columns:var(--blue-col-width) var(--center-col-width) var(--red-col-width);gap:var(--main-gap);padding:10px;width:calc(var(--blue-col-width) + var(--center-col-width) + var(--red-col-width) + 40px);max-width:none;margin:0 auto;position:relative;transform:translateX(var(--side-balance-offset));}
 
   /* SIDE CARDS */
   .pcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:10px;}
@@ -189,7 +172,7 @@
   .banpick-area{overflow:hidden;transition:max-height .25s ease;}
   .blue-team .team-heading{color:var(--blue);border-color:var(--blue-mid);}
   .red-team  .team-heading{color:var(--red); border-color:var(--red-mid);}
-  .section-label{font-size:11px;color:var(--text2);margin-bottom:5px;font-weight:700;letter-spacing:.05em;}
+  .section-label{font-size:11px;color:var(--text3);margin-bottom:5px;font-weight:700;letter-spacing:.05em;}
   .section-label-inline{margin-bottom:0;}
 
   /* FEARLESS ZONE */
@@ -272,6 +255,56 @@
   .modal-close{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;line-height:1;padding:0;}
   .modal-close:hover{color:var(--text);}
   .modal-section{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin:12px 0 6px;}
+  .settings-modal{max-width:520px;}
+  .settings-group{border-top:1px solid var(--border);padding-top:12px;margin-top:12px;}
+  .settings-group:first-of-type{border-top:none;padding-top:0;margin-top:0;}
+  .settings-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:9px 0;}
+  .settings-row>div:first-child{min-width:0;}
+  .settings-label{font-size:13px;font-weight:700;color:var(--text);}
+  .settings-note{font-size:11px;color:var(--text3);margin-top:3px;line-height:1.4;}
+  .settings-number{width:56px;height:30px;border:1px solid var(--border);border-radius:6px;background:var(--surface2);color:var(--text);font-family:inherit;font-size:14px;text-align:center;outline:none;}
+  .settings-number:focus{border-color:var(--purple);}
+  .settings-pool-width{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:224px;}
+  .settings-pool-width .btn-sm{height:32px;padding:0 10px;font-size:13px;}
+  .settings-pool-width .btn-sm.active{background:var(--surface2);border-color:var(--purple);color:var(--purple);font-weight:700;}
+  .settings-action-row{display:flex;justify-content:flex-end;margin-top:10px;}
+  .tour-overlay{display:none;position:fixed;inset:0;z-index:4500;background:transparent;pointer-events:auto;}
+  .tour-overlay.show{display:block;}
+  .tour-mask{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;}
+  .tour-highlight{position:fixed;z-index:1;border:2px solid #f8f9fb;border-radius:10px;background:rgba(248,249,251,.05);box-shadow:0 0 0 1px rgba(248,249,251,.22),0 0 28px rgba(248,249,251,.45);transition:left .18s,top .18s,width .18s,height .18s;pointer-events:none;}
+  .tour-popover{position:fixed;z-index:9999;top:16px;left:16px;width:360px;max-width:calc(100vw - 32px);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:0 12px 36px rgba(0,0,0,.55);transition:left .18s,top .18s;}
+  body.tour-editing .tour-popover{cursor:grab;}
+  body.tour-editing .tour-popover.tour-edit-dragging{cursor:grabbing;transition:none;}
+  .tour-step{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
+  .tour-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:8px;}
+  .tour-text{font-size:13px;color:var(--text2);line-height:1.7;}
+  .tour-actions{display:flex;align-items:center;gap:8px;border-top:1px solid var(--border);padding-top:12px;margin-top:14px;}
+  .tour-actions-left{display:flex;gap:8px;flex:1;}
+  .tour-actions-right{display:flex;gap:8px;}
+  .tour-actions .btn,.tour-actions .btn-sm{height:34px;display:flex;align-items:center;justify-content:center;padding:0 12px;font-size:13px;}
+  .tour-next{background:var(--surface2);border-color:var(--purple-mid);color:var(--text);}
+  .tour-editor-panel{display:none;position:fixed;right:16px;bottom:16px;z-index:10000;width:292px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;box-shadow:0 12px 32px rgba(0,0,0,.5);font-size:12px;color:var(--text2);}
+  .tour-editor-panel.show{display:block;}
+  .tour-editor-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;}
+  .tour-editor-title{font-size:13px;font-weight:700;color:var(--text);}
+  .tour-editor-step{font-size:11px;color:var(--text3);}
+  .tour-editor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px;}
+  .tour-editor-grid .btn-sm{height:30px;padding:0 8px;font-size:12px;}
+  .tour-editor-grid .btn-sm.active{background:var(--surface2);border-color:var(--purple-mid);color:var(--text);font-weight:700;}
+  .tour-editor-nudge{display:grid;grid-template-columns:34px 34px 34px;grid-template-rows:30px 30px 30px;gap:5px;justify-content:center;margin-bottom:10px;}
+  .tour-editor-nudge .btn-sm{height:30px;padding:0;}
+  .tour-editor-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--text3);margin-bottom:8px;}
+  .tour-editor-output{width:100%;height:74px;box-sizing:border-box;resize:none;border:1px solid var(--border);border-radius:6px;background:var(--surface2);color:var(--text2);font:11px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;padding:8px;outline:none;}
+  .tour-editor-actions{display:flex;justify-content:flex-end;gap:6px;margin-top:8px;}
+  body.tour-open{overflow:hidden;}
+  @media (max-width:520px){
+    .settings-row{align-items:stretch;flex-direction:column;gap:8px;}
+    .settings-pool-width{width:100%;}
+    .settings-number{width:72px;}
+    .settings-action-row .btn-sm{width:100%;}
+    .tour-actions{align-items:stretch;flex-direction:column;}
+    .tour-actions-left,.tour-actions-right{display:grid;grid-template-columns:1fr 1fr;width:100%;}
+  }
   .save-row{display:flex;gap:8px;margin-bottom:10px;}
   .save-input{flex:1;height:34px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:0 10px;font-size:14px;color:var(--text);font-family:inherit;outline:none;}
   .save-input:focus{border-color:var(--purple);}
@@ -344,20 +377,72 @@ League of Legendsの大会・練習向けドラフトツール
       <button class="btn" id="confirmCancel">キャンセル</button>
     </div>
   </div>
+  <div class="tour-editor-panel" id="tourEditorPanel" aria-hidden="true">
+    <div class="tour-editor-head">
+      <div class="tour-editor-title">ツアー位置調整</div>
+      <div class="tour-editor-step" id="tourEditorStep"></div>
+    </div>
+    <div class="tour-editor-grid" id="tourEditorPlacementControls">
+      <button class="btn-sm" type="button" data-tour-placement="top" onclick="setTourEditorPlacement('top')">上</button>
+      <button class="btn-sm" type="button" data-tour-placement="center" onclick="setTourEditorPlacement('center')">中央</button>
+      <button class="btn-sm" type="button" data-tour-placement="bottom" onclick="setTourEditorPlacement('bottom')">下</button>
+      <button class="btn-sm" type="button" data-tour-placement="left-center" onclick="setTourEditorPlacement('left-center')">左中</button>
+      <button class="btn-sm" type="button" data-tour-placement="left" onclick="setTourEditorPlacement('left')">左</button>
+      <button class="btn-sm" type="button" data-tour-placement="right-center" onclick="setTourEditorPlacement('right-center')">右中</button>
+      <button class="btn-sm" type="button" data-tour-placement="right" onclick="setTourEditorPlacement('right')">右</button>
+    </div>
+    <div class="tour-editor-nudge">
+      <span></span>
+      <button class="btn-sm" type="button" onclick="nudgeTourPopover(0,-10)">↑</button>
+      <span></span>
+      <button class="btn-sm" type="button" onclick="nudgeTourPopover(-10,0)">←</button>
+      <button class="btn-sm" type="button" onclick="resetTourStepPosition()">0</button>
+      <button class="btn-sm" type="button" onclick="nudgeTourPopover(10,0)">→</button>
+      <span></span>
+      <button class="btn-sm" type="button" onclick="nudgeTourPopover(0,10)">↓</button>
+      <span></span>
+    </div>
+    <div class="tour-editor-meta">
+      <span id="tourEditorOffset">x 0 / y 0</span>
+      <span>ドラッグ可</span>
+    </div>
+    <textarea class="tour-editor-output" id="tourEditorOutput" readonly></textarea>
+    <div class="tour-editor-actions">
+      <button class="btn-sm" type="button" onclick="clearTourEditorPositions()">全リセット</button>
+    </div>
+  </div>
+</div>
+
+<div class="tour-overlay" id="tourOverlay" aria-hidden="true">
+  <svg class="tour-mask" id="tourMaskSvg" aria-hidden="true"></svg>
+  <div id="tourHighlights"></div>
+  <div class="tour-popover" id="tourPopover" role="dialog" aria-live="polite" aria-labelledby="tourTitle">
+    <div class="tour-step" id="tourStep"></div>
+    <div class="tour-title" id="tourTitle"></div>
+    <div class="tour-text" id="tourText"></div>
+    <div class="tour-actions">
+      <div class="tour-actions-left">
+        <button class="btn-sm" id="tourPrevBtn" type="button" onclick="prevTourStep()">戻る</button>
+      </div>
+      <div class="tour-actions-right">
+        <button class="btn-sm tour-next" id="tourNextBtn" type="button" onclick="nextTourStep()">進む</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="modal-overlay" id="helpModal">
   <div class="modal help-modal">
     <div class="modal-title">
       <span>使い方</span>
-      <button class="modal-close" onclick="document.getElementById('helpModal').classList.remove('show')">✕</button>
+      <button class="modal-close" onclick="closeHelpModal()">✕</button>
     </div>
     <div class="help-section">
       <div class="help-section-title">基本操作</div>
       <div class="help-list">
         <div class="help-item">ピック・BAN → クリック or ドラッグ</div>
         <div class="help-item">ピックプール・プロテクトへの追加 → ドラッグ</div>
-        <div class="help-item">削除 → アイコンを右クリック（トーナメントは「1手戻す」のみ）</div>
+        <div class="help-item">削除 → アイコンを右クリック</div>
         <div class="help-item">OP.GGリンクの表示 → チャンピオンにマウスカーソルを1.5秒（一覧は2秒）</div>
       </div>
     </div>
@@ -560,16 +645,87 @@ League of Legendsの大会・練習向けドラフトツール
   </div>
 </div>
 
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal settings-modal">
+    <div class="modal-title">
+      <span>設定</span>
+      <button class="modal-close" onclick="closeSettingsModal()">✕</button>
+    </div>
+    <div class="settings-group">
+      <div class="modal-section">表示</div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">チャンピオンOP.GG</div>
+          <div class="settings-note">チャンピオン画像にマウスを乗せたときのリンク表示</div>
+        </div>
+        <label class="toggle-wrap" style="gap:8px;flex-shrink:0;">
+          <input type="checkbox" id="champOpggToggle" onchange="setChampOpggEnabled(this.checked)">
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+    </div>
+    <div class="settings-group">
+      <div class="modal-section">ドラフト</div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">プロテクト</div>
+          <div class="settings-note">各チームのプロテクト枠数</div>
+        </div>
+        <input class="settings-number" type="number" id="blueProtectMax" value="3" min="0" max="8" oninput="syncProtectCfg()">
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">BAN上限</div>
+          <div class="settings-note">プロテクトからBANできる上限数</div>
+        </div>
+        <input class="settings-number" type="number" id="protectBanMax" value="1" min="0" max="8" oninput="syncProtectCfg()">
+        <input type="number" id="redProtectMax" value="3" min="0" max="8" style="display:none;">
+      </div>
+    </div>
+    <div class="settings-group">
+      <div class="modal-section">レイアウト</div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">プール幅</div>
+          <div class="settings-note">左右のプールに表示する横列数</div>
+        </div>
+        <div class="settings-pool-width" role="group" aria-label="プール幅">
+          <button class="btn-sm" type="button" data-pool-columns="4" onclick="setPoolColumnCount(4)">4列</button>
+          <button class="btn-sm" type="button" data-pool-columns="5" onclick="setPoolColumnCount(5)">5列</button>
+          <button class="btn-sm" type="button" data-pool-columns="6" onclick="setPoolColumnCount(6)">6列</button>
+          <button class="btn-sm" type="button" data-pool-columns="7" onclick="setPoolColumnCount(7)">7列</button>
+        </div>
+      </div>
+    </div>
+    <div class="settings-group">
+      <div class="modal-section">ヘルプ</div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">チュートリアル</div>
+          <div class="settings-note">初回表示のガイドをもう一度表示します</div>
+        </div>
+        <button class="btn-sm" type="button" onclick="replayTutorialFromSettings()">再表示</button>
+      </div>
+    </div>
+    <div class="settings-group">
+      <div class="modal-section">データ</div>
+      <div class="settings-action-row">
+        <button class="btn-sm" type="button" onclick="openSettingsSaveManager()">セーブデータ一括管理</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="topbar">
   <div class="topbar-title">Draft Planner</div>
-  <button class="btn-sm" style="font-size:12px;padding:3px 10px;flex-shrink:0;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:var(--text);" onclick="document.getElementById('helpModal').classList.add('show')">使い方</button>
+  <button class="btn-sm" style="font-size:12px;padding:3px 10px;flex-shrink:0;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:var(--text);" onclick="openHelpModal()">使い方</button>
 
   <div class="mode-seg">
     <button class="mode-seg-btn active" id="modeFree"     onclick="setMode('free')">フリー</button>
     <button class="mode-seg-btn"        id="modeFearless" onclick="setMode('fearless')">フィアレス</button>
     <button class="mode-seg-btn"        id="modeLtk"      onclick="setMode('ltk')">LTK3</button>
   </div>
-  <button class="btn-sm" id="settingsBtn" onclick="toggleSettings()" style="font-size:12px;padding:3px 10px;flex-shrink:0;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:var(--text);">⚙ 設定</button>
+  <button class="btn-sm" id="settingsBtn" onclick="openSettingsModal()" style="font-size:12px;padding:3px 10px;flex-shrink:0;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:var(--text);">⚙ 設定</button>
   <div id="ltkRankWrap" style="display:none;align-items:center;gap:4px;">
     <select id="ltkRankSelect">
       <option value="next">NEXT</option>
@@ -577,27 +733,10 @@ League of Legendsの大会・練習向けドラフトツール
     </select>
   </div>
 
-  <div id="settingsPanel" style="display:none;align-items:center;gap:10px;flex-wrap:wrap;">
-    <div class="topbar-sep"></div>
-    <label class="toggle-wrap" style="gap:5px;" title="OFFにすると、チャンピオン画像にマウスオーバーしてもOP.GGリンクを表示しません。">
-      <input type="checkbox" id="champOpggToggle" onchange="setChampOpggEnabled(this.checked)">
-      <span class="toggle-track" style="width:34px;height:18px;border-radius:9px;"></span>
-      <span class="toggle-label" style="font-size:12px;">チャンプOP.GG</span>
-    </label>
-    <div class="topbar-sep"></div>
-    <div class="protect-cfg" style="font-size:12px;padding:4px 10px;gap:7px;">
-      <label>プロテクト <input type="number" id="blueProtectMax" value="3" min="0" max="8" oninput="syncProtectCfg()" style="width:36px;height:22px;font-size:12px;"></label>
-      <label>BAN上限 <input type="number" id="protectBanMax" value="1" min="0" max="8" oninput="syncProtectCfg()" style="width:36px;height:22px;font-size:12px;"></label>
-      <input type="number" id="redProtectMax" value="3" min="0" max="8" style="display:none;">
-    </div>
-    <div class="topbar-sep"></div>
-    <button class="btn-sm" onclick="openSaveManager()" style="font-size:12px;padding:3px 10px;flex-shrink:0;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:var(--text);">セーブデータ一括管理</button>
-  </div>
   <div class="topbar-btns">
-    <button class="btn btn-undo" id="undoBtn" onclick="undoLast()" disabled style="display:none">← 1手戻す</button>
     <button class="btn" id="ltkNavBtn" onclick="ltkNavAction()" style="display:none;"></button>
     <button class="btn" id="nextGameBtn" onclick="nextGame()" style="display:none;">次のゲームへ</button>
-    <button class="btn" onclick="openDraftModal()">ドラフト保存/呼出</button>
+    <button class="btn" id="draftSaveOpenBtn" onclick="openDraftModal()">ドラフト保存/呼出</button>
     <button class="btn btn-reset" onclick="resetDraft()">ドラフトリセット</button>
     <button class="btn btn-reset-all" onclick="resetAll()">オールリセット</button>
   </div>
@@ -613,7 +752,7 @@ League of Legendsの大会・練習向けドラフトツール
 </div>
 
 <script>
-let allChamps=[], dragData=null, history=[];
+let allChamps=[], dragData=null;
 let currentRoleFilter='all';
 
 let state = {
@@ -633,15 +772,69 @@ let state = {
   ltkCoreDraft:null,
 };
 
-const SIDE_COLUMN_DEFAULT_WIDTH = 254; // 左右プール列の初期幅。広くしたい場合はここを変更する
-const SIDE_COLUMN_EXPAND_STEP = 52; // 矢印ボタン1クリックごとに広げる幅
+const SIDE_COLUMN_DEFAULT_WIDTH = 254;
+const SIDE_COLUMN_COLUMN_STEP = 52;
 const SIDE_COLUMN_MIN_WIDTH = 220;
 const SIDE_COLUMN_MAX_WIDTH = 430;
-const SIDE_COLUMN_EXPAND_MAX_LEVEL = 3;
+const SIDE_COLUMN_DEFAULT_COLUMNS = 4;
+const SIDE_COLUMN_MIN_COLUMNS = 4;
+const SIDE_COLUMN_MAX_COLUMNS = 7;
+const SIDE_COLUMN_STORAGE_KEY = 'draftTool_poolColumnCount';
+const TOUR_HIDDEN_STORAGE_KEY = 'draftTool_tourHidden';
+const TOUR_EDITOR_STORAGE_KEY = 'draftTool_tourEditorOverrides';
 const CENTER_COLUMN_WIDTH = 788;
 let sideColumnResizeReady = false;
 let sideColumnPreferredWidth = SIDE_COLUMN_DEFAULT_WIDTH;
-let sideColumnExpandLevel = 0;
+let sideColumnPoolColumns = SIDE_COLUMN_DEFAULT_COLUMNS;
+let tourStepIndex = 0;
+let tourPositionTimer = null;
+let tourEditorEnabled = false;
+let tourEditorOverrides = {};
+let tourDragState = null;
+let tourLastAutoPosition = null;
+
+const TOUR_STEPS = [
+  {
+    targets: ['.teams-row', '#champGrid'],
+    anchor: '.teams-row',
+    placements: ['center', 'right-center', 'left-center', 'bottom', 'top'],
+    offset: {x:-591, y:-26},
+    title: 'ピック・BANエリア',
+    text: 'チャンピオン一覧からクリックまたはドラッグで追加できます。配置したチャンピオンは右クリックで削除できます。'
+  },
+  {
+    targets: ['.blue-col > .pcard:first-child', '.red-col > .pcard:first-child', '#champGrid'],
+    anchor: '#champGrid',
+    placements: ['center', 'top', 'right-center', 'left-center', 'bottom'],
+    offset: {x:0, y:-71},
+    title: 'チームプールエリア',
+    text: 'チャンピオンをドラッグすると、各プレイヤーのプールを作成できます。チャンピオン一覧からプールへ追加していきます。'
+  },
+  {
+    targets: ['#bluePoolTitle', '#redPoolTitle', '.pool-label-input'],
+    anchor: '#bluePoolTitle',
+    placements: ['center', 'right-center', 'left-center', 'bottom', 'top'],
+    offset: {x:0, y:-240},
+    title: 'チーム名・プレイヤー名',
+    text: 'チーム名やプレイヤー名は直接入力できます。名前をつけておくと、保存や呼び出しのときに見分けやすくなります。'
+  },
+  {
+    targets: ['#banpickCollapseBtn', '#banpickCollapseBtn2'],
+    anchor: '#banpickCollapseBtn2',
+    placements: ['right-center', 'left-center', 'bottom', 'top', 'center'],
+    offset: {x:-442, y:-188},
+    title: 'プール構築モード',
+    text: '折りたたみボタンでピック・BANエリアを閉じると、チャンピオン一覧からプールへ追加しやすくなります。'
+  },
+  {
+    targets: ['#draftSaveOpenBtn', '.team-save-open-btn', '.player-save-btn'],
+    anchor: '#draftSaveOpenBtn',
+    placements: ['center', 'bottom', 'left-center', 'right-center', 'top'],
+    offset: {x:306, y:-268},
+    title: '保存機能',
+    text: '作成したドラフト、チームプール、プレイヤープールは、それぞれの保存ボタンから名前をつけて保存できます。'
+  }
+];
 
 function getSideColumnWidth(side='blue'){
   const main = document.getElementById('mainLayout');
@@ -661,11 +854,20 @@ function clampSideColumnWidth(width){
   const numericWidth = Number.isFinite(width) ? width : SIDE_COLUMN_DEFAULT_WIDTH;
   return Math.max(minWidth, Math.min(maxWidth, Math.round(numericWidth)));
 }
+function normalizePoolColumnCount(columns){
+  const parsed = parseInt(columns, 10);
+  if(!Number.isFinite(parsed)) return SIDE_COLUMN_DEFAULT_COLUMNS;
+  return Math.max(SIDE_COLUMN_MIN_COLUMNS, Math.min(SIDE_COLUMN_MAX_COLUMNS, parsed));
+}
+function getSideColumnWidthForColumns(columns){
+  const safeColumns = normalizePoolColumnCount(columns);
+  return SIDE_COLUMN_DEFAULT_WIDTH + (safeColumns - SIDE_COLUMN_DEFAULT_COLUMNS) * SIDE_COLUMN_COLUMN_STEP;
+}
 function applySideColumnWidth(side, width, persist=false, remember=true){
   const main = document.getElementById('mainLayout');
   if(!main) return SIDE_COLUMN_DEFAULT_WIDTH;
   const nextWidth = clampSideColumnWidth(width);
-  if(remember) sideColumnPreferredWidth = nextWidth;
+  if(remember) sideColumnPreferredWidth = width;
   main.style.setProperty('--blue-col-width', `${nextWidth}px`);
   main.style.setProperty('--red-col-width', `${nextWidth}px`);
   updateSideColumnBalance();
@@ -678,25 +880,405 @@ function updateSideColumnBalance(){
   main.style.setProperty('--side-balance-offset', `${offset}px`);
 }
 function initSideColumnResize(){
-  sideColumnExpandLevel = 0;
-  sideColumnPreferredWidth = SIDE_COLUMN_DEFAULT_WIDTH;
+  sideColumnPoolColumns = normalizePoolColumnCount(localStorage.getItem(SIDE_COLUMN_STORAGE_KEY));
+  sideColumnPreferredWidth = getSideColumnWidthForColumns(sideColumnPoolColumns);
   applySideColumnWidth('both', sideColumnPreferredWidth, false, false);
+  syncPoolWidthButtons();
 
   if(sideColumnResizeReady) return;
   sideColumnResizeReady = true;
   window.addEventListener('resize', ()=>{
-    applySideColumnWidth('both', sideColumnPreferredWidth, false, false);
+    applySideColumnWidth('both', getSideColumnWidthForColumns(sideColumnPoolColumns), false, false);
+    if(document.getElementById('tourOverlay')?.classList.contains('show')) positionTourStep();
   });
 }
-function expandSideColumnWidth(side){
-  if(side !== 'blue' && side !== 'red') return;
-  sideColumnExpandLevel = (sideColumnExpandLevel + 1) % (SIDE_COLUMN_EXPAND_MAX_LEVEL + 1);
-  const nextWidth = SIDE_COLUMN_DEFAULT_WIDTH + SIDE_COLUMN_EXPAND_STEP * sideColumnExpandLevel;
-  applySideColumnWidth('both', nextWidth, false);
+function syncPoolWidthButtons(){
+  document.querySelectorAll('[data-pool-columns]').forEach(btn=>{
+    const selected = normalizePoolColumnCount(btn.dataset.poolColumns) === sideColumnPoolColumns;
+    btn.classList.toggle('active', selected);
+    btn.setAttribute('aria-pressed', selected ? 'true' : 'false');
+  });
 }
-function resetSideColumnWidth(side){
-  sideColumnExpandLevel = 0;
-  applySideColumnWidth('both', SIDE_COLUMN_DEFAULT_WIDTH, false);
+function setPoolColumnCount(columns){
+  sideColumnPoolColumns = normalizePoolColumnCount(columns);
+  sideColumnPreferredWidth = getSideColumnWidthForColumns(sideColumnPoolColumns);
+  localStorage.setItem(SIDE_COLUMN_STORAGE_KEY, String(sideColumnPoolColumns));
+  applySideColumnWidth('both', sideColumnPreferredWidth, false, false);
+  syncPoolWidthButtons();
+}
+
+function openHelpModal(){
+  document.getElementById('helpModal')?.classList.add('show');
+}
+function closeHelpModal(){
+  document.getElementById('helpModal')?.classList.remove('show');
+}
+function shouldShowTour(){
+  try{
+    return localStorage.getItem(TOUR_HIDDEN_STORAGE_KEY) !== 'true';
+  }catch(e){
+    return true;
+  }
+}
+function markTourHidden(){
+  try{
+    localStorage.setItem(TOUR_HIDDEN_STORAGE_KEY, 'true');
+  }catch(e){}
+}
+function isTourEditorMode(){
+  const params = new URLSearchParams(window.location.search);
+  return params.get('tourEdit') === '1' || window.location.hash.includes('tourEdit');
+}
+function loadTourEditorOverrides(){
+  try{
+    tourEditorOverrides = JSON.parse(localStorage.getItem(TOUR_EDITOR_STORAGE_KEY) || '{}') || {};
+  }catch(e){
+    tourEditorOverrides = {};
+  }
+}
+function saveTourEditorOverrides(){
+  try{
+    localStorage.setItem(TOUR_EDITOR_STORAGE_KEY, JSON.stringify(tourEditorOverrides));
+  }catch(e){}
+}
+function getTourStepOverride(index=tourStepIndex){
+  return tourEditorEnabled ? (tourEditorOverrides[String(index)] || {}) : {};
+}
+function getTourStepPlacements(step, index=tourStepIndex){
+  const placements = Array.isArray(step?.placements) && step.placements.length
+    ? step.placements
+    : ['top', 'right-center', 'left-center', 'bottom', 'center'];
+  const overridePlacement = getTourStepOverride(index).placement;
+  if(!overridePlacement) return placements;
+  return [overridePlacement, ...placements.filter(placement=>placement !== overridePlacement)];
+}
+function getTourStepOffset(step, index=tourStepIndex){
+  const baseOffset = step?.offset || {};
+  const override = getTourStepOverride(index);
+  return {
+    x: (Number(baseOffset.x) || 0) + (Number(override.offsetX) || 0),
+    y: (Number(baseOffset.y) || 0) + (Number(override.offsetY) || 0)
+  };
+}
+function normalizeTourStepOverride(index){
+  const key = String(index);
+  const raw = tourEditorOverrides[key] || {};
+  const placement = raw.placement || '';
+  const offsetX = Math.round(Number(raw.offsetX) || 0);
+  const offsetY = Math.round(Number(raw.offsetY) || 0);
+  if(!placement && offsetX === 0 && offsetY === 0){
+    delete tourEditorOverrides[key];
+    return;
+  }
+  tourEditorOverrides[key] = {placement, offsetX, offsetY};
+}
+function setTourStepOverride(updates, rerender=true){
+  if(!tourEditorEnabled) return;
+  const key = String(tourStepIndex);
+  tourEditorOverrides[key] = {...(tourEditorOverrides[key] || {}), ...updates};
+  normalizeTourStepOverride(tourStepIndex);
+  saveTourEditorOverrides();
+  if(rerender) positionTourStep();
+}
+function buildTourEditorOutput(){
+  const keys = Object.keys(tourEditorOverrides).sort((a,b)=>Number(a)-Number(b));
+  if(!keys.length) return '未調整';
+  return keys.map(key=>{
+    const override = tourEditorOverrides[key];
+    const step = TOUR_STEPS[Number(key)];
+    const title = step?.title || `STEP ${Number(key)+1}`;
+    const placement = override.placement ? `placement: '${override.placement}'` : '';
+    const offset = `offset: { x: ${override.offsetX || 0}, y: ${override.offsetY || 0} }`;
+    return `STEP ${Number(key)+1} ${title}\n${[placement, offset].filter(Boolean).join(', ')}`;
+  }).join('\n\n');
+}
+function ensureTourEditorPanel(){
+  const panel = document.getElementById('tourEditorPanel');
+  const overlay = document.getElementById('tourOverlay');
+  if(panel && overlay && panel.parentElement !== overlay) overlay.appendChild(panel);
+  return panel;
+}
+function updateTourEditorPanel(){
+  if(!tourEditorEnabled) return;
+  const panel = ensureTourEditorPanel();
+  if(!panel) return;
+  const override = getTourStepOverride();
+  const offset = getTourStepOffset(TOUR_STEPS[tourStepIndex]);
+  panel.classList.add('show');
+  panel.setAttribute('aria-hidden', 'false');
+  document.getElementById('tourEditorStep').textContent = `STEP ${tourStepIndex+1}/${TOUR_STEPS.length}`;
+  document.getElementById('tourEditorOffset').textContent = `x ${Math.round(offset.x)} / y ${Math.round(offset.y)}`;
+  document.getElementById('tourEditorOutput').value = buildTourEditorOutput();
+  const activePlacement = override.placement || TOUR_STEPS[tourStepIndex]?.placements?.[0] || 'top';
+  document.querySelectorAll('[data-tour-placement]').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.tourPlacement === activePlacement);
+  });
+}
+function applyTourPositionOffset(pos, popRect, viewportW, viewportH, step){
+  const margin = 16;
+  const offset = getTourStepOffset(step);
+  const left = clampTourValue(pos.left + offset.x, margin, viewportW - popRect.width - margin);
+  const top = clampTourValue(pos.top + offset.y, margin, viewportH - popRect.height - margin);
+  return {...pos, left, top, right:left + popRect.width, bottom:top + popRect.height};
+}
+function setTourEditorPlacement(placement){
+  setTourStepOverride({placement, offsetX:0, offsetY:0});
+}
+function nudgeTourPopover(dx, dy){
+  const override = getTourStepOverride();
+  setTourStepOverride({
+    offsetX:(Number(override.offsetX) || 0) + dx,
+    offsetY:(Number(override.offsetY) || 0) + dy
+  });
+}
+function resetTourStepPosition(){
+  if(!tourEditorEnabled) return;
+  delete tourEditorOverrides[String(tourStepIndex)];
+  saveTourEditorOverrides();
+  positionTourStep();
+}
+function clearTourEditorPositions(){
+  if(!tourEditorEnabled) return;
+  tourEditorOverrides = {};
+  saveTourEditorOverrides();
+  positionTourStep();
+}
+function onTourPopoverPointerDown(event){
+  if(!tourEditorEnabled || event.button !== 0) return;
+  if(event.target.closest('button,input,textarea,select,a')) return;
+  const popover = document.getElementById('tourPopover');
+  if(!popover) return;
+  const rect = popover.getBoundingClientRect();
+  tourDragState = {
+    pointerId:event.pointerId,
+    startX:event.clientX,
+    startY:event.clientY,
+    startLeft:rect.left,
+    startTop:rect.top
+  };
+  popover.classList.add('tour-edit-dragging');
+  popover.setPointerCapture?.(event.pointerId);
+  event.preventDefault();
+}
+function onTourPopoverPointerMove(event){
+  if(!tourDragState || event.pointerId !== tourDragState.pointerId) return;
+  const popover = document.getElementById('tourPopover');
+  if(!popover) return;
+  const rect = popover.getBoundingClientRect();
+  const viewportW = document.documentElement.clientWidth || window.innerWidth;
+  const viewportH = document.documentElement.clientHeight || window.innerHeight;
+  const margin = 16;
+  const left = clampTourValue(tourDragState.startLeft + event.clientX - tourDragState.startX, margin, viewportW - rect.width - margin);
+  const top = clampTourValue(tourDragState.startTop + event.clientY - tourDragState.startY, margin, viewportH - rect.height - margin);
+  popover.style.left = `${left}px`;
+  popover.style.top = `${top}px`;
+  const base = tourLastAutoPosition || {left:tourDragState.startLeft, top:tourDragState.startTop};
+  setTourStepOverride({offsetX:Math.round(left - base.left), offsetY:Math.round(top - base.top)}, false);
+  updateTourEditorPanel();
+}
+function onTourPopoverPointerUp(event){
+  if(!tourDragState || event.pointerId !== tourDragState.pointerId) return;
+  document.getElementById('tourPopover')?.classList.remove('tour-edit-dragging');
+  tourDragState = null;
+}
+function initTourEditor(){
+  tourEditorEnabled = isTourEditorMode();
+  if(!tourEditorEnabled) return;
+  loadTourEditorOverrides();
+  document.body.classList.add('tour-editing');
+  const panel = ensureTourEditorPanel();
+  panel?.classList.add('show');
+  panel?.setAttribute('aria-hidden', 'false');
+  document.getElementById('tourPopover')?.addEventListener('pointerdown', onTourPopoverPointerDown);
+  window.addEventListener('pointermove', onTourPopoverPointerMove);
+  window.addEventListener('pointerup', onTourPopoverPointerUp);
+}
+function showTourIfNeeded(){
+  if(tourEditorEnabled){
+    setTimeout(()=>startTour(0), 350);
+    return;
+  }
+  if(!shouldShowTour()) return;
+  setTimeout(()=>startTour(0), 350);
+}
+function startTour(index=0){
+  tourStepIndex = Math.max(0, Math.min(TOUR_STEPS.length-1, index));
+  const overlay = document.getElementById('tourOverlay');
+  if(!overlay) return;
+  window.scrollTo({top:0, left:0, behavior:'auto'});
+  overlay.classList.add('show');
+  overlay.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('tour-open');
+  renderTourStep();
+}
+function closeTour(hideForever=false){
+  if(hideForever) markTourHidden();
+  clearTimeout(tourPositionTimer);
+  const overlay = document.getElementById('tourOverlay');
+  document.getElementById('tourHighlights').innerHTML = '';
+  document.getElementById('tourMaskSvg').innerHTML = '';
+  if(overlay){
+    overlay.classList.remove('show');
+    overlay.setAttribute('aria-hidden', 'true');
+  }
+  document.body.classList.remove('tour-open');
+}
+function nextTourStep(){
+  if(tourStepIndex >= TOUR_STEPS.length-1){
+    closeTour(true);
+    return;
+  }
+  tourStepIndex += 1;
+  renderTourStep();
+}
+function prevTourStep(){
+  if(tourStepIndex <= 0) return;
+  tourStepIndex -= 1;
+  renderTourStep();
+}
+function renderTourStep(){
+  const step = TOUR_STEPS[tourStepIndex];
+  const targets = getTourTargets(step);
+  document.getElementById('tourStep').textContent = `STEP ${tourStepIndex+1}/${TOUR_STEPS.length}`;
+  document.getElementById('tourTitle').textContent = step.title;
+  document.getElementById('tourText').textContent = step.text;
+  const prevBtn = document.getElementById('tourPrevBtn');
+  const nextBtn = document.getElementById('tourNextBtn');
+  if(prevBtn) prevBtn.disabled = tourStepIndex === 0;
+  if(nextBtn) nextBtn.textContent = tourStepIndex === TOUR_STEPS.length-1 ? '完了' : '進む';
+  if(targets.length && tourStepIndex > 0){
+    const rect = getUnionRect(targets.map(el=>el.getBoundingClientRect()));
+    const viewportH = document.documentElement.clientHeight || window.innerHeight;
+    if(rect.top < 72 || rect.top > viewportH - 180){
+      targets[0].scrollIntoView({block:'center', inline:'nearest'});
+    }
+  }
+  clearTimeout(tourPositionTimer);
+  if(tourEditorEnabled) positionTourStep();
+  tourPositionTimer = setTimeout(positionTourStep, 80);
+}
+function getTourTargets(step){
+  const selectors = step?.targets || (step?.target ? [step.target] : []);
+  return selectors.flatMap(selector=>[...document.querySelectorAll(selector)]);
+}
+function getUnionRect(rects){
+  if(!rects.length){
+    const viewportW = document.documentElement.clientWidth || window.innerWidth;
+    const viewportH = document.documentElement.clientHeight || window.innerHeight;
+    return {left:viewportW/2-120,top:viewportH/2-80,right:viewportW/2+120,bottom:viewportH/2+80,width:240,height:160};
+  }
+  const left = Math.min(...rects.map(r=>r.left));
+  const top = Math.min(...rects.map(r=>r.top));
+  const right = Math.max(...rects.map(r=>r.right));
+  const bottom = Math.max(...rects.map(r=>r.bottom));
+  return {left, top, right, bottom, width:right-left, height:bottom-top};
+}
+function getTourAnchorRect(step, fallbackRects){
+  const anchorSelector = step?.anchor;
+  if(anchorSelector){
+    const anchor = document.querySelector(anchorSelector);
+    if(anchor) return anchor.getBoundingClientRect();
+  }
+  return getUnionRect(fallbackRects);
+}
+function positionTourStep(){
+  const step = TOUR_STEPS[tourStepIndex];
+  const targets = getTourTargets(step);
+  const highlights = document.getElementById('tourHighlights');
+  const maskSvg = document.getElementById('tourMaskSvg');
+  const popover = document.getElementById('tourPopover');
+  if(!highlights || !maskSvg || !popover) return;
+  const viewportW = document.documentElement.clientWidth || window.innerWidth;
+  const viewportH = document.documentElement.clientHeight || window.innerHeight;
+  const pad = 8;
+  const rects = targets.map(el=>el.getBoundingClientRect());
+  const anchorRect = getTourAnchorRect(step, rects);
+  const highlightRects = rects.map(targetRect=>{
+    const left = Math.max(8, targetRect.left - pad);
+    const top = Math.max(8, targetRect.top - pad);
+    const width = Math.min(viewportW - left - 8, targetRect.width + pad*2);
+    const height = Math.min(viewportH - top - 8, targetRect.height + pad*2);
+    return {left, top, width, height, right:left + width, bottom:top + height};
+  });
+  highlights.innerHTML = highlightRects.map(targetRect=>{
+    return `<div class="tour-highlight" style="left:${targetRect.left}px;top:${targetRect.top}px;width:${targetRect.width}px;height:${targetRect.height}px;"></div>`;
+  }).join('');
+  const holes = highlightRects.map(targetRect=>{
+    return `<rect x="${targetRect.left}" y="${targetRect.top}" width="${targetRect.width}" height="${targetRect.height}" rx="10" ry="10" fill="black"></rect>`;
+  }).join('');
+  maskSvg.setAttribute('viewBox', `0 0 ${viewportW} ${viewportH}`);
+  maskSvg.innerHTML = `
+    <defs>
+      <mask id="tourMask">
+        <rect x="0" y="0" width="${viewportW}" height="${viewportH}" fill="white"></rect>
+        ${holes}
+      </mask>
+    </defs>
+    <rect x="0" y="0" width="${viewportW}" height="${viewportH}" fill="rgba(0,0,0,.68)" mask="url(#tourMask)"></rect>
+  `;
+
+  const popRect = popover.getBoundingClientRect();
+  const popPos = chooseTourPopoverPosition(anchorRect, popRect, viewportW, viewportH, getTourStepPlacements(step), highlightRects);
+  tourLastAutoPosition = popPos;
+  const finalPopPos = applyTourPositionOffset(popPos, popRect, viewportW, viewportH, step);
+  popover.style.left = `${finalPopPos.left}px`;
+  popover.style.top = `${finalPopPos.top}px`;
+  updateTourEditorPanel();
+}
+
+function clampTourValue(value, min, max){
+  if(max < min) return min;
+  return Math.max(min, Math.min(max, value));
+}
+function tourRectsOverlap(a,b, gap=8){
+  return !(
+    a.right + gap <= b.left ||
+    a.left - gap >= b.right ||
+    a.bottom + gap <= b.top ||
+    a.top - gap >= b.bottom
+  );
+}
+function getTourOverlapArea(a,b,gap=8){
+  const left = Math.max(a.left, b.left - gap);
+  const right = Math.min(a.right, b.right + gap);
+  const top = Math.max(a.top, b.top - gap);
+  const bottom = Math.min(a.bottom, b.bottom + gap);
+  return Math.max(0, right - left) * Math.max(0, bottom - top);
+}
+function getTourOverlapScore(rect, avoidRects){
+  return avoidRects.reduce((sum, avoidRect)=>sum + getTourOverlapArea(rect, avoidRect), 0);
+}
+function getTourPopoverRawPosition(placement, targetRect, popW, popH, viewportW, viewportH){
+  const gap = 16;
+  const targetCenterX = targetRect.left + targetRect.width / 2;
+  const targetCenterY = targetRect.top + targetRect.height / 2;
+  const centeredX = targetCenterX - popW / 2;
+  const centeredY = targetCenterY - popH / 2;
+  if(placement === 'bottom') return {left:centeredX, top:targetRect.bottom + gap};
+  if(placement === 'left') return {left:targetRect.left - popW - gap, top:centeredY};
+  if(placement === 'right') return {left:targetRect.right + gap, top:centeredY};
+  if(placement === 'left-center') return {left:targetRect.left - popW - gap, top:viewportH / 2 - popH / 2};
+  if(placement === 'right-center') return {left:targetRect.right + gap, top:viewportH / 2 - popH / 2};
+  if(placement === 'center') return {left:viewportW / 2 - popW / 2, top:viewportH / 2 - popH / 2};
+  return {left:centeredX, top:targetRect.top - popH - gap};
+}
+function chooseTourPopoverPosition(targetRect, popRect, viewportW, viewportH, placements, avoidRects=[]){
+  const margin = 16;
+  const popW = popRect.width;
+  const popH = popRect.height;
+  const safeAvoidRects = avoidRects.length ? avoidRects : [targetRect];
+  const preferredPlacements = Array.isArray(placements) && placements.length
+    ? placements
+    : ['top', 'right-center', 'left-center', 'bottom', 'center'];
+  const candidates = preferredPlacements.map((placement, index)=>{
+    const rawPos = getTourPopoverRawPosition(placement, targetRect, popW, popH, viewportW, viewportH);
+    const left = clampTourValue(rawPos.left, margin, viewportW - popW - margin);
+    const top = clampTourValue(rawPos.top, margin, viewportH - popH - margin);
+    const rect = {left, top, right:left + popW, bottom:top + popH, placement, index};
+    rect.overlap = getTourOverlapScore(rect, safeAvoidRects);
+    return rect;
+  });
+  return candidates.find(pos=>pos.overlap <= 0) || candidates.sort((a,b)=>a.overlap - b.overlap || a.index - b.index)[0];
 }
 
 // ─── OP.GG ────────────────────────────────────────────────────
@@ -1016,7 +1598,7 @@ function init(){
   initChampOpggSetting();
   disableInputSuggestions(document);
   renderAll();
-  document.getElementById('undoBtn').style.display='';
+  initTourEditor();
   // ロールアイコンをセット（buildLayout後に要素が存在するので安全）
   document.getElementById('roleIconTop').src=ROLE_ICONS.top;
   document.getElementById('roleIconJungle').src=ROLE_ICONS.jungle;
@@ -1026,6 +1608,7 @@ function init(){
   setTimeout(()=>{
     if(document.getElementById('champGrid')&&allChamps.length>0) renderChampGrid();
   }, 200);
+  showTourIfNeeded();
 }
 
 function setRoleFilter(role){
@@ -1069,7 +1652,6 @@ function buildLayout(){
         </div>
       </div>
     </div>
-    <div class="col-resizer col-resizer-left" data-side="blue" title="クリックでプールが1列ずつ広がる" onclick="expandSideColumnWidth('blue')"></div>
     <div class="center">
       <div class="teams-row">
         <div class="team-card blue-team">
@@ -1135,7 +1717,6 @@ function buildLayout(){
           placeholder="「テキスト出力」ボタンを押すと結果が表示されます"></textarea>
       </div>
     </div>
-    <div class="col-resizer col-resizer-right" data-side="red" title="クリックでプールを1列ずつ広げる" onclick="expandSideColumnWidth('red')"></div>
     <div class="red-col">
       <div class="pcard">
         <div class="pcard-title" style="display:flex;align-items:center;justify-content:space-between;gap:6px;white-space:nowrap;">
@@ -1206,11 +1787,9 @@ function renderAll(){
   renderChampGrid();
   checkDuplicates();
   renderStepBar();
-  updateUndo();
 }
 
 function removeFromSlot(team,type,idx){
-  saveHistory();
   if(type==='ban') state[team].bans[idx]=null;
   else state[team].picks[idx]=null;
   renderAll();
@@ -1465,13 +2044,6 @@ function renderStepBar(){
   }
 }
 
-function updateUndo(){
-  const btn = document.getElementById('undoBtn');
-  if(!btn) return;
-  btn.disabled = history.length === 0;
-  btn.style.display = history.length > 0 ? '' : 'none';
-}
-
 // ─── CLICK ───────────────────────────────────────────────────
 function onChampClick(e,id,name){
   e.stopPropagation();
@@ -1515,7 +2087,6 @@ function applySlot(zone,idx,champId,champName){
   const team=zone.startsWith('blue')?'blue':'red';
   const slot=isBan?state[team].bans:state[team].picks;
   if(slot[idx])return;
-  saveHistory();
   slot[idx]={id:champId,name:champName};
   renderAll();
 }
@@ -1659,7 +2230,6 @@ function onDrop(e,tz,ti){
     const team=tz.startsWith('blue')?'blue':'red';
     const slot=isBan?state[team].bans:state[team].picks;
     if(usedIds().has(id)&&!(src==='ban'||src==='pick'))return;
-    saveHistory();
     // 移動元がban/pickスロットなら空にする
     if(src==='ban'&&zone){
       const srcTeam=zone.startsWith('blue')?'blue':'red';
@@ -1671,23 +2241,6 @@ function onDrop(e,tz,ti){
     slot[ti]={id,name};
     renderAll();
   }
-}
-
-// ─── UNDO ─────────────────────────────────────────────────────
-function saveHistory(){
-  history.push({
-    blue:{bans:[...state.blue.bans],picks:[...state.blue.picks]},
-    red: {bans:[...state.red.bans], picks:[...state.red.picks]}
-  });
-  if(history.length>30)history.shift();
-}
-function undoLast(){
-  if(!history.length)return;
-  const p=history.pop();
-  state.blue.bans=p.blue.bans; state.blue.picks=p.blue.picks;
-  state.red.bans=p.red.bans;   state.red.picks=p.red.picks;
-  renderAll();
-  updateUndo();
 }
 
 // ─── HELPERS ──────────────────────────────────────────────────
@@ -1742,7 +2295,6 @@ function showConfirm(msg, callback, cancelCallback, okLabel){
 }
 function resetDraft(){
   showConfirm('ドラフトをリセットしますか？', ()=>{
-    history=[];
     state.blue.bans=Array(5).fill(null);
     state.blue.picks=Array(5).fill(null);
     state.red.bans=Array(5).fill(null);
@@ -1755,7 +2307,6 @@ function resetDraft(){
 }
 function doResetAll(){
   currentDraftId = null;
-  history=[];
   state={
     blue:{bans:Array(5).fill(null),picks:Array(5).fill(null)},
     red: {bans:Array(5).fill(null),picks:Array(5).fill(null)},
@@ -1892,9 +2443,8 @@ function openDraftModal(){
 }
 function closeDraftModal(){ document.getElementById('draftSaveModal').classList.remove('show'); }
 bindOverlayClose(document.getElementById('draftSaveModal'), closeDraftModal);
-bindOverlayClose(document.getElementById('helpModal'), ()=>{
-  document.getElementById('helpModal').classList.remove('show');
-});
+bindOverlayClose(document.getElementById('helpModal'), closeHelpModal);
+bindOverlayClose(document.getElementById('settingsModal'), closeSettingsModal);
 document.querySelectorAll('#helpModal details').forEach(function(el){
   el.addEventListener('toggle',function(){
     const arrow=this.querySelector('.help-update-arrow');
@@ -1972,7 +2522,6 @@ function loadDraft(idx){
   if(!saves[idx])return;
   state=JSON.parse(JSON.stringify(saves[idx].state));
   normalizeLoadedState(state);
-  history=[];
   buildPools();
   renderAll();
   const bt=saves[idx].blueTitle||'青チーム';
@@ -2571,8 +3120,13 @@ function renderFearless(){
     const row  = document.getElementById(team+'FearlessRow');
     if(!zone||!row) return;
     if(on && !banpickCollapsed){
-      zone.classList.add('active');
       const fearList = state[key]||[];
+      if(isLtkOn() && fearList.length===0){
+        zone.classList.remove('active');
+        row.innerHTML = '';
+        return;
+      }
+      zone.classList.add('active');
       if(fearList.length===0){
         row.innerHTML='<span style="font-size:12px;color:var(--text3);">なし</span>';
       } else {
@@ -2601,7 +3155,6 @@ function nextGame(){
     state.fearlessBlue = [...(state.fearlessBlue||[]), ...bluePicks];
     state.fearlessRed  = [...(state.fearlessRed||[]),  ...redPicks];
     // ピックとBANをリセット（フィアレスは残す）
-    history=[];
     state.blue.bans = Array(5).fill(null);
     state.blue.picks = Array(5).fill(null);
     state.red.bans  = Array(5).fill(null);
@@ -2701,15 +3254,30 @@ function smDeleteDraft(i){ const saves=getDraftSaves(); saves.splice(i,1); putDr
 function smDeleteTeam(i){ const saves=getSaves(); saves.splice(i,1); putSaves(saves); renderSaveManager(); }
 function smDeletePlayer(i){ const saves=getPlayerSaves(); saves.splice(i,1); putPlayerSaves(saves); renderSaveManager(); }
 
-// ─── 設定パネル 折りたたみ ────────────────────────────────────
-function toggleSettings(){
-  const panel = document.getElementById('settingsPanel');
-  const btn   = document.getElementById('settingsBtn');
-  const open  = panel.style.display === 'flex';
-  panel.style.display = open ? 'none' : 'flex';
-  btn.style.background   = open ? 'rgba(255,255,255,.1)' : 'rgba(255,255,255,.22)';
-  btn.style.borderColor  = open ? 'rgba(255,255,255,.2)' : 'var(--purple)';
-  btn.style.color        = open ? 'var(--text)' : 'var(--purple)';
+// ─── 設定モーダル ─────────────────────────────────────────────
+function setSettingsButtonActive(active){
+  const btn = document.getElementById('settingsBtn');
+  if(!btn) return;
+  btn.style.background  = active ? 'rgba(255,255,255,.22)' : 'rgba(255,255,255,.1)';
+  btn.style.borderColor = active ? 'var(--purple)' : 'rgba(255,255,255,.2)';
+  btn.style.color       = active ? 'var(--purple)' : 'var(--text)';
+}
+function openSettingsModal(){
+  syncPoolWidthButtons();
+  document.getElementById('settingsModal')?.classList.add('show');
+  setSettingsButtonActive(true);
+}
+function closeSettingsModal(){
+  document.getElementById('settingsModal')?.classList.remove('show');
+  setSettingsButtonActive(false);
+}
+function replayTutorialFromSettings(){
+  closeSettingsModal();
+  setTimeout(()=>startTour(0), 120);
+}
+function openSettingsSaveManager(){
+  closeSettingsModal();
+  openSaveManager();
 }
 
 // ─── LTKモード ────────────────────────────────────────────────
@@ -2852,7 +3420,6 @@ function ltkNextGame(){
       bluePicks: JSON.parse(JSON.stringify(state.blue.picks)),
       redBans:   JSON.parse(JSON.stringify(state.red.bans)),
       redPicks:  JSON.parse(JSON.stringify(state.red.picks)),
-      history:   JSON.parse(JSON.stringify(history||[])),
     };
     // COREプールを保存してNEXTプールを復元
     state.ltkCoreSnapshot = _snapshotPools();
@@ -2867,9 +3434,7 @@ function ltkNextGame(){
       state.blue.picks = JSON.parse(JSON.stringify(state.ltkNextDraft.bluePicks));
       state.red.bans   = JSON.parse(JSON.stringify(state.ltkNextDraft.redBans));
       state.red.picks  = JSON.parse(JSON.stringify(state.ltkNextDraft.redPicks));
-      history = JSON.parse(JSON.stringify(state.ltkNextDraft.history));
     } else {
-      history=[];
       state.blue.bans  = Array(5).fill(null);
       state.blue.picks = Array(5).fill(null);
       state.red.bans   = Array(5).fill(null);
@@ -2898,7 +3463,6 @@ function ltkAdvanceToCore(){
       bluePicks: JSON.parse(JSON.stringify(state.blue.picks)),
       redBans:   JSON.parse(JSON.stringify(state.red.bans)),
       redPicks:  JSON.parse(JSON.stringify(state.red.picks)),
-      history:   JSON.parse(JSON.stringify(history||[])),
     };
 
     // NEXTプールを保存してCOREプールを復元
@@ -2915,9 +3479,7 @@ function ltkAdvanceToCore(){
       state.blue.picks = JSON.parse(JSON.stringify(state.ltkCoreDraft.bluePicks));
       state.red.bans   = JSON.parse(JSON.stringify(state.ltkCoreDraft.redBans));
       state.red.picks  = JSON.parse(JSON.stringify(state.ltkCoreDraft.redPicks));
-      history = JSON.parse(JSON.stringify(state.ltkCoreDraft.history));
     } else {
-      history=[];
       state.blue.bans  = Array(5).fill(null);
       state.blue.picks = Array(5).fill(null);
       state.red.bans   = Array(5).fill(null);
