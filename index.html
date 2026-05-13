@@ -277,7 +277,7 @@
   body.tour-editing .tour-popover.tour-edit-dragging{cursor:grabbing;transition:none;}
   .tour-step{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
   .tour-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:8px;}
-  .tour-text{font-size:13px;color:var(--text2);line-height:1.7;}
+  .tour-text{font-size:13px;color:var(--text2);line-height:1.7;white-space:pre-line;}
   .tour-actions{display:flex;align-items:center;gap:8px;border-top:1px solid var(--border);padding-top:12px;margin-top:14px;}
   .tour-actions-left{display:flex;gap:8px;flex:1;}
   .tour-actions-right{display:flex;gap:8px;}
@@ -443,7 +443,7 @@ League of Legendsの大会・練習向けドラフトツール
         <div class="help-item">ピック・BAN → クリック or ドラッグ</div>
         <div class="help-item">ピックプール・プロテクトへの追加 → ドラッグ</div>
         <div class="help-item">削除 → アイコンを右クリック</div>
-        <div class="help-item">OP.GGリンクの表示 → チャンピオンにマウスカーソルを1.5秒（一覧は2秒）</div>
+        <div class="help-item">OP.GGリンクの表示 → 設定でON後、チャンピオンにマウスカーソルを1.5秒（一覧は2秒）</div>
       </div>
     </div>
     <div class="help-section">
@@ -487,7 +487,7 @@ League of Legendsの大会・練習向けドラフトツール
         </summary>
         <div class="help-update-item">LTK3プロテクトの判定・編集まわりを調整</div>
         <div class="help-update-item">チャンピオンOP.GG表示のON/OFF設定を追加</div>
-        <div class="help-update-item">エズリアルのロールを調整</div>
+        <div class="help-update-item">エズリアル・クインのロールを調整</div>
         <div class="help-update-item">プール列を4列～7列まで調整できる機能を追加</div>
       </details>
     </div>
@@ -800,7 +800,7 @@ const TOUR_STEPS = [
     placements: ['center', 'right-center', 'left-center', 'bottom', 'top'],
     offset: {x:-591, y:-26},
     title: 'ピック・BANエリア',
-    text: 'チャンピオン一覧からクリックまたはドラッグで追加できます。配置したチャンピオンは右クリックで削除できます。'
+    text: 'チャンピオン一覧、またはプレイヤーのプールから\nクリックまたはドラッグで追加\n右クリックで削除'
   },
   {
     targets: ['.blue-col > .pcard:first-child', '.red-col > .pcard:first-child', '#champGrid'],
@@ -808,7 +808,7 @@ const TOUR_STEPS = [
     placements: ['center', 'top', 'right-center', 'left-center', 'bottom'],
     offset: {x:0, y:-71},
     title: 'チームプールエリア',
-    text: 'チャンピオンをドラッグすると、各プレイヤーのプールを作成できます。チャンピオン一覧からプールへ追加していきます。'
+    text: 'プレイヤーのプールを作成できる\nチャンピオン一覧からドラッグで追加\nプールからピック・バンに追加可能'
   },
   {
     targets: ['#bluePoolTitle', '#redPoolTitle', '.pool-label-input'],
@@ -816,7 +816,7 @@ const TOUR_STEPS = [
     placements: ['center', 'right-center', 'left-center', 'bottom', 'top'],
     offset: {x:0, y:-240},
     title: 'チーム名・プレイヤー名',
-    text: 'チーム名やプレイヤー名は直接入力できます。名前をつけておくと、保存や呼び出しのときに見分けやすくなります。'
+    text: 'チーム名とプレイヤー名を入力可能'
   },
   {
     targets: ['#banpickCollapseBtn', '#banpickCollapseBtn2'],
@@ -824,7 +824,7 @@ const TOUR_STEPS = [
     placements: ['right-center', 'left-center', 'bottom', 'top', 'center'],
     offset: {x:-442, y:-188},
     title: 'プール構築モード',
-    text: '折りたたみボタンでピック・BANエリアを閉じると、チャンピオン一覧からプールへ追加しやすくなります。'
+    text: 'ピック・BANエリアを折りたたむと\nプール構築モードに移行\n\nプールを選択後、チャンピオン一覧から\nクリックでより簡単にプールへ追加'
   },
   {
     targets: ['#draftSaveOpenBtn', '.team-save-open-btn', '.player-save-btn'],
@@ -832,7 +832,7 @@ const TOUR_STEPS = [
     placements: ['center', 'bottom', 'left-center', 'right-center', 'top'],
     offset: {x:306, y:-268},
     title: '保存機能',
-    text: '作成したドラフト、チームプール、プレイヤープールは、それぞれの保存ボタンから名前をつけて保存できます。'
+    text: '作成した内容をブラウザ内に保存\nドラフト盤面、チームプール\nプレイヤープールを保存可能'
   }
 ];
 
@@ -1458,7 +1458,7 @@ const CHAMP_DATA=[
   {id:'Gangplank',name:'ガングプランク',roles:['top']},
   {id:'Qiyana',name:'キヤナ',roles:['jungle','mid']},
   {id:'Kindred',name:'キンドレッド',roles:['jungle']},
-  {id:'Quinn',name:'クイン',roles:['top']},
+  {id:'Quinn',name:'クイン',roles:['top','jungle']},
   {id:'Kled',name:'クレッド',roles:['top']},
   {id:'Gwen',name:'グウェン',roles:['top','jungle']},
   {id:'Gragas',name:'グラガス',roles:['top']},
