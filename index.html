@@ -230,6 +230,7 @@
   .role-tab.active img{opacity:1;}
   .champ-search{width:100%;height:38px;margin-bottom:10px;border:1px solid var(--border);border-radius:var(--radius-sm);padding:0 14px;font-size:16px;font-family:inherit;background:var(--surface2);color:var(--text);outline:none;transition:border-color .15s;}
   .champ-search:focus{border-color:var(--purple);}
+  .champ-show-used-label{font-size:14px;}
   .champ-grid{display:flex;flex-wrap:wrap;align-content:flex-start;row-gap:4px;column-gap:5px;height:var(--champ-grid-height,310px);min-height:310px;max-height:900px;overflow-y:auto;padding-right:2px;}
   .champ-grid::-webkit-scrollbar{width:6px;}
   .champ-grid::-webkit-scrollbar-thumb{background:#4a5570;border-radius:3px;}
@@ -744,6 +745,7 @@ League of Legendsの大会・練習向けドラフトツール
 
   <div class="topbar-btns">
     <button class="btn" id="ltkNavBtn" onclick="ltkNavAction()" style="display:none;"></button>
+    <button class="btn" id="prevGameBtn" onclick="previousGame()" style="display:none;">前のゲームへ</button>
     <button class="btn" id="nextGameBtn" onclick="nextGame()" style="display:none;">次のゲームへ</button>
     <button class="btn" id="draftSaveOpenBtn" onclick="openDraftModal()">ドラフト保存/呼出</button>
     <button class="btn btn-reset" onclick="resetDraft()">ドラフトリセット</button>
@@ -775,6 +777,7 @@ let state = {
   blueLoadedSaveId:null, redLoadedSaveId:null,
   fearlessBlue:[],
   fearlessRed:[],
+  fearlessHistory:[],
   ltkNextSnapshot:null,
   ltkCoreSnapshot:null,
   ltkNextDraft:null,
@@ -1793,7 +1796,7 @@ function buildLayout(){
           <label class="toggle-wrap" style="flex-shrink:0;">
             <input type="checkbox" id="showAllToggle" onchange="renderChampGrid()">
             <span class="toggle-track"></span>
-            <span class="toggle-label" style="white-space:nowrap;">指名済みを表示</span>
+            <span class="toggle-label champ-show-used-label" style="white-space:nowrap;">指名済みを表示</span>
           </label>
         </div>
         <div class="champ-grid" id="champGrid"></div>
@@ -1801,7 +1804,7 @@ function buildLayout(){
       </div>
       <div class="champ-grid-card" style="margin-top:0;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-          <span style="font-size:13px;font-weight:700;color:var(--text2);letter-spacing:.05em;text-transform:uppercase;">ドラフト結果</span>
+          <span style="font-size:13px;font-weight:700;color:var(--text2);letter-spacing:.05em;text-transform:uppercase;">ドラフトテキスト共有</span>
           <button class="btn-sm" onclick="generateResult()">テキスト出力</button>
         </div>
         <textarea id="resultOutput" readonly
@@ -2387,9 +2390,22 @@ function showConfirm(msg, callback, cancelCallback, okLabel){
   overlay.classList.add('show');
   const ok=document.getElementById('confirmOk');
   const cancel=document.getElementById('confirmCancel');
+  cancel.style.display='';
   confirmCancelHandler=cancelCallback||null;
   ok.onclick=()=>{ closeConfirm(false); callback(); };
   cancel.onclick=()=>{ closeConfirm(true); };
+}
+function showNotice(msg, okLabel='OK'){
+  document.getElementById('confirmMsg').textContent=msg||'';
+  document.getElementById('confirmOk').textContent=okLabel;
+  const overlay=document.getElementById('confirmOverlay');
+  overlay.classList.add('show');
+  const ok=document.getElementById('confirmOk');
+  const cancel=document.getElementById('confirmCancel');
+  cancel.style.display='none';
+  confirmCancelHandler=null;
+  ok.onclick=()=>{ closeConfirm(false); };
+  cancel.onclick=()=>{ closeConfirm(false); };
 }
 function resetDraft(){
   showConfirm('ドラフトをリセットしますか？', ()=>{
@@ -2415,7 +2431,7 @@ function doResetAll(){
     blueNames:['','','','',''],redNames:['','','','',''],
     bluePlayerNames:['','','','',''],redPlayerNames:['','','','',''],
     blueLoadedSaveId:null, redLoadedSaveId:null,
-    fearlessBlue:[], fearlessRed:[],
+    fearlessBlue:[], fearlessRed:[], fearlessHistory:[],
     ltkNextSnapshot:null, ltkCoreSnapshot:null, ltkNextDraft:null, ltkCoreDraft:null,
   };
   buildPools();
@@ -2456,6 +2472,7 @@ function hasAnyData(){
   if(state.blueNewbieProtect.length||state.redNewbieProtect.length)return true;
   if(state.bluePools.some(p=>p.length)||state.redPools.some(p=>p.length))return true;
   if((state.fearlessBlue||[]).length||(state.fearlessRed||[]).length)return true;
+  if((state.fearlessHistory||[]).length)return true;
   if(state.blueNames.some(n=>n)||state.redNames.some(n=>n))return true;
   if((state.bluePlayerNames||[]).some(n=>n)||(state.redPlayerNames||[]).some(n=>n))return true;
   const bpt=document.getElementById('bluePoolTitle');
@@ -2563,7 +2580,7 @@ function getCurrentDraftSave(){
   return getDraftSaves().find(s=>s.id===currentDraftId) || null;
 }
 function hasFearlessDraftData(draftState){
-  return !!((draftState?.fearlessBlue||[]).length || (draftState?.fearlessRed||[]).length);
+  return !!((draftState?.fearlessBlue||[]).length || (draftState?.fearlessRed||[]).length || (draftState?.fearlessHistory||[]).length);
 }
 function isFearlessDraftSave(save){
   return !!(save?.fearlessOn || hasFearlessDraftData(save?.state));
@@ -2650,6 +2667,7 @@ function loadDraft(idx){
   renderFearless();
   applyLtkModeEffects();
   updateGameButtons();
+  renderStepBar();
 
   renderDraftSavedList();
   if(banpickCollapsed) toggleBanPick();
@@ -2750,6 +2768,9 @@ function normalizeLoadedState(targetState){
   targetState.redNames=normalizePoolNames(targetState.redNames);
   targetState.bluePlayerNames=normalizePlayerNameEntries(targetState.bluePlayerNames, targetState.blueNames);
   targetState.redPlayerNames=normalizePlayerNameEntries(targetState.redPlayerNames, targetState.redNames);
+  targetState.fearlessBlue=Array.isArray(targetState.fearlessBlue) ? targetState.fearlessBlue : [];
+  targetState.fearlessRed=Array.isArray(targetState.fearlessRed) ? targetState.fearlessRed : [];
+  targetState.fearlessHistory=Array.isArray(targetState.fearlessHistory) ? targetState.fearlessHistory : [];
   return targetState;
 }
 function syncPoolLabelInput(team, idx){
@@ -3243,15 +3264,39 @@ function renderFearless(){
   });
 }
 
+function cloneDraftValue(value){
+  return JSON.parse(JSON.stringify(value));
+}
+function normalizeDraftSlotArray(arr){
+  return Array.from({length:5}, (_,i)=>arr?.[i] || null);
+}
+function ensureFearlessHistory(){
+  if(!Array.isArray(state.fearlessHistory)) state.fearlessHistory = [];
+  return state.fearlessHistory;
+}
+function hasPreviousFearlessGame(){
+  return !isLtkOn() && ensureFearlessHistory().length > 0;
+}
+function currentFearlessSnapshot(){
+  return {
+    blueBans: cloneDraftValue(state.blue.bans),
+    bluePicks: cloneDraftValue(state.blue.picks),
+    redBans: cloneDraftValue(state.red.bans),
+    redPicks: cloneDraftValue(state.red.picks),
+    fearlessBlue: cloneDraftValue(state.fearlessBlue || []),
+    fearlessRed: cloneDraftValue(state.fearlessRed || [])
+  };
+}
 function nextGame(){
   // ピックが全部埋まっているか確認（青5 + 赤5 = 10体）
   const bluePicks = state.blue.picks.filter(Boolean);
   const redPicks  = state.red.picks.filter(Boolean);
   if(bluePicks.length<5 || redPicks.length<5){
-    alert('ピックが全て埋まっていません。');
+    showNotice('ピックが全て埋まっていません。');
     return;
   }
   showConfirm('現在のピック10体をフィアレスBANに移動して次のゲームを開始しますか？', ()=>{
+    ensureFearlessHistory().push(currentFearlessSnapshot());
     // フィアレスに追加（青は青のみ、赤は赤のみ）
     state.fearlessBlue = [...(state.fearlessBlue||[]), ...bluePicks];
     state.fearlessRed  = [...(state.fearlessRed||[]),  ...redPicks];
@@ -3263,13 +3308,37 @@ function nextGame(){
     clearPoolSelection();
     renderAll();
     renderFearless();
+    updateGameButtons();
   }, null, '次のゲームへ');
+}
+function previousGame(){
+  const history = ensureFearlessHistory();
+  if(!history.length){
+    showNotice('戻れるゲームがありません。');
+    updateGameButtons();
+    return;
+  }
+  showConfirm('前のゲームへ戻しますか？\n現在のBAN/PICKは上書きされます。', ()=>{
+    const snap = history.pop();
+    state.blue.bans = normalizeDraftSlotArray(snap?.blueBans);
+    state.blue.picks = normalizeDraftSlotArray(snap?.bluePicks);
+    state.red.bans = normalizeDraftSlotArray(snap?.redBans);
+    state.red.picks = normalizeDraftSlotArray(snap?.redPicks);
+    state.fearlessBlue = cloneDraftValue(snap?.fearlessBlue || []);
+    state.fearlessRed = cloneDraftValue(snap?.fearlessRed || []);
+    clearPoolSelection();
+    renderAll();
+    renderFearless();
+    updateGameButtons();
+  }, null, '前のゲームへ');
 }
 
 function clearFearless(){
   state.fearlessBlue = [];
   state.fearlessRed  = [];
+  state.fearlessHistory = [];
   renderFearless();
+  updateGameButtons();
 }
 
 
@@ -3454,9 +3523,11 @@ function updateGameButtons(){
   const ltkOn = isLtkOn();
   const rank = getLtkRank();
   const nextGameBtn = document.getElementById('nextGameBtn');
+  const prevGameBtn = document.getElementById('prevGameBtn');
   const ltkNavBtn   = document.getElementById('ltkNavBtn');
   if(ltkOn){
     if(nextGameBtn) nextGameBtn.style.display = 'none';
+    if(prevGameBtn) prevGameBtn.style.display = 'none';
     if(ltkNavBtn){
       ltkNavBtn.style.display = '';
       if(rank==='next'){
@@ -3472,6 +3543,10 @@ function updateGameButtons(){
   } else {
     if(ltkNavBtn)   ltkNavBtn.style.display   = 'none';
     if(nextGameBtn) nextGameBtn.style.display  = fearlessOn ? '' : 'none';
+    if(prevGameBtn){
+      prevGameBtn.style.display = fearlessOn ? '' : 'none';
+      prevGameBtn.disabled = !hasPreviousFearlessGame();
+    }
   }
 }
 
