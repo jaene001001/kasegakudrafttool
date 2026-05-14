@@ -221,6 +221,7 @@
 
   /* CHAMP GRID */
   .champ-grid-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;}
+  .champ-grid-resizable{position:relative;}
   .role-tabs{display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap;}
   .role-tab{display:flex;align-items:center;justify-content:center;gap:5px;padding:6px 0;width:66px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:transparent;color:var(--text2);font-family:inherit;font-size:13px;cursor:pointer;transition:all .15s;white-space:nowrap;}
   .role-tab:hover{border-color:var(--purple-mid);background:var(--purple-light);color:var(--purple);}
@@ -229,9 +230,15 @@
   .role-tab.active img{opacity:1;}
   .champ-search{width:100%;height:38px;margin-bottom:10px;border:1px solid var(--border);border-radius:var(--radius-sm);padding:0 14px;font-size:16px;font-family:inherit;background:var(--surface2);color:var(--text);outline:none;transition:border-color .15s;}
   .champ-search:focus{border-color:var(--purple);}
-  .champ-grid{display:flex;flex-wrap:wrap;align-content:flex-start;row-gap:4px;column-gap:5px;max-height:310px;min-height:310px;overflow-y:auto;padding-right:2px;}
+  .champ-grid{display:flex;flex-wrap:wrap;align-content:flex-start;row-gap:4px;column-gap:5px;height:var(--champ-grid-height,310px);min-height:310px;max-height:900px;overflow-y:auto;padding-right:2px;}
   .champ-grid::-webkit-scrollbar{width:6px;}
   .champ-grid::-webkit-scrollbar-thumb{background:#4a5570;border-radius:3px;}
+  .champ-grid-resize-edge{position:absolute;left:12px;right:12px;bottom:-7px;height:14px;border-radius:999px;cursor:ns-resize;touch-action:none;user-select:none;}
+  .champ-grid-resize-edge:hover,
+  body.champ-grid-resizing .champ-grid-resize-edge{background:rgba(150,166,190,.08);}
+  .champ-grid-resizable:has(.champ-grid-resize-edge:hover),
+  body.champ-grid-resizing .champ-grid-resizable{border-bottom-color:var(--text3);}
+  body.champ-grid-resizing{cursor:ns-resize;user-select:none;}
 
   .champ-item{display:flex;flex-direction:column;align-items:center;width:70px;cursor:pointer;border-radius:9px;padding:4px 2px;transition:background .12s;user-select:none;}
   .champ-item:hover{background:var(--purple-light);}
@@ -251,6 +258,8 @@
   .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:4000;align-items:center;justify-content:center;overscroll-behavior:contain;}
   .modal-overlay.show{display:flex;}
   .modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;min-width:320px;max-width:420px;width:90%;overscroll-behavior:contain;}
+  .modal-box{width:90%;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 12px 36px rgba(0,0,0,.55);overscroll-behavior:contain;}
+  .modal-box .modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 0;}
   .modal-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
   .modal-close{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;line-height:1;padding:0;}
   .modal-close:hover{color:var(--text);}
@@ -780,12 +789,19 @@ const SIDE_COLUMN_DEFAULT_COLUMNS = 4;
 const SIDE_COLUMN_MIN_COLUMNS = 4;
 const SIDE_COLUMN_MAX_COLUMNS = 7;
 const SIDE_COLUMN_STORAGE_KEY = 'draftTool_poolColumnCount';
+const CHAMP_GRID_EXPANDED_DEFAULT_HEIGHT = 310;
+const CHAMP_GRID_COLLAPSED_DEFAULT_HEIGHT = 620;
+const CHAMP_GRID_MAX_HEIGHT = 900;
 const TOUR_HIDDEN_STORAGE_KEY = 'draftTool_tourHidden';
 const TOUR_EDITOR_STORAGE_KEY = 'draftTool_tourEditorOverrides';
 const CENTER_COLUMN_WIDTH = 788;
 let sideColumnResizeReady = false;
 let sideColumnPreferredWidth = SIDE_COLUMN_DEFAULT_WIDTH;
 let sideColumnPoolColumns = SIDE_COLUMN_DEFAULT_COLUMNS;
+let champGridExpandedHeight = CHAMP_GRID_EXPANDED_DEFAULT_HEIGHT;
+let champGridCollapsedHeight = CHAMP_GRID_COLLAPSED_DEFAULT_HEIGHT;
+let champGridResizeReady = false;
+let champGridResizeState = null;
 let tourStepIndex = 0;
 let tourPositionTimer = null;
 let tourEditorEnabled = false;
@@ -905,6 +921,80 @@ function setPoolColumnCount(columns){
   localStorage.setItem(SIDE_COLUMN_STORAGE_KEY, String(sideColumnPoolColumns));
   applySideColumnWidth('both', sideColumnPreferredWidth, false, false);
   syncPoolWidthButtons();
+}
+
+function clampChampGridHeight(height){
+  const parsed = parseInt(height, 10);
+  const fallback = banpickCollapsed ? CHAMP_GRID_COLLAPSED_DEFAULT_HEIGHT : CHAMP_GRID_EXPANDED_DEFAULT_HEIGHT;
+  const numericHeight = Number.isFinite(parsed) ? parsed : fallback;
+  return Math.max(fallback, Math.min(CHAMP_GRID_MAX_HEIGHT, Math.round(numericHeight)));
+}
+function getModeChampGridHeight(){
+  return banpickCollapsed ? champGridCollapsedHeight : champGridExpandedHeight;
+}
+function rememberModeChampGridHeight(height){
+  const nextHeight = clampChampGridHeight(height);
+  if(banpickCollapsed) champGridCollapsedHeight = nextHeight;
+  else champGridExpandedHeight = nextHeight;
+  return nextHeight;
+}
+function applyChampGridHeight(height){
+  const grid = document.getElementById('champGrid');
+  if(!grid) return banpickCollapsed ? CHAMP_GRID_COLLAPSED_DEFAULT_HEIGHT : CHAMP_GRID_EXPANDED_DEFAULT_HEIGHT;
+  const nextHeight = clampChampGridHeight(height);
+  grid.style.setProperty('--champ-grid-height', `${nextHeight}px`);
+  if(document.getElementById('tourOverlay')?.classList.contains('show')) positionTourStep();
+  return nextHeight;
+}
+function getCurrentChampGridHeight(){
+  const grid = document.getElementById('champGrid');
+  const fallback = banpickCollapsed ? CHAMP_GRID_COLLAPSED_DEFAULT_HEIGHT : CHAMP_GRID_EXPANDED_DEFAULT_HEIGHT;
+  if(!grid) return fallback;
+  return Math.round(grid.getBoundingClientRect().height || fallback);
+}
+function initChampGridResize(){
+  const card = document.getElementById('champGridCard');
+  const handle = document.getElementById('champGridResizeHandle');
+  applyChampGridHeight(getModeChampGridHeight());
+  if((!card && !handle) || champGridResizeReady) return;
+  champGridResizeReady = true;
+
+  const isBottomEdge = e=>{
+    if(!card) return false;
+    const rect = card.getBoundingClientRect();
+    return e.clientY >= rect.bottom - 14 && e.clientY <= rect.bottom + 14;
+  };
+  const startResize = e=>{
+    if(e.button !== undefined && e.button !== 0) return;
+    e.preventDefault();
+    e.stopPropagation();
+    champGridResizeState = {
+      pointerId: e.pointerId,
+      startY: e.clientY,
+      startHeight: getCurrentChampGridHeight()
+    };
+    document.body.classList.add('champ-grid-resizing');
+    handle?.setPointerCapture?.(e.pointerId);
+  };
+  handle?.addEventListener('pointerdown', startResize);
+  card?.addEventListener('pointerdown', e=>{
+    if(isBottomEdge(e)) startResize(e);
+  });
+  window.addEventListener('pointermove', e=>{
+    if(!champGridResizeState || champGridResizeState.pointerId !== e.pointerId) return;
+    e.preventDefault();
+    applyChampGridHeight(champGridResizeState.startHeight + e.clientY - champGridResizeState.startY);
+  });
+  const finishResize = e=>{
+    if(!champGridResizeState || champGridResizeState.pointerId !== e.pointerId) return;
+    e.preventDefault();
+    rememberModeChampGridHeight(applyChampGridHeight(getCurrentChampGridHeight()));
+    document.body.classList.remove('champ-grid-resizing');
+    handle?.releasePointerCapture?.(e.pointerId);
+    champGridResizeState = null;
+  };
+  window.addEventListener('pointerup', finishResize);
+  window.addEventListener('pointercancel', finishResize);
 }
 
 function openHelpModal(){
@@ -1595,6 +1685,7 @@ function init(){
   initModalScrollLock();
   initSideColumnResize();
   buildLayout();
+  initChampGridResize();
   initChampOpggSetting();
   disableInputSuggestions(document);
   renderAll();
@@ -1688,7 +1779,7 @@ function buildLayout(){
         </div>
       </div>
 
-      <div class="champ-grid-card">
+      <div class="champ-grid-card champ-grid-resizable" id="champGridCard">
         <div class="role-tabs" id="roleTabs">
           <button class="role-tab active" onclick="setRoleFilter('all')">ALL</button>
           <button class="role-tab" onclick="setRoleFilter('top')"><img id="roleIconTop">TOP</button>
@@ -1706,6 +1797,7 @@ function buildLayout(){
           </label>
         </div>
         <div class="champ-grid" id="champGrid"></div>
+        <div class="champ-grid-resize-edge" id="champGridResizeHandle" role="separator" aria-orientation="horizontal" aria-label="チャンピオン一覧の高さを変更" title="枠の下辺をドラッグで高さ変更"></div>
       </div>
       <div class="champ-grid-card" style="margin-top:0;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
@@ -1844,14 +1936,16 @@ function renderProtect(team){
   const max=getProtectMax(team);
   const protect=state[team+'Protect'];
   const zone=document.getElementById(team+'Protect');
+  const used=usedIds();
 
   zone.innerHTML=Array.from({length:max},(_,i)=>{
     const c=protect[i]||null;
+    const u=c&&used.has(c.id);
     return `<div class="protect-slot" id="${team}ProtectSlot${i}"
       ondragover="onOver(event)" ondragleave="onLeave(event)"
       ondrop="onDropProtectSlot(event,'${team}',${i})">
       ${c
-        ?opggWrap(`<img src="${img(c.id)}" alt="${esc(c.name)}"
+        ?opggWrap(`<img class="champ-mini${u?' used':''}" src="${img(c.id)}" alt="${esc(c.name)}"
             draggable="true"
             ondragstart="startDrag(event,'protect','${c.id}','${esc(c.name)}','${team}Protect',${i})"
             style="cursor:context-menu;"
@@ -2269,6 +2363,10 @@ function generateResult(){
   const el=document.getElementById('resultOutput');
   if(el) el.value=lines.join('\n').trim();
 }
+function clearResultOutput(){
+  const el=document.getElementById('resultOutput');
+  if(el) el.value='';
+}
 
 let confirmCancelHandler = null;
 function closeConfirm(runCancel=false){
@@ -2303,6 +2401,7 @@ function resetDraft(){
     const t=document.getElementById('showAllToggle');if(t)t.checked=false;
     clearPoolSelection();
     renderAll();
+    clearResultOutput();
   }, null, 'リセットする');
 }
 function doResetAll(){
@@ -2347,6 +2446,7 @@ function doResetAll(){
   renderFearless();
   updateGameButtons();
   renderAll();
+  clearResultOutput();
 }
 function hasAnyData(){
   // ピック・BAN・プール・プロテクト・フィアレス・名前のいずれかに何か入っていればtrue
@@ -2553,6 +2653,7 @@ function loadDraft(idx){
 
   renderDraftSavedList();
   if(banpickCollapsed) toggleBanPick();
+  clearResultOutput();
   closeDraftModal();
 }
 
@@ -3195,8 +3296,9 @@ function toggleBanPick(){
     btn.textContent = banpickCollapsed ? '▼ 展開する' : '▲ 折りたたむ';
   });
   if(grid){
-    grid.style.maxHeight = banpickCollapsed ? '620px' : '310px';
-    grid.style.minHeight = banpickCollapsed ? '620px' : '310px';
+    grid.style.maxHeight = '';
+    grid.style.minHeight = '';
+    applyChampGridHeight(getModeChampGridHeight());
   }
   if(!banpickCollapsed) clearPoolSelection();
   // 折りたたみ時は指名済みを表示をON、展開時はOFF
