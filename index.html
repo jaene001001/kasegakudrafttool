@@ -327,13 +327,17 @@
   .draft-list-pane{display:flex;flex-direction:column;}
   .draft-pane-title{font-size:11px;color:var(--text3);font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:7px;}
   .draft-folder-list{display:flex;flex:0 1 auto;flex-direction:column;gap:4px;min-height:0;max-height:calc(100% - 78px);overflow:auto;padding-right:2px;}
-  .draft-folder-tab{width:100%;height:32px;padding:0 8px;border:1px solid transparent;border-radius:7px;background:transparent;color:var(--text2);font-family:inherit;font-size:13px;cursor:pointer;display:grid;grid-template-columns:18px minmax(0,1fr) auto;align-items:center;gap:7px;text-align:left;}
+  .draft-folder-tab{position:relative;width:100%;height:32px;padding:0 8px 0 10px;border:1px solid transparent;border-radius:7px;background:transparent;color:var(--text2);font-family:inherit;font-size:13px;cursor:pointer;display:grid;grid-template-columns:18px minmax(0,1fr) auto;align-items:center;gap:7px;text-align:left;}
   .draft-folder-tab:hover{background:var(--purple-light);border-color:var(--purple-mid);color:var(--text);}
-  .draft-folder-tab.active{background:var(--surface2);border-color:var(--purple-mid);color:var(--text);font-weight:700;}
+  .draft-folder-tab.active{background:linear-gradient(90deg,rgba(248,249,251,.13),var(--surface2));border-color:rgba(248,249,251,.48);color:var(--text);font-weight:800;box-shadow:inset 0 0 0 1px rgba(248,249,251,.08);}
+  .draft-folder-tab.active::before{content:'';position:absolute;left:0;top:5px;bottom:5px;width:3px;border-radius:999px;background:var(--purple);}
   .draft-folder-tab.drag-over{border-color:var(--green);background:rgba(94,219,160,.08);color:var(--text);}
   .draft-folder-icon{width:15px;height:12px;border:1px solid currentColor;border-radius:2px;position:relative;opacity:.72;}
   .draft-folder-icon::before{content:'';position:absolute;left:1px;top:-5px;width:8px;height:5px;border:1px solid currentColor;border-bottom:0;border-radius:2px 2px 0 0;background:var(--surface2);}
   .draft-folder-count{font-size:11px;color:var(--text3);}
+  .draft-folder-tab.active .draft-folder-icon{opacity:1;color:var(--purple);background:rgba(248,249,251,.08);}
+  .draft-folder-tab.active .draft-folder-icon::before{background:#252c38;}
+  .draft-folder-tab.active .draft-folder-count{display:flex;align-items:center;justify-content:center;min-width:20px;height:18px;padding:0 6px;border:1px solid rgba(248,249,251,.18);border-radius:999px;background:rgba(248,249,251,.12);color:var(--text);font-weight:800;}
   .draft-folder-add-btn{height:30px;margin-top:8px;padding:0 9px;border:1px dashed var(--border);border-radius:7px;background:transparent;color:var(--text3);font-family:inherit;font-size:12px;cursor:pointer;text-align:left;}
   .draft-folder-add-btn:hover{border-color:var(--purple-mid);background:var(--purple-light);color:var(--text2);}
   .draft-folder-create-row{display:none;gap:6px;margin-top:8px;}
@@ -344,24 +348,33 @@
   #draftSavedList .saved-item[draggable=true]{cursor:grab;}
   #draftSavedList .saved-item[draggable=true]:active{cursor:grabbing;}
   .saved-item-folder{font-size:11px;color:var(--text3);margin-left:6px;}
-  .draft-table-modal{box-sizing:border-box;width:min(98vw,1440px);max-width:none;height:min(92vh,860px);max-height:none;display:flex;flex-direction:column;position:relative;}
-  .draft-table-toolbar{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+  .draft-table-modal{box-sizing:border-box;width:min(98vw,1440px);max-width:none;height:min(96vh,930px);max-height:none;display:flex;flex-direction:column;position:relative;}
+  .draft-table-titlebar{position:absolute;top:18px;right:18px;margin:0;z-index:8;}
+  .draft-table-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;padding-right:34px;}
   .draft-table-field{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text3);font-weight:700;letter-spacing:.04em;}
   .draft-table-select{height:34px;min-width:220px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:13px;padding:0 9px;outline:none;}
   .draft-table-select:focus{border-color:var(--purple);}
-  .draft-table-view-switch{display:flex;align-items:center;gap:4px;padding:3px;border:1px solid var(--border);border-radius:var(--radius-sm);background:rgba(255,255,255,.02);}
-  .draft-table-view-btn{height:26px;padding:0 9px;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--text3);font-family:inherit;font-size:12px;cursor:pointer;}
-  .draft-table-view-btn:hover{background:var(--purple-light);color:var(--text2);}
-  .draft-table-view-btn.active{background:var(--surface2);border-color:var(--purple-mid);color:var(--text);font-weight:700;}
-  .draft-table-count{margin-left:auto;font-size:12px;color:var(--text3);}
-  .draft-table-scroll{flex:1;min-height:0;overflow:auto;border:1px solid var(--border);border-radius:var(--radius-sm);background:#111722;}
+  .draft-table-view-switch{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;flex-shrink:0;}
+  .draft-table-view-btn{padding:4px 13px;border:none;border-right:1px solid var(--border);background:transparent;color:var(--text3);font-family:inherit;font-size:12px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+  .draft-table-view-btn:last-child{border-right:none;}
+  .draft-table-view-btn:hover:not(.active){background:var(--purple-light);color:var(--text2);}
+  .draft-table-view-btn.active{background:var(--surface2);color:var(--text);font-weight:600;}
+  .btn-sm.draft-table-reset-filter{margin-left:auto;height:28px;padding:0 10px;font-size:12px;}
+  .draft-table-note{margin:-2px 0 8px;padding-left:1px;font-size:10px;color:var(--text3);line-height:1.4;opacity:.78;}
+  .draft-table-scroll{flex:0 1 auto;min-height:0;overflow:auto;border:1px solid var(--border);border-radius:var(--radius-sm);background:#111722;}
+  #draftTableScroll::-webkit-scrollbar{width:7px;height:7px;}
+  #draftTableScroll::-webkit-scrollbar-thumb{background:#4a5570;border-radius:4px;}
   .draft-table{border-collapse:separate;border-spacing:0;width:auto;table-layout:fixed;font-size:12px;color:var(--text2);}
   .draft-table th,.draft-table td{border-right:1px solid var(--border);border-bottom:1px solid var(--border);background:#151b27;}
   .draft-table tbody tr.row-ban th,.draft-table tbody tr.row-ban td{background:rgba(255,107,107,.12);}
   .draft-table tbody tr.row-pick th,.draft-table tbody tr.row-pick td{background:rgba(94,219,160,.095);}
-  .draft-table th{height:48px;color:var(--text);font-weight:700;}
+  .draft-table th{height:58px;color:var(--text);font-weight:700;}
   .draft-table td{height:64px;text-align:center;vertical-align:middle;}
-  .draft-table thead th{position:sticky;top:0;z-index:4;background:#1b2230;}
+  .draft-table tbody tr.phase-second td,
+  .draft-table tbody tr.phase-second .draft-table-num{height:70px;}
+  .draft-table tbody tr.row-pick.phase-second td,
+  .draft-table tbody tr.row-pick.phase-second .draft-table-num{height:74px;}
+  .draft-table thead th{position:sticky;top:0;z-index:4;background:#1b2230;height:72px;}
   .draft-table .sticky-cell{position:sticky;z-index:3;background:#181f2b;}
   .draft-table tbody tr.row-ban .sticky-cell{background:#2a1d28;}
   .draft-table tbody tr.row-pick .sticky-cell{background:#172d2b;}
@@ -369,6 +382,7 @@
   .draft-table .col-kind{left:0;width:112px;min-width:112px;}
   .draft-table .col-num{left:112px;width:112px;min-width:112px;}
   .draft-table .save-col{width:148px;min-width:148px;max-width:148px;}
+  .draft-table thead .save-col{vertical-align:bottom;padding-bottom:6px;}
   .draft-table .placeholder-col{width:148px;min-width:148px;max-width:148px;visibility:hidden;pointer-events:none;}
   .draft-table-kind{box-sizing:border-box;position:relative;vertical-align:top;white-space:normal;line-height:1.35;font-size:11px;letter-spacing:.04em;padding:9px 8px;max-width:112px;}
   .draft-table-kind.filterable{cursor:pointer;}
@@ -378,7 +392,8 @@
   .draft-table-num.filterable:hover{color:var(--purple);box-shadow:inset 0 0 0 1px var(--purple-mid);}
   .draft-table-kind-main{white-space:pre-line;}
   .draft-table-num-main{font-size:13px;}
-  .draft-table-cell-filter{box-sizing:border-box;position:absolute;left:8px;right:8px;top:32px;min-width:0;display:flex;align-items:center;justify-content:center;gap:5px;padding:4px 5px;border:1px solid var(--purple-mid);border-radius:6px;background:var(--purple-light);color:var(--text);font-size:10px;line-height:1.15;cursor:default;}
+  .draft-table-cell-filter{box-sizing:border-box;position:absolute;left:8px;right:8px;top:50%;transform:translateY(-50%);min-width:0;display:flex;align-items:center;justify-content:center;gap:5px;padding:4px 5px;border:1px solid var(--purple-mid);border-radius:6px;background:var(--purple-light);color:var(--text);font-size:10px;line-height:1.15;cursor:default;}
+  .draft-table-num .draft-table-cell-filter{top:32px;transform:none;}
   .draft-table-cell-filter-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .draft-table-cell-filter-clear{width:16px;height:16px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;padding:0;border:1px solid var(--border);border-radius:999px;background:transparent;color:var(--text3);font-family:inherit;font-size:13px;line-height:1;cursor:pointer;}
   .draft-table-cell-filter-clear:hover{border-color:var(--purple-mid);background:var(--surface2);color:var(--text);}
@@ -386,9 +401,10 @@
   .draft-table-save-head{position:relative;min-width:0;padding:0 26px;}
   .draft-table-save-head .draft-table-save-name{min-width:0;text-align:center;}
   .draft-table-save-edit-btn{position:absolute;right:3px;top:0;width:20px;height:20px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--text3);font-family:inherit;font-size:11px;line-height:1;cursor:pointer;}
-  .draft-table-save-edit-btn:hover{border-color:var(--purple-mid);background:var(--purple-light);color:var(--text);}
+  .draft-table-save-edit-btn:hover{border-color:var(--purple-mid);background:var(--surface2);color:var(--text2);}
   .draft-table-rename-input{width:126px;height:26px;box-sizing:border-box;background:var(--surface);border:1px solid var(--purple-mid);border-radius:6px;color:var(--text);font-family:inherit;font-size:12px;padding:0 7px;outline:none;}
-  .draft-table-save-date{margin-top:3px;font-size:10px;color:var(--text3);font-weight:500;}
+  .btn-sm.draft-table-load-btn{height:22px;margin-top:5px;padding:0 8px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--text3);font-size:11px;line-height:1;opacity:1;}
+  .btn-sm.draft-table-load-btn:hover{background:var(--surface2);border-color:var(--purple-mid);color:var(--text2);}
   .draft-table-pair{display:grid;grid-template-columns:1fr 1fr;gap:7px;justify-items:center;align-items:center;padding:0 7px;}
   .draft-table-champ{width:50px;min-width:50px;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--text3);position:relative;}
   .draft-table-champ img{width:44px;height:44px;border-radius:8px;object-fit:cover;border:1px solid var(--border);background:#232b3a;}
@@ -737,8 +753,7 @@ League of Legendsの大会・練習向けドラフトツール
 
 <div class="modal-overlay" id="draftTableModal">
   <div class="modal draft-table-modal">
-    <div class="modal-title">
-      <span>ドラフトテーブル（β）</span>
+    <div class="modal-title draft-table-titlebar">
       <button class="modal-close" onclick="closeDraftTableModal()">✕</button>
     </div>
     <div class="draft-table-toolbar">
@@ -753,8 +768,9 @@ League of Legendsの大会・練習向けドラフトツール
         <button class="draft-table-view-btn" type="button" data-view="text" onclick="setDraftTableView('text')">文字</button>
       </div>
       <div class="draft-table-filter-status" id="draftTableFilterStatus"></div>
-      <div class="draft-table-count" id="draftTableCount"></div>
+      <button class="btn-sm draft-table-reset-filter" type="button" id="draftTableFilterResetBtn" onclick="clearDraftTableFilter()">絞り込みリセット</button>
     </div>
+    <div class="draft-table-note">LTK3は保存時に表示中だったNEXT/COREの盤面を表示します。</div>
     <div class="draft-table-scroll" id="draftTableScroll"></div>
     <div class="draft-table-search-layer" id="draftTableSearchLayer" onclick="if(event.target===this)closeDraftTableSearch()">
       <div class="draft-table-search-modal">
@@ -880,6 +896,13 @@ League of Legendsの大会・練習向けドラフトツール
           <div class="settings-note">初回表示のガイドをもう一度表示します</div>
         </div>
         <button class="btn-sm" type="button" onclick="replayTutorialFromSettings()">再表示</button>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">デバッグ</div>
+          <div class="settings-note">プールとピック/BANをロール別にランダム生成します</div>
+        </div>
+        <button class="btn-sm" type="button" onclick="generateRandomDebugDraft()">ランダムドラフト生成</button>
       </div>
     </div>
     <div class="settings-group">
@@ -1008,7 +1031,7 @@ const TOUR_STEPS = [
     targets: ['#banpickCollapseBtn', '#banpickCollapseBtn2'],
     anchor: '#banpickCollapseBtn2',
     placements: ['right-center', 'left-center', 'bottom', 'top', 'center'],
-    offset: {x:-442, y:-188},
+    offset: {x:-442, y:-138},
     title: 'プール構築モード',
     text: 'ピック・BANエリアを折りたたむと\nプール構築モードに移行\n\nプールを選択後、チャンピオン一覧から\nクリックでより簡単にプールへ追加'
   },
@@ -1853,6 +1876,7 @@ const CHAMP_DATA=[
 function init(){
   allChamps=CHAMP_DATA;
   initModalScrollLock();
+  initDraftTableWheelScroll();
   initSideColumnResize();
   buildLayout();
   initChampGridResize();
@@ -2585,6 +2609,80 @@ function resetDraft(){
     clearResultOutput();
   }, null, 'リセットする');
 }
+const DEBUG_DRAFT_ROLES = ['top','jungle','mid','bot','support'];
+const DEBUG_DRAFT_ROLE_LABELS = ['TOP','JG','MID','BOT','SUP'];
+function debugDraftChampSource(){
+  return (allChamps && allChamps.length ? allChamps : CHAMP_DATA) || [];
+}
+function debugDraftShuffle(items){
+  const shuffled = [...items];
+  for(let i=shuffled.length-1;i>0;i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+function debugDraftRoleChamps(role){
+  return debugDraftChampSource().filter(c=>Array.isArray(c.roles) && c.roles.includes(role));
+}
+function debugDraftPickChamps(role, count, usedIds){
+  const picked = [];
+  const pickedIds = new Set();
+  const addChamp = champ=>{
+    if(!champ || pickedIds.has(champ.id)) return false;
+    picked.push({id:champ.id, name:champ.name});
+    pickedIds.add(champ.id);
+    if(usedIds) usedIds.add(champ.id);
+    return true;
+  };
+  for(const champ of debugDraftShuffle(debugDraftRoleChamps(role).filter(c=>!usedIds?.has(c.id)))){
+    if(addChamp(champ) && picked.length>=count) return picked;
+  }
+  for(const champ of debugDraftShuffle(debugDraftRoleChamps(role))){
+    if(addChamp(champ) && picked.length>=count) return picked;
+  }
+  return picked;
+}
+function debugDraftRoleLineup(usedIds){
+  return DEBUG_DRAFT_ROLES.map(role=>debugDraftPickChamps(role, 1, usedIds)[0] || null);
+}
+function debugDraftPoolSet(usedIds){
+  return DEBUG_DRAFT_ROLES.map(role=>debugDraftPickChamps(role, 3 + Math.floor(Math.random() * 6), usedIds));
+}
+function applyRandomDebugDraft(){
+  if(!allChamps || !allChamps.length) allChamps = CHAMP_DATA;
+  const usedIds = new Set([...(state.fearlessBlue||[]), ...(state.fearlessRed||[])].filter(Boolean).map(c=>c.id));
+  state.blue.bans = debugDraftRoleLineup(usedIds);
+  state.red.bans = debugDraftRoleLineup(usedIds);
+  state.blue.picks = debugDraftRoleLineup(usedIds);
+  state.red.picks = debugDraftRoleLineup(usedIds);
+  state.bluePools = debugDraftPoolSet(usedIds);
+  state.redPools = debugDraftPoolSet(usedIds);
+  ['blue','red'].forEach(team=>{
+    const names = getPlayerDisplayList(team);
+    DEBUG_DRAFT_ROLE_LABELS.forEach((label, idx)=>{
+      if(!names[idx]) names[idx] = label;
+    });
+    setPlayerLoadedSaveId(team, 0, null);
+    setPlayerLoadedSaveId(team, 1, null);
+    setPlayerLoadedSaveId(team, 2, null);
+    setPlayerLoadedSaveId(team, 3, null);
+    setPlayerLoadedSaveId(team, 4, null);
+  });
+  clearPoolSelection();
+  setRoleFilter('all');
+  _updateCurrentModeSnapshot();
+  renderAll();
+  clearResultOutput();
+  closeSettingsModal();
+}
+function generateRandomDebugDraft(){
+  if(!debugDraftChampSource().length){
+    showNotice('チャンピオンデータがまだ読み込まれていません。');
+    return;
+  }
+  showConfirm('現在のプールとピック/BANをランダムデータで上書きしますか？', applyRandomDebugDraft, null, '生成する');
+}
 function doResetAll(){
   currentDraftId = null;
   state={
@@ -2671,7 +2769,10 @@ let draftTableSortMode = 'saved';
 let draftTableViewMode = 'both';
 let draftTableSearchTarget = null;
 let draftTableSearchAnchor = null;
-let draftTableFilter = null;
+let draftTableFilters = {};
+let draftTableScrollLeft = 0;
+let draftTableScrollTop = 0;
+let draftTableOpenedOnce = false;
 let editingDraftSaveIndex = -1;
 let editingDraftTableSaveIndex = -1;
 const DRAFT_TABLE_FILTER_GROUPS = {
@@ -2687,10 +2788,10 @@ const DRAFT_TABLE_ROWS = [
   {kind:'1stフェーズ\nPICK', kindRows:3, filterKey:'firstPick', no:1, noFilterKey:'pick1', type:'picks', idx:0},
   {no:2, noFilterKey:'pick2', type:'picks', idx:1},
   {no:3, noFilterKey:'pick3', type:'picks', idx:2},
-  {kind:'2ndフェーズ\nBAN', kindRows:2, filterKey:'secondBan', no:4, noFilterKey:'ban4', type:'bans', idx:3},
-  {no:5, noFilterKey:'ban5', type:'bans', idx:4},
-  {kind:'2ndフェーズ\nPICK', kindRows:2, filterKey:'secondPick', no:4, noFilterKey:'pick4', type:'picks', idx:3},
-  {no:5, noFilterKey:'pick5', type:'picks', idx:4},
+  {kind:'2ndフェーズ\nBAN', kindRows:2, filterKey:'secondBan', no:4, noFilterKey:'ban4', type:'bans', idx:3, phase:'second'},
+  {no:5, noFilterKey:'ban5', type:'bans', idx:4, phase:'second'},
+  {kind:'2ndフェーズ\nPICK', kindRows:2, filterKey:'secondPick', no:4, noFilterKey:'pick4', type:'picks', idx:3, phase:'second'},
+  {no:5, noFilterKey:'pick5', type:'picks', idx:4, phase:'second'},
 ];
 DRAFT_TABLE_ROWS.forEach(row=>{
   DRAFT_TABLE_FILTER_GROUPS[row.noFilterKey] = {
@@ -2848,7 +2949,6 @@ function onDraftFolderDrop(e, folderId){
   const targetFolderId = normalizeDraftFolderId(folderId, getDraftFolders());
   saves[idx] = {...saves[idx], folderId: targetFolderId};
   putDraftSaves(saves);
-  currentDraftFolderFilter = targetFolderId || DRAFT_FOLDER_NONE;
   renderDraftFolderControls();
   renderDraftSavedList();
 }
@@ -2890,6 +2990,35 @@ function handleModalWheel(e){
   if(!document.body.classList.contains('modal-open')) return;
   if(canScrollModalContent(e.target, e.deltaY)) return;
   e.preventDefault();
+}
+function handleDraftTableWheel(e){
+  const el = e.currentTarget;
+  const maxScrollLeft = el.scrollWidth - el.clientWidth;
+  if(maxScrollLeft <= 0) return;
+  const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+  if(!delta) return;
+  el.scrollLeft += delta;
+  e.preventDefault();
+  e.stopPropagation();
+}
+function rememberDraftTableScroll(){
+  const el = document.getElementById('draftTableScroll');
+  if(!el) return;
+  draftTableScrollLeft = el.scrollLeft;
+  draftTableScrollTop = el.scrollTop;
+}
+function restoreDraftTableScroll(){
+  const el = document.getElementById('draftTableScroll');
+  if(!el) return;
+  el.scrollLeft = Math.min(draftTableScrollLeft, Math.max(0, el.scrollWidth - el.clientWidth));
+  el.scrollTop = Math.min(draftTableScrollTop, Math.max(0, el.scrollHeight - el.clientHeight));
+}
+function initDraftTableWheelScroll(){
+  const el = document.getElementById('draftTableScroll');
+  if(el){
+    el.addEventListener('wheel', handleDraftTableWheel, {passive:false});
+    el.addEventListener('scroll', rememberDraftTableScroll, {passive:true});
+  }
 }
 function initModalScrollLock(){
   const observer = new MutationObserver(syncModalScrollLock);
@@ -2953,8 +3082,8 @@ function getUniqueDraftSaveName(baseName, folderId, folders=getDraftFolders(), s
   );
   if(!used.has(base)) return base;
   let num = 2;
-  while(used.has(`${base} ${num}`)) num++;
-  return `${base} ${num}`;
+  while(used.has(`${base}(${num})`)) num++;
+  return `${base}(${num})`;
 }
 function refreshDraftSaveDefaultName(force=false){
   const input = document.getElementById('draftSaveNameInput');
@@ -2970,11 +3099,38 @@ function getCurrentDraftSave(){
   if(!currentDraftId) return null;
   return getDraftSaves().find(s=>s.id===currentDraftId) || null;
 }
-function hasFearlessDraftData(draftState){
-  return !!((draftState?.fearlessBlue||[]).length || (draftState?.fearlessRed||[]).length || (draftState?.fearlessHistory||[]).length);
+function getDraftSaveMode(save){
+  if(['free','fearless','ltk'].includes(save?.mode)) return save.mode;
+  if(save?.ltkOn) return 'ltk';
+  if(save?.fearlessOn) return 'fearless';
+  return 'free';
 }
-function isFearlessDraftSave(save){
-  return !!(save?.fearlessOn || hasFearlessDraftData(save?.state));
+function getDraftModeLabel(save){
+  const mode = getDraftSaveMode(save);
+  if(mode==='ltk') return 'LTK3モード';
+  if(mode==='fearless') return 'フィアレスモード';
+  return 'フリーモード';
+}
+function sanitizeDraftStateForMode(draftState, mode){
+  const next = JSON.parse(JSON.stringify(draftState || state));
+  if(mode==='free'){
+    next.fearlessBlue = [];
+    next.fearlessRed = [];
+    next.fearlessHistory = [];
+    next.ltkNextSnapshot = null;
+    next.ltkCoreSnapshot = null;
+    next.ltkNextDraft = null;
+    next.ltkCoreDraft = null;
+  } else if(mode==='fearless'){
+    next.ltkNextSnapshot = null;
+    next.ltkCoreSnapshot = null;
+    next.ltkNextDraft = null;
+    next.ltkCoreDraft = null;
+  }
+  return next;
+}
+function getDraftStateForSave(mode){
+  return sanitizeDraftStateForMode(state, mode);
 }
 function draftSaveNameBlur(el){
   if(!el.value.trim()) refreshDraftSaveDefaultName(true);
@@ -2988,17 +3144,19 @@ function saveDraft(){
   const rawName=input.value.trim() || input.dataset.def || getDraftDefaultName();
   const name=getUniqueDraftSaveName(rawName, folderId, folders, saves);
   const newDraftId = crypto.randomUUID();
+  const draftMode = getCurrentMode();
   saves.unshift({
     id: newDraftId,
     name,
     date: new Date().toLocaleDateString('ja-JP', {year:'numeric',month:'2-digit',day:'2-digit'}),
-    state: JSON.parse(JSON.stringify(state)),
+    state: getDraftStateForSave(draftMode),
     blueTitle: document.getElementById('bluePoolTitle')?.value||'青チーム',
     redTitle:  document.getElementById('redPoolTitle')?.value||'赤チーム',
     folderId,
     memo: localStorage.getItem('draftTool_memo')||'',
-    fearlessOn: isFearlessOn(),
-    ltkOn: isLtkOn(),
+    mode: draftMode,
+    fearlessOn: draftMode==='fearless',
+    ltkOn: draftMode==='ltk',
     ltkRank: getLtkRank(),
   });
   const storedSaves = saves.slice(0,30);
@@ -3022,7 +3180,7 @@ function renderDraftSavedList(){
   el.innerHTML=visible.map(({s,i})=>{
     const isLoaded=s.id&&s.id===currentDraftId;
     const highlight=isLoaded?'border-color:var(--purple);background:#1e2430;':'';
-    const modeText=s.ltkOn?' - LTK3モード':(isFearlessDraftSave(s)?' - フィアレスモード':' - フリーモード');
+    const modeText=` - ${getDraftModeLabel(s)}`;
     const folderText=getDraftFolderLabel(s.folderId, folders);
     return `<div class="saved-item" draggable="true" ondragstart="onDraftSaveDragStart(event,${i})" style="${highlight}">
       <div style="flex:1;min-width:0;">
@@ -3152,11 +3310,16 @@ function normalizeDraftTableSearchText(value){
     .replace(/[＝=・･\-－‐‑‒–—―．.\s]/g,'')
     .trim();
 }
-function draftTableSaveMatchesFilter(save){
-  if(!draftTableFilter) return true;
-  const group = DRAFT_TABLE_FILTER_GROUPS[draftTableFilter.key];
-  const query = normalizeDraftTableSearchText(draftTableFilter.query);
-  if(!group || !query) return true;
+function getDraftTableFilter(filterKey){
+  return typeof draftTableFilters?.[filterKey] === 'string' ? draftTableFilters[filterKey] : '';
+}
+function getDraftTableFilterEntries(){
+  return Object.entries(draftTableFilters || {})
+    .map(([key, query])=>({key, query, normalized:normalizeDraftTableSearchText(query)}))
+    .filter(filter=>DRAFT_TABLE_FILTER_GROUPS[filter.key] && filter.normalized);
+}
+function draftTableSaveMatchesSingleFilter(save, filter){
+  const group = DRAFT_TABLE_FILTER_GROUPS[filter.key];
   const draftState = save?.state || {};
   return ['blue','red'].some(team=>{
     const slots = draftState[team]?.[group.type] || [];
@@ -3164,9 +3327,14 @@ function draftTableSaveMatchesFilter(save){
       const champ = slots[idx];
       if(!champ) return false;
       const haystack = normalizeDraftTableSearchText(`${champ.name||''} ${champ.id||''}`);
-      return haystack.includes(query);
+      return haystack.includes(filter.normalized);
     });
   });
+}
+function draftTableSaveMatchesFilter(save){
+  const filters = getDraftTableFilterEntries();
+  if(!filters.length) return true;
+  return filters.every(filter=>draftTableSaveMatchesSingleFilter(save, filter));
 }
 function getDraftTableSaves(folders=getDraftFolders()){
   const folderId = getDraftTableFolderId(folders);
@@ -3195,6 +3363,8 @@ function renderDraftTableControls(){
   document.querySelectorAll('.draft-table-view-btn').forEach(btn=>{
     btn.classList.toggle('active', btn.dataset.view===draftTableViewMode);
   });
+  const resetBtn = document.getElementById('draftTableFilterResetBtn');
+  if(resetBtn) resetBtn.disabled = getDraftTableFilterEntries().length === 0;
   const filterStatus = document.getElementById('draftTableFilterStatus');
   if(filterStatus){
     filterStatus.classList.remove('show');
@@ -3202,22 +3372,22 @@ function renderDraftTableControls(){
   }
 }
 function renderDraftTableKind(row){
-  const hasFilter = draftTableFilter?.key===row.filterKey;
+  const filterQuery = getDraftTableFilter(row.filterKey);
   return `<div class="draft-table-kind-main">${esc(row.kind)}</div>
-    ${hasFilter
-      ? `<div class="draft-table-cell-filter" title="${esc(draftTableFilter.query)}" onclick="event.stopPropagation()">
-          <span class="draft-table-cell-filter-name">${esc(draftTableFilter.query)}</span>
-          <button class="draft-table-cell-filter-clear" type="button" onclick="event.stopPropagation();clearDraftTableFilter()" title="絞り込み解除">×</button>
+    ${filterQuery
+      ? `<div class="draft-table-cell-filter" title="${esc(filterQuery)}" onclick="event.stopPropagation()">
+          <span class="draft-table-cell-filter-name">${esc(filterQuery)}</span>
+          <button class="draft-table-cell-filter-clear" type="button" onclick="event.stopPropagation();clearDraftTableFilter('${row.filterKey}')" title="絞り込み解除">×</button>
         </div>`
       : ''}`;
 }
 function renderDraftTableNo(row){
-  const hasFilter = draftTableFilter?.key===row.noFilterKey;
+  const filterQuery = getDraftTableFilter(row.noFilterKey);
   return `<div class="draft-table-num-main">${row.no}</div>
-    ${hasFilter
-      ? `<div class="draft-table-cell-filter" title="${esc(draftTableFilter.query)}" onclick="event.stopPropagation()">
-          <span class="draft-table-cell-filter-name">${esc(draftTableFilter.query)}</span>
-          <button class="draft-table-cell-filter-clear" type="button" onclick="event.stopPropagation();clearDraftTableFilter()" title="絞り込み解除">×</button>
+    ${filterQuery
+      ? `<div class="draft-table-cell-filter" title="${esc(filterQuery)}" onclick="event.stopPropagation()">
+          <span class="draft-table-cell-filter-name">${esc(filterQuery)}</span>
+          <button class="draft-table-cell-filter-clear" type="button" onclick="event.stopPropagation();clearDraftTableFilter('${row.noFilterKey}')" title="絞り込み解除">×</button>
         </div>`
       : ''}`;
 }
@@ -3247,11 +3417,9 @@ function renderDraftTable(){
   renderDraftTableControls();
   const folders = getDraftFolders();
   const entries = getDraftTableSaves(folders);
-  const count = document.getElementById('draftTableCount');
-  const folderLabel = getDraftFolderLabel(currentDraftTableFolder, folders);
-  if(count) count.textContent = `${folderLabel}: ${entries.length}件`;
   const scroll = document.getElementById('draftTableScroll');
   if(!scroll) return;
+  rememberDraftTableScroll();
 
   const head = entries.map(({save, idx})=>`
     <th class="save-col" title="${esc(save.name||'名称なし')}">
@@ -3261,10 +3429,10 @@ function renderDraftTable(){
             <div class="draft-table-save-name">${esc(save.name||'名称なし')}</div>
             <button class="draft-table-save-edit-btn" type="button" onclick="event.stopPropagation();startDraftTableRename(${idx})" title="名前変更">✎</button>
           </div>`}
-      <div class="draft-table-save-date">${esc(save.date||'')}</div>
+      <button class="btn-sm draft-table-load-btn" type="button" onclick="event.stopPropagation();loadDraftFromTable(${idx})">呼び出し</button>
     </th>`).join('') || '<th class="save-col placeholder-col"></th>';
   const body = DRAFT_TABLE_ROWS.map(row=>`
-    <tr class="row-${row.type==='bans'?'ban':'pick'}">
+    <tr class="row-${row.type==='bans'?'ban':'pick'}${row.phase==='second'?' phase-second':''}">
       ${row.kind?`<th class="sticky-cell col-kind draft-table-kind filterable" rowspan="${row.kindRows}" onclick="openDraftTableSearch(event,'${row.filterKey}')" title="チャンプ名で絞り込み">${renderDraftTableKind(row)}</th>`:''}
       <th class="sticky-cell col-num draft-table-num filterable" onclick="openDraftTableSearch(event,'${row.noFilterKey}')" title="このNo.をチャンプ名で絞り込み">${renderDraftTableNo(row)}</th>
       ${entries.map(entry=>renderDraftTableCell(entry,row)).join('') || '<td class="save-col placeholder-col"><div class="draft-table-pair"><div class="draft-table-champ"><div class="draft-table-empty">-</div><span>-</span></div><div class="draft-table-champ"><div class="draft-table-empty">-</div><span>-</span></div></div></td>'}
@@ -3281,6 +3449,7 @@ function renderDraftTable(){
       </thead>
       <tbody>${body}</tbody>
     </table>`;
+  requestAnimationFrame(restoreDraftTableScroll);
   if(editingDraftTableSaveIndex>=0){
     setTimeout(()=>{
       const input = document.getElementById(`draftTableRenameInput${editingDraftTableSaveIndex}`);
@@ -3291,16 +3460,25 @@ function renderDraftTable(){
 }
 function openDraftTableModal(){
   const folders = getDraftFolders();
-  currentDraftTableFolder = currentDraftFolderFilter===DRAFT_FOLDER_NONE || folders.some(f=>f.id===currentDraftFolderFilter)
-    ? currentDraftFolderFilter
-    : DRAFT_FOLDER_NONE;
+  if(!draftTableOpenedOnce){
+    currentDraftTableFolder = currentDraftFolderFilter===DRAFT_FOLDER_NONE || folders.some(f=>f.id===currentDraftFolderFilter)
+      ? currentDraftFolderFilter
+      : DRAFT_FOLDER_NONE;
+    draftTableOpenedOnce = true;
+  }
   renderDraftTable();
   document.getElementById('draftTableModal').classList.add('show');
+  requestAnimationFrame(restoreDraftTableScroll);
 }
 function closeDraftTableModal(){
+  rememberDraftTableScroll();
   closeDraftTableSearch();
   editingDraftTableSaveIndex = -1;
   document.getElementById('draftTableModal').classList.remove('show');
+}
+function loadDraftFromTable(idx){
+  closeDraftTableModal();
+  loadDraft(idx);
 }
 function setDraftTableFolder(folderId){
   const folders = getDraftFolders();
@@ -3373,7 +3551,7 @@ function openDraftTableSearch(e, filterKey){
   const input = document.getElementById('draftTableSearchInput');
   if(title) title.textContent = `${group.label} チャンプ名検索`;
   if(input){
-    input.value = draftTableFilter?.key===filterKey ? draftTableFilter.query : '';
+    input.value = getDraftTableFilter(filterKey);
   }
   document.getElementById('draftTableSearchLayer')?.classList.add('show');
   renderDraftTableSearchSuggestions();
@@ -3382,6 +3560,7 @@ function openDraftTableSearch(e, filterKey){
 }
 function closeDraftTableSearch(){
   draftTableSearchAnchor = null;
+  draftTableSearchTarget = null;
   document.getElementById('draftTableSearchLayer')?.classList.remove('show');
 }
 function selectDraftTableSearchSuggestion(name){
@@ -3392,17 +3571,23 @@ function selectDraftTableSearchSuggestion(name){
 function applyDraftTableSearch(){
   const query = document.getElementById('draftTableSearchInput')?.value.trim() || '';
   if(query && draftTableSearchTarget){
-    draftTableFilter = {key:draftTableSearchTarget, query};
-  } else {
-    draftTableFilter = null;
+    draftTableFilters = {...draftTableFilters, [draftTableSearchTarget]:query};
+  } else if(draftTableSearchTarget){
+    clearDraftTableFilter(draftTableSearchTarget, false);
   }
   closeDraftTableSearch();
   renderDraftTable();
 }
-function clearDraftTableFilter(){
-  draftTableFilter = null;
+function clearDraftTableFilter(filterKey, shouldRender=true){
+  if(filterKey){
+    const next = {...draftTableFilters};
+    delete next[filterKey];
+    draftTableFilters = next;
+  } else {
+    draftTableFilters = {};
+  }
   closeDraftTableSearch();
-  renderDraftTable();
+  if(shouldRender) renderDraftTable();
 }
 function handleDraftTableSearchKey(e){
   if(e.key==='Enter') applyDraftTableSearch();
@@ -3414,7 +3599,10 @@ let currentDraftId = null;
 function loadDraft(idx){
   const saves=getDraftSaves();
   if(!saves[idx])return;
+  const savedMode = getDraftSaveMode(saves[idx]);
   state=JSON.parse(JSON.stringify(saves[idx].state));
+  normalizeLoadedState(state);
+  state = sanitizeDraftStateForMode(state, savedMode);
   normalizeLoadedState(state);
   buildPools();
   renderAll();
@@ -3430,10 +3618,8 @@ function loadDraft(idx){
   currentDraftId = saves[idx].id || null;
 
   // モード状態を復元
-  const savedLtkOn   = saves[idx].ltkOn || false;
+  const savedLtkOn   = savedMode==='ltk';
   const savedLtkRank = saves[idx].ltkRank || 'next';
-  const savedFearless = saves[idx].fearlessOn || hasFearlessDraftData(state);
-  const savedMode = savedLtkOn ? 'ltk' : (savedFearless ? 'fearless' : 'free');
   ['free','fearless','ltk'].forEach(m=>{
     document.getElementById('mode'+m.charAt(0).toUpperCase()+m.slice(1))?.classList.toggle('active', m===savedMode);
   });
@@ -3464,16 +3650,18 @@ function overwriteDraft(){
   }
   showConfirm(`「${saves[idx].name}」に上書きしますか？`, ()=>{
     const folderId = getSelectedDraftFolderId();
+    const draftMode = getCurrentMode();
     saves[idx] = {
       ...saves[idx],
       date: new Date().toLocaleDateString('ja-JP', {year:'numeric',month:'2-digit',day:'2-digit'}),
-      state: JSON.parse(JSON.stringify(state)),
+      state: getDraftStateForSave(draftMode),
       blueTitle: document.getElementById('bluePoolTitle')?.value||'青チーム',
       redTitle:  document.getElementById('redPoolTitle')?.value||'赤チーム',
       folderId,
       memo: localStorage.getItem('draftTool_memo')||'',
-      fearlessOn: isFearlessOn(),
-      ltkOn: isLtkOn(),
+      mode: draftMode,
+      fearlessOn: draftMode==='fearless',
+      ltkOn: draftMode==='ltk',
       ltkRank: getLtkRank(),
     };
     putDraftSaves(saves);
