@@ -318,6 +318,108 @@
   .save-row{display:flex;gap:8px;margin-bottom:10px;}
   .save-input{flex:1;height:34px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:0 10px;font-size:14px;color:var(--text);font-family:inherit;outline:none;}
   .save-input:focus{border-color:var(--purple);}
+  .draft-save-modal{max-width:840px;width:min(92vw,840px);max-height:min(92vh,760px);}
+  .draft-save-top{margin-bottom:12px;}
+  .draft-save-top .save-row{margin-bottom:0;}
+  .draft-browser{display:grid;grid-template-columns:260px minmax(0,1fr);gap:12px;border-top:1px solid var(--border);padding-top:12px;height:min(58vh,520px);min-height:360px;}
+  .draft-folder-pane,.draft-list-pane{min-height:0;}
+  .draft-folder-pane{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:var(--radius-sm);background:rgba(255,255,255,.02);padding:8px;}
+  .draft-list-pane{display:flex;flex-direction:column;}
+  .draft-pane-title{font-size:11px;color:var(--text3);font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:7px;}
+  .draft-folder-list{display:flex;flex:0 1 auto;flex-direction:column;gap:4px;min-height:0;max-height:calc(100% - 78px);overflow:auto;padding-right:2px;}
+  .draft-folder-tab{width:100%;height:32px;padding:0 8px;border:1px solid transparent;border-radius:7px;background:transparent;color:var(--text2);font-family:inherit;font-size:13px;cursor:pointer;display:grid;grid-template-columns:18px minmax(0,1fr) auto;align-items:center;gap:7px;text-align:left;}
+  .draft-folder-tab:hover{background:var(--purple-light);border-color:var(--purple-mid);color:var(--text);}
+  .draft-folder-tab.active{background:var(--surface2);border-color:var(--purple-mid);color:var(--text);font-weight:700;}
+  .draft-folder-tab.drag-over{border-color:var(--green);background:rgba(94,219,160,.08);color:var(--text);}
+  .draft-folder-icon{width:15px;height:12px;border:1px solid currentColor;border-radius:2px;position:relative;opacity:.72;}
+  .draft-folder-icon::before{content:'';position:absolute;left:1px;top:-5px;width:8px;height:5px;border:1px solid currentColor;border-bottom:0;border-radius:2px 2px 0 0;background:var(--surface2);}
+  .draft-folder-count{font-size:11px;color:var(--text3);}
+  .draft-folder-add-btn{height:30px;margin-top:8px;padding:0 9px;border:1px dashed var(--border);border-radius:7px;background:transparent;color:var(--text3);font-family:inherit;font-size:12px;cursor:pointer;text-align:left;}
+  .draft-folder-add-btn:hover{border-color:var(--purple-mid);background:var(--purple-light);color:var(--text2);}
+  .draft-folder-create-row{display:none;gap:6px;margin-top:8px;}
+  .draft-folder-create-row.show{display:flex;}
+  .draft-folder-create-row .save-input{height:30px;font-size:12px;padding:0 8px;}
+  .draft-folder-create-row .btn-sm{height:30px;padding:0 9px;font-size:12px;}
+  .draft-list-pane .saved-list{flex:1;max-height:none;}
+  #draftSavedList .saved-item[draggable=true]{cursor:grab;}
+  #draftSavedList .saved-item[draggable=true]:active{cursor:grabbing;}
+  .saved-item-folder{font-size:11px;color:var(--text3);margin-left:6px;}
+  .draft-table-modal{box-sizing:border-box;width:min(98vw,1440px);max-width:none;height:min(92vh,860px);max-height:none;display:flex;flex-direction:column;position:relative;}
+  .draft-table-toolbar{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+  .draft-table-field{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text3);font-weight:700;letter-spacing:.04em;}
+  .draft-table-select{height:34px;min-width:220px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:13px;padding:0 9px;outline:none;}
+  .draft-table-select:focus{border-color:var(--purple);}
+  .draft-table-view-switch{display:flex;align-items:center;gap:4px;padding:3px;border:1px solid var(--border);border-radius:var(--radius-sm);background:rgba(255,255,255,.02);}
+  .draft-table-view-btn{height:26px;padding:0 9px;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--text3);font-family:inherit;font-size:12px;cursor:pointer;}
+  .draft-table-view-btn:hover{background:var(--purple-light);color:var(--text2);}
+  .draft-table-view-btn.active{background:var(--surface2);border-color:var(--purple-mid);color:var(--text);font-weight:700;}
+  .draft-table-count{margin-left:auto;font-size:12px;color:var(--text3);}
+  .draft-table-scroll{flex:1;min-height:0;overflow:auto;border:1px solid var(--border);border-radius:var(--radius-sm);background:#111722;}
+  .draft-table{border-collapse:separate;border-spacing:0;width:auto;table-layout:fixed;font-size:12px;color:var(--text2);}
+  .draft-table th,.draft-table td{border-right:1px solid var(--border);border-bottom:1px solid var(--border);background:#151b27;}
+  .draft-table tbody tr.row-ban th,.draft-table tbody tr.row-ban td{background:rgba(255,107,107,.12);}
+  .draft-table tbody tr.row-pick th,.draft-table tbody tr.row-pick td{background:rgba(94,219,160,.095);}
+  .draft-table th{height:48px;color:var(--text);font-weight:700;}
+  .draft-table td{height:64px;text-align:center;vertical-align:middle;}
+  .draft-table thead th{position:sticky;top:0;z-index:4;background:#1b2230;}
+  .draft-table .sticky-cell{position:sticky;z-index:3;background:#181f2b;}
+  .draft-table tbody tr.row-ban .sticky-cell{background:#2a1d28;}
+  .draft-table tbody tr.row-pick .sticky-cell{background:#172d2b;}
+  .draft-table thead .sticky-cell{z-index:6;background:#202838;}
+  .draft-table .col-kind{left:0;width:112px;min-width:112px;}
+  .draft-table .col-num{left:112px;width:112px;min-width:112px;}
+  .draft-table .save-col{width:148px;min-width:148px;max-width:148px;}
+  .draft-table .placeholder-col{width:148px;min-width:148px;max-width:148px;visibility:hidden;pointer-events:none;}
+  .draft-table-kind{box-sizing:border-box;position:relative;vertical-align:top;white-space:normal;line-height:1.35;font-size:11px;letter-spacing:.04em;padding:9px 8px;max-width:112px;}
+  .draft-table-kind.filterable{cursor:pointer;}
+  .draft-table-kind.filterable:hover{color:var(--purple);box-shadow:inset 0 0 0 1px var(--purple-mid);}
+  .draft-table-num{box-sizing:border-box;position:relative;vertical-align:top;padding:9px 8px;max-width:112px;}
+  .draft-table-num.filterable{cursor:pointer;}
+  .draft-table-num.filterable:hover{color:var(--purple);box-shadow:inset 0 0 0 1px var(--purple-mid);}
+  .draft-table-kind-main{white-space:pre-line;}
+  .draft-table-num-main{font-size:13px;}
+  .draft-table-cell-filter{box-sizing:border-box;position:absolute;left:8px;right:8px;top:32px;min-width:0;display:flex;align-items:center;justify-content:center;gap:5px;padding:4px 5px;border:1px solid var(--purple-mid);border-radius:6px;background:var(--purple-light);color:var(--text);font-size:10px;line-height:1.15;cursor:default;}
+  .draft-table-cell-filter-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .draft-table-cell-filter-clear{width:16px;height:16px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;padding:0;border:1px solid var(--border);border-radius:999px;background:transparent;color:var(--text3);font-family:inherit;font-size:13px;line-height:1;cursor:pointer;}
+  .draft-table-cell-filter-clear:hover{border-color:var(--purple-mid);background:var(--surface2);color:var(--text);}
+  .draft-table-save-name{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.25;word-break:break-word;}
+  .draft-table-save-head{position:relative;min-width:0;padding:0 26px;}
+  .draft-table-save-head .draft-table-save-name{min-width:0;text-align:center;}
+  .draft-table-save-edit-btn{position:absolute;right:3px;top:0;width:20px;height:20px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--text3);font-family:inherit;font-size:11px;line-height:1;cursor:pointer;}
+  .draft-table-save-edit-btn:hover{border-color:var(--purple-mid);background:var(--purple-light);color:var(--text);}
+  .draft-table-rename-input{width:126px;height:26px;box-sizing:border-box;background:var(--surface);border:1px solid var(--purple-mid);border-radius:6px;color:var(--text);font-family:inherit;font-size:12px;padding:0 7px;outline:none;}
+  .draft-table-save-date{margin-top:3px;font-size:10px;color:var(--text3);font-weight:500;}
+  .draft-table-pair{display:grid;grid-template-columns:1fr 1fr;gap:7px;justify-items:center;align-items:center;padding:0 7px;}
+  .draft-table-champ{width:50px;min-width:50px;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--text3);position:relative;}
+  .draft-table-champ img{width:44px;height:44px;border-radius:8px;object-fit:cover;border:1px solid var(--border);background:#232b3a;}
+  .draft-table-champ.blue img{border-color:var(--blue);}
+  .draft-table-champ.red img{border-color:var(--red);}
+  .draft-table-champ.ban.blue img{border-color:rgba(90,171,255,.52);}
+  .draft-table-champ.ban.red img{border-color:rgba(255,107,107,.52);}
+  .draft-table-champ.ban::before,
+  .draft-table-champ.ban::after{content:'';position:absolute;top:22px;left:50%;border-radius:999px;transform:translate(-50%,-50%) rotate(50deg);pointer-events:none;z-index:2;}
+  .draft-table-champ.ban::before{width:35px;height:3px;background:rgba(42,45,56,.68);box-shadow:0 0 2px rgba(0,0,0,.3);}
+  .draft-table-champ.ban::after{width:34px;height:1px;background:rgba(235,238,248,.86);}
+  .draft-table-champ span{max-width:50px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px;line-height:1.1;}
+  .draft-table.view-icon .draft-table-champ span{display:none;}
+  .draft-table.view-text .draft-table-champ{width:58px;min-width:58px;}
+  .draft-table.view-text .draft-table-champ img,.draft-table.view-text .draft-table-empty{display:none;}
+  .draft-table.view-text .draft-table-champ.ban::before,
+  .draft-table.view-text .draft-table-champ.ban::after{display:none;}
+  .draft-table.view-text .draft-table-champ span{max-width:62px;font-size:11px;color:var(--text2);}
+  .draft-table-empty{width:44px;height:44px;border-radius:8px;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;color:var(--text3);}
+  .draft-table-empty-msg{height:100%;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:14px;}
+  .draft-table-search-layer{display:none;position:absolute;inset:0;z-index:20;background:transparent;}
+  .draft-table-search-layer.show{display:block;}
+  .draft-table-search-modal{position:absolute;left:24px;top:94px;width:min(430px,calc(100% - 48px));display:grid;grid-template-columns:148px minmax(0,1fr);gap:8px 10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 18px 48px rgba(0,0,0,.55);padding:12px;}
+  .draft-table-search-title{grid-column:1/-1;font-size:14px;font-weight:700;color:var(--text);margin-bottom:0;}
+  .draft-table-search-input{width:100%;height:34px;box-sizing:border-box;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:14px;padding:0 9px;outline:none;}
+  .draft-table-search-input:focus{border-color:var(--purple);}
+  .draft-table-search-suggestions{display:none;grid-column:2;grid-row:2;max-height:210px;overflow:auto;border:1px solid var(--border);border-radius:var(--radius-sm);background:#111722;padding:4px;}
+  .draft-table-search-suggestions.show{display:block;}
+  .draft-table-search-suggestion{width:100%;height:30px;display:flex;align-items:center;padding:0 8px;border:0;border-radius:6px;background:transparent;color:var(--text2);font-family:inherit;font-size:13px;text-align:left;cursor:pointer;}
+  .draft-table-search-suggestion:hover{background:var(--purple-light);color:var(--text);}
+  .draft-table-search-suggestion-empty{padding:7px 8px;color:var(--text3);font-size:12px;}
   .modal-field-stack{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
   .modal-field-label{font-size:12px;color:var(--text3);font-weight:700;letter-spacing:.04em;}
   .player-modal-form{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
@@ -338,6 +440,10 @@
   .saved-list{display:flex;flex-direction:column;gap:5px;max-height:200px;overflow-y:auto;padding-right:4px;}
   .saved-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);}
   .saved-item-name{flex:1;font-size:14px;color:var(--text);}
+  .saved-item-name-row{display:flex;align-items:center;gap:6px;min-width:0;}
+  .saved-item-edit-btn{width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--text3);font-family:inherit;font-size:12px;line-height:1;cursor:pointer;}
+  .saved-item-edit-btn:hover{border-color:var(--purple-mid);background:var(--purple-light);color:var(--text);}
+  .saved-item-rename-input{width:100%;height:28px;box-sizing:border-box;background:var(--surface);border:1px solid var(--purple-mid);border-radius:6px;color:var(--text);font-family:inherit;font-size:14px;padding:0 8px;outline:none;}
   .saved-item-date{font-size:11px;color:var(--text3);}
   .empty-msg{font-size:13px;color:var(--text3);text-align:center;padding:16px 0;}
   .confirm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:5000;align-items:center;justify-content:center;overscroll-behavior:contain;}
@@ -463,13 +569,14 @@ League of Legendsの大会・練習向けドラフトツール
         <div class="help-item">プール構築モード → バンピックエリアを折りたたむと切替。プール選択から一括追加ができる。</div>
         <div class="help-item">フィアレスモード → 設定から切替。フィアレスルールに対応。</div>
         <div class="help-item">LTK3モード → LTK3ルール用。NEXTとCOREのプール・バンピックを分けて管理できる。</div>
+        <div class="help-item">テーブルモード（β） → 保存しているドラフトデータを一覧で確認できる。</div>
       </div>
     </div>
     <div class="help-section">
       <div class="help-section-title">保存について</div>
       <div class="help-list">
         <div class="help-item">個人プール・チームデータ・ドラフトはブラウザのローカルストレージに保存</div>
-        <div class="help-item">チームデータ、ドラフトデータは上書き可能</div>
+        <div class="help-item">チームデータ、ドラフトデータ・プレイヤープールは上書き可能</div>
         <div class="help-item">キャッシュ・サイトデータを消すと保存データも削除される</div>
         <div class="help-item">保存データの共有・エクスポートはセキュリティの観点から現在非対応</div>
       </div>
@@ -488,6 +595,18 @@ League of Legendsの大会・練習向けドラフトツール
         <div class="help-item">X：@DraftPlanner</div>
         <div class="help-item">gmail：<span id="contactEmail"></span></div>
       </div>
+    </div>
+    <div class="help-update">
+      <details>
+        <summary class="help-update-title" style="cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px;">
+          <span style="transition:transform .2s;display:inline-block;" class="help-update-arrow">＋</span>
+          <span>v1.0.2 更新内容</span>
+        </summary>
+        <div class="help-update-item">テーブルモード（β）をテスト実装</div>
+        <div class="help-update-item">ドラフトデータ保存にフォルダ分け機能を追加</div>
+        <div class="help-update-item">プレイヤーデータの上書き機能を追加</div>
+        <div class="help-update-item">チャンピオン一覧の高さを変更できる機能を追加</div>
+      </details>
     </div>
     <div class="help-update">
       <details>
@@ -586,18 +705,64 @@ League of Legendsの大会・練習向けドラフトツール
 </div>
 
 <div class="modal-overlay" id="draftSaveModal">
-  <div class="modal">
+  <div class="modal draft-save-modal">
     <div class="modal-title">
       <span>ドラフト保存/呼び出し</span>
       <button class="modal-close" onclick="closeDraftModal()">✕</button>
     </div>
-    <div class="modal-section">名前をつけて保存</div>
-    <div class="save-row">
-      <input class="save-input" id="draftSaveNameInput" type="text" placeholder="青チーム名 vs 赤チーム名" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onblur="draftSaveNameBlur(this)">
-      <button class="btn-sm" onclick="saveDraft()">保存</button>
+    <div class="draft-save-top">
+      <div class="modal-section">名前をつけて保存</div>
+      <div class="save-row">
+        <input class="save-input" id="draftSaveNameInput" type="text" placeholder="ドラフトプラン" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onblur="draftSaveNameBlur(this)">
+        <button class="btn-sm" onclick="saveDraft()">保存</button>
+      </div>
     </div>
-    <div class="modal-section">保存済みドラフト</div>
-    <div class="saved-list" id="draftSavedList"></div>
+    <div class="draft-browser">
+      <div class="draft-folder-pane">
+        <div class="draft-pane-title">フォルダ</div>
+        <div class="draft-folder-list" id="draftFolderTabs"></div>
+        <button class="draft-folder-add-btn" type="button" onclick="toggleDraftFolderCreate()">+ フォルダ追加</button>
+        <div class="draft-folder-create-row" id="draftFolderCreateRow">
+          <input class="save-input" id="draftFolderNameInput" type="text" placeholder="フォルダ名" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onkeydown="if(event.key==='Enter')createDraftFolder()">
+          <button class="btn-sm" type="button" onclick="createDraftFolder()">追加</button>
+        </div>
+      </div>
+      <div class="draft-list-pane">
+        <div class="draft-pane-title">保存済みドラフト</div>
+        <div class="saved-list" id="draftSavedList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="draftTableModal">
+  <div class="modal draft-table-modal">
+    <div class="modal-title">
+      <span>ドラフトテーブル（β）</span>
+      <button class="modal-close" onclick="closeDraftTableModal()">✕</button>
+    </div>
+    <div class="draft-table-toolbar">
+      <label class="draft-table-field">
+        <span>フォルダ</span>
+        <select class="draft-table-select" id="draftTableFolderSelect" onchange="setDraftTableFolder(this.value)" aria-label="表示するフォルダ"></select>
+      </label>
+      <button class="btn-sm" type="button" id="draftTableSortBtn" onclick="toggleDraftTableSort()">並び: 保存順</button>
+      <div class="draft-table-view-switch" aria-label="表示切替">
+        <button class="draft-table-view-btn" type="button" data-view="icon" onclick="setDraftTableView('icon')">アイコン</button>
+        <button class="draft-table-view-btn" type="button" data-view="both" onclick="setDraftTableView('both')">アイコン+文字</button>
+        <button class="draft-table-view-btn" type="button" data-view="text" onclick="setDraftTableView('text')">文字</button>
+      </div>
+      <div class="draft-table-filter-status" id="draftTableFilterStatus"></div>
+      <div class="draft-table-count" id="draftTableCount"></div>
+    </div>
+    <div class="draft-table-scroll" id="draftTableScroll"></div>
+    <div class="draft-table-search-layer" id="draftTableSearchLayer" onclick="if(event.target===this)closeDraftTableSearch()">
+      <div class="draft-table-search-modal">
+        <div class="draft-table-search-title" id="draftTableSearchTitle">チャンプ名検索</div>
+        <input class="draft-table-search-input" id="draftTableSearchInput" type="text" placeholder="チャンピオン名" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="renderDraftTableSearchSuggestions()" onkeydown="handleDraftTableSearchKey(event)">
+        <div class="draft-table-search-suggestions" id="draftTableSearchSuggestions"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -727,7 +892,7 @@ League of Legendsの大会・練習向けドラフトツール
 </div>
 
 <div class="topbar">
-  <div class="topbar-title">Draft Planner</div>
+  <div class="topbar-title">K DraftPlanner</div>
   <button class="btn-sm" style="font-size:12px;padding:3px 10px;flex-shrink:0;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:var(--text);" onclick="openHelpModal()">使い方</button>
 
   <div class="mode-seg">
@@ -747,6 +912,7 @@ League of Legendsの大会・練習向けドラフトツール
     <button class="btn" id="ltkNavBtn" onclick="ltkNavAction()" style="display:none;"></button>
     <button class="btn" id="prevGameBtn" onclick="previousGame()" style="display:none;">前のゲームへ</button>
     <button class="btn" id="nextGameBtn" onclick="nextGame()" style="display:none;">次のゲームへ</button>
+    <button class="btn" id="draftTableOpenBtn" onclick="openDraftTableModal()">テーブル（β）</button>
     <button class="btn" id="draftSaveOpenBtn" onclick="openDraftModal()">ドラフト保存/呼出</button>
     <button class="btn btn-reset" onclick="resetDraft()">ドラフトリセット</button>
     <button class="btn btn-reset-all" onclick="resetAll()">オールリセット</button>
@@ -774,6 +940,7 @@ let state = {
   bluePools:[[],[],[],[],[]],redPools:[[],[],[],[],[]],
   blueNames:['','','','',''],redNames:['','','','',''],
   bluePlayerNames:['','','','',''],redPlayerNames:['','','','',''],
+  blueLoadedPlayerSaveIds:Array(5).fill(null),redLoadedPlayerSaveIds:Array(5).fill(null),
   blueLoadedSaveId:null, redLoadedSaveId:null,
   fearlessBlue:[],
   fearlessRed:[],
@@ -2131,8 +2298,6 @@ function renderStepBar(){
     const rank = getLtkRank();
     bar.innerHTML=`<span style="color:var(--green);font-weight:600">LTK3モード</span>
       <span class="mode-seg" style="margin-left:10px;">
-        <button class="mode-seg-btn${rank==='next'?' active':''}" onclick="setLtkRank('next')">NEXT</button>
-        <button class="mode-seg-btn${rank==='core'?' active':''}" onclick="setLtkRank('core')">CORE</button>
       </span>`;
   } else if(mode==='fearless'){
     bar.innerHTML='<span style="color:var(--text);font-weight:600">フリーモード（フィアレス）</span>';
@@ -2430,6 +2595,7 @@ function doResetAll(){
     bluePools:[[],[],[],[],[]],redPools:[[],[],[],[],[]],
     blueNames:['','','','',''],redNames:['','','','',''],
     bluePlayerNames:['','','','',''],redPlayerNames:['','','','',''],
+    blueLoadedPlayerSaveIds:Array(5).fill(null),redLoadedPlayerSaveIds:Array(5).fill(null),
     blueLoadedSaveId:null, redLoadedSaveId:null,
     fearlessBlue:[], fearlessRed:[], fearlessHistory:[],
     ltkNextSnapshot:null, ltkCoreSnapshot:null, ltkNextDraft:null, ltkCoreDraft:null,
@@ -2495,10 +2661,196 @@ function syncProtectCfg(){
 
 
 // ─── DRAFT SAVE / LOAD ────────────────────────────────────────
+const DRAFT_FOLDER_STORAGE_KEY = 'draftTool_draftFolders';
+const DRAFT_FOLDER_NONE = '__none__';
+const DRAFT_SAVE_BASE_NAME = 'ドラフトプラン';
+let currentDraftFolderFilter = DRAFT_FOLDER_NONE;
+let draftFolderCreateOpen = false;
+let currentDraftTableFolder = DRAFT_FOLDER_NONE;
+let draftTableSortMode = 'saved';
+let draftTableViewMode = 'both';
+let draftTableSearchTarget = null;
+let draftTableSearchAnchor = null;
+let draftTableFilter = null;
+let editingDraftSaveIndex = -1;
+let editingDraftTableSaveIndex = -1;
+const DRAFT_TABLE_FILTER_GROUPS = {
+  firstBan: {label:'1stフェーズ BAN', type:'bans', indexes:[0,1,2]},
+  firstPick:{label:'1stフェーズ PICK', type:'picks', indexes:[0,1,2]},
+  secondBan:{label:'2ndフェーズ BAN', type:'bans', indexes:[3,4]},
+  secondPick:{label:'2ndフェーズ PICK', type:'picks', indexes:[3,4]},
+};
+const DRAFT_TABLE_ROWS = [
+  {kind:'1stフェーズ\nBAN', kindRows:3, filterKey:'firstBan', no:1, noFilterKey:'ban1', type:'bans', idx:0},
+  {no:2, noFilterKey:'ban2', type:'bans', idx:1},
+  {no:3, noFilterKey:'ban3', type:'bans', idx:2},
+  {kind:'1stフェーズ\nPICK', kindRows:3, filterKey:'firstPick', no:1, noFilterKey:'pick1', type:'picks', idx:0},
+  {no:2, noFilterKey:'pick2', type:'picks', idx:1},
+  {no:3, noFilterKey:'pick3', type:'picks', idx:2},
+  {kind:'2ndフェーズ\nBAN', kindRows:2, filterKey:'secondBan', no:4, noFilterKey:'ban4', type:'bans', idx:3},
+  {no:5, noFilterKey:'ban5', type:'bans', idx:4},
+  {kind:'2ndフェーズ\nPICK', kindRows:2, filterKey:'secondPick', no:4, noFilterKey:'pick4', type:'picks', idx:3},
+  {no:5, noFilterKey:'pick5', type:'picks', idx:4},
+];
+DRAFT_TABLE_ROWS.forEach(row=>{
+  DRAFT_TABLE_FILTER_GROUPS[row.noFilterKey] = {
+    label:`${row.type==='bans'?'BAN':'PICK'} ${row.no}`,
+    type:row.type,
+    indexes:[row.idx],
+  };
+});
+
 function getDraftSaves(){ try{ return JSON.parse(localStorage.getItem('draftTool_drafts')||'[]'); }catch(e){return[];} }
 function putDraftSaves(arr){
   try{ localStorage.setItem('draftTool_drafts', JSON.stringify(arr)); }
   catch(e){ alert('保存容量が上限に達しました。古いデータを削除してください。'); }
+}
+function getDraftFolders(){
+  try{
+    const arr = JSON.parse(localStorage.getItem(DRAFT_FOLDER_STORAGE_KEY)||'[]');
+    return Array.isArray(arr) ? arr.filter(f=>f&&f.id&&typeof f.name==='string') : [];
+  }catch(e){ return []; }
+}
+function putDraftFolders(arr){
+  try{ localStorage.setItem(DRAFT_FOLDER_STORAGE_KEY, JSON.stringify(arr)); }
+  catch(e){ alert('保存容量が上限に達しました。古いデータを削除してください。'); }
+}
+function normalizeDraftFolderId(folderId, folders=getDraftFolders()){
+  if(!folderId || folderId===DRAFT_FOLDER_NONE) return null;
+  return folders.some(f=>f.id===folderId) ? folderId : null;
+}
+function getDraftFolderLabel(folderId, folders=getDraftFolders()){
+  const id = normalizeDraftFolderId(folderId, folders);
+  if(!id) return '未分類';
+  return folders.find(f=>f.id===id)?.name || '未分類';
+}
+function getDraftFolderFilterId(save, folders=getDraftFolders()){
+  return normalizeDraftFolderId(save?.folderId, folders) || DRAFT_FOLDER_NONE;
+}
+function draftMatchesFolderFilter(save, folders=getDraftFolders()){
+  return getDraftFolderFilterId(save, folders)===currentDraftFolderFilter;
+}
+function getSelectedDraftFolderId(folders=getDraftFolders()){
+  return normalizeDraftFolderId(currentDraftFolderFilter, folders);
+}
+function setDraftFolderFilter(folderId){
+  const folders = getDraftFolders();
+  const valid = folderId===DRAFT_FOLDER_NONE || folders.some(f=>f.id===folderId);
+  currentDraftFolderFilter = valid ? folderId : DRAFT_FOLDER_NONE;
+  editingDraftSaveIndex = -1;
+  renderDraftFolderControls();
+  renderDraftSavedList();
+  refreshDraftSaveDefaultName();
+}
+function toggleDraftFolderCreate(force){
+  const nextOpen = typeof force==='boolean' ? force : !draftFolderCreateOpen;
+  if(!nextOpen){
+    closeDraftFolderCreate();
+    return;
+  }
+  draftFolderCreateOpen = true;
+  renderDraftFolderControls();
+  setTimeout(()=>{
+    const input = document.getElementById('draftFolderNameInput');
+    if(!input) return;
+    if(!input.value.trim()) input.value = getDraftFolderDefaultName();
+    input.focus();
+    input.select();
+  }, 0);
+}
+function closeDraftFolderCreate(){
+  draftFolderCreateOpen = false;
+  const input = document.getElementById('draftFolderNameInput');
+  if(input) input.value = '';
+  renderDraftFolderControls();
+}
+function handleDraftFolderCreateOutsideClick(e){
+  if(!draftFolderCreateOpen) return;
+  const createRow = document.getElementById('draftFolderCreateRow');
+  if(createRow?.contains(e.target) || e.target.closest?.('.draft-folder-add-btn')) return;
+  closeDraftFolderCreate();
+}
+function renderDraftFolderControls(){
+  const folders = getDraftFolders();
+  if(currentDraftFolderFilter!==DRAFT_FOLDER_NONE && !folders.some(f=>f.id===currentDraftFolderFilter)){
+    currentDraftFolderFilter = DRAFT_FOLDER_NONE;
+  }
+
+  const saves = getDraftSaves();
+  const tabEl = document.getElementById('draftFolderTabs');
+  if(tabEl){
+    const countFor = id => saves.filter(s=>getDraftFolderFilterId(s, folders)===id).length;
+    const tabs = [
+      {id:DRAFT_FOLDER_NONE, name:'未分類'},
+      ...folders.map(f=>({id:f.id, name:f.name}))
+    ];
+    tabEl.innerHTML = tabs.map(tab=>`
+      <button class="draft-folder-tab${currentDraftFolderFilter===tab.id?' active':''}" type="button" onclick="setDraftFolderFilter('${esc(tab.id)}')" ondragover="onDraftFolderDragOver(event)" ondragleave="onDraftFolderDragLeave(event)" ondrop="onDraftFolderDrop(event,'${esc(tab.id)}')" title="${esc(tab.name)}">
+        <span class="draft-folder-icon" aria-hidden="true"></span>
+        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(tab.name)}</span>
+        <span class="draft-folder-count">${countFor(tab.id)}</span>
+      </button>`).join('');
+  }
+
+  const createRow = document.getElementById('draftFolderCreateRow');
+  if(createRow) createRow.classList.toggle('show', draftFolderCreateOpen);
+}
+function createDraftFolder(){
+  const input = document.getElementById('draftFolderNameInput');
+  const name = (input?.value||'').trim();
+  if(!name){
+    input?.focus();
+    return;
+  }
+  const folders = getDraftFolders();
+  const key = name.toLocaleLowerCase('ja-JP');
+  if(folders.some(f=>f.name.toLocaleLowerCase('ja-JP')===key)){
+    showNotice('同じ名前のフォルダがあります。');
+    return;
+  }
+  const folder = {id:crypto.randomUUID(), name, date:new Date().toLocaleString('ja-JP')};
+  folders.push(folder);
+  putDraftFolders(folders);
+  currentDraftFolderFilter = folder.id;
+  draftFolderCreateOpen = false;
+  if(input) input.value = '';
+  renderDraftFolderControls();
+  renderDraftSavedList();
+}
+
+function onDraftSaveDragStart(e, idx){
+  if(editingDraftSaveIndex===idx){
+    e.preventDefault();
+    return;
+  }
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('application/x-draft-save-index', String(idx));
+  e.dataTransfer.setData('text/plain', String(idx));
+}
+function onDraftFolderDragOver(e){
+  e.preventDefault();
+  e.currentTarget.classList.add('drag-over');
+  if(e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+}
+function onDraftFolderDragLeave(e){
+  e.currentTarget.classList.remove('drag-over');
+}
+function onDraftFolderDrop(e, folderId){
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  const rawIdx = e.dataTransfer?.getData('application/x-draft-save-index');
+  if(rawIdx === undefined || rawIdx === '') return;
+  const idx = Number(rawIdx);
+  if(!Number.isInteger(idx)) return;
+
+  const saves = getDraftSaves();
+  if(!saves[idx]) return;
+  const targetFolderId = normalizeDraftFolderId(folderId, getDraftFolders());
+  saves[idx] = {...saves[idx], folderId: targetFolderId};
+  putDraftSaves(saves);
+  currentDraftFolderFilter = targetFolderId || DRAFT_FOLDER_NONE;
+  renderDraftFolderControls();
+  renderDraftSavedList();
 }
 function bindOverlayClose(overlayEl, onClose){
   let pointerDownOnOverlay = false;
@@ -2550,16 +2902,28 @@ function initModalScrollLock(){
 
 function openDraftModal(){
   const input=document.getElementById('draftSaveNameInput');
-  const defaultName=getDraftDefaultName();
   const currentSave=getCurrentDraftSave();
-  const initialName=currentSave?.name || defaultName;
+  const folders=getDraftFolders();
+  draftFolderCreateOpen = false;
+  const folderNameInput=document.getElementById('draftFolderNameInput');
+  if(folderNameInput) folderNameInput.value = '';
+  if(currentSave){
+    currentDraftFolderFilter = normalizeDraftFolderId(currentSave.folderId, folders) || DRAFT_FOLDER_NONE;
+  } else if(currentDraftFolderFilter!==DRAFT_FOLDER_NONE && !folders.some(f=>f.id===currentDraftFolderFilter)){
+    currentDraftFolderFilter = DRAFT_FOLDER_NONE;
+  }
+  const folderId = getSelectedDraftFolderId(folders);
+  const initialName = currentSave?.name || getUniqueDraftSaveName(getDraftDefaultName(), folderId, folders);
   input.dataset.def=initialName;
   input.value=initialName;
+  renderDraftFolderControls();
   renderDraftSavedList();
   document.getElementById('draftSaveModal').classList.add('show');
 }
 function closeDraftModal(){ document.getElementById('draftSaveModal').classList.remove('show'); }
 bindOverlayClose(document.getElementById('draftSaveModal'), closeDraftModal);
+document.getElementById('draftSaveModal').addEventListener('click', handleDraftFolderCreateOutsideClick);
+bindOverlayClose(document.getElementById('draftTableModal'), closeDraftTableModal);
 bindOverlayClose(document.getElementById('helpModal'), closeHelpModal);
 bindOverlayClose(document.getElementById('settingsModal'), closeSettingsModal);
 document.querySelectorAll('#helpModal details').forEach(function(el){
@@ -2572,8 +2936,35 @@ document.querySelectorAll('#helpModal details').forEach(function(el){
 function getCurrentTeamTitle(team){
   return document.getElementById(team+'PoolTitle')?.value.trim() || getTeamDefaultName(team);
 }
-function getDraftDefaultName(){
+function getDraftFolderDefaultName(){
   return `${getCurrentTeamTitle('blue')} vs ${getCurrentTeamTitle('red')}`;
+}
+function getDraftDefaultName(){
+  return DRAFT_SAVE_BASE_NAME;
+}
+function getUniqueDraftSaveName(baseName, folderId, folders=getDraftFolders(), saves=getDraftSaves(), ignoreIdx=-1){
+  const base = (baseName||DRAFT_SAVE_BASE_NAME).trim() || DRAFT_SAVE_BASE_NAME;
+  const folderKey = folderId || DRAFT_FOLDER_NONE;
+  const used = new Set(
+    saves
+      .filter((s,i)=>i!==ignoreIdx && getDraftFolderFilterId(s, folders)===folderKey)
+      .map(s=>(s.name||'').trim())
+      .filter(Boolean)
+  );
+  if(!used.has(base)) return base;
+  let num = 2;
+  while(used.has(`${base} ${num}`)) num++;
+  return `${base} ${num}`;
+}
+function refreshDraftSaveDefaultName(force=false){
+  const input = document.getElementById('draftSaveNameInput');
+  if(!input) return;
+  const folders = getDraftFolders();
+  const folderId = getSelectedDraftFolderId(folders);
+  const nextDefault = getUniqueDraftSaveName(getDraftDefaultName(), folderId, folders);
+  const shouldReplace = force || !input.value.trim() || input.value===input.dataset.def;
+  input.dataset.def = nextDefault;
+  if(shouldReplace) input.value = nextDefault;
 }
 function getCurrentDraftSave(){
   if(!currentDraftId) return null;
@@ -2586,42 +2977,61 @@ function isFearlessDraftSave(save){
   return !!(save?.fearlessOn || hasFearlessDraftData(save?.state));
 }
 function draftSaveNameBlur(el){
-  if(!el.value.trim()) el.value=el.dataset.def||getDraftDefaultName();
+  if(!el.value.trim()) refreshDraftSaveDefaultName(true);
 }
 
 function saveDraft(){
   const input=document.getElementById('draftSaveNameInput');
-  const name=input.value.trim() || input.dataset.def || getDraftDefaultName();
   const saves=getDraftSaves();
+  const folders=getDraftFolders();
+  const folderId=getSelectedDraftFolderId(folders);
+  const rawName=input.value.trim() || input.dataset.def || getDraftDefaultName();
+  const name=getUniqueDraftSaveName(rawName, folderId, folders, saves);
+  const newDraftId = crypto.randomUUID();
   saves.unshift({
-    id: crypto.randomUUID(),
+    id: newDraftId,
     name,
     date: new Date().toLocaleDateString('ja-JP', {year:'numeric',month:'2-digit',day:'2-digit'}),
     state: JSON.parse(JSON.stringify(state)),
     blueTitle: document.getElementById('bluePoolTitle')?.value||'青チーム',
     redTitle:  document.getElementById('redPoolTitle')?.value||'赤チーム',
+    folderId,
     memo: localStorage.getItem('draftTool_memo')||'',
     fearlessOn: isFearlessOn(),
     ltkOn: isLtkOn(),
     ltkRank: getLtkRank(),
   });
-  putDraftSaves(saves.slice(0,30));
-  input.dataset.def=getDraftDefaultName();
-  input.value=input.dataset.def;
+  const storedSaves = saves.slice(0,30);
+  putDraftSaves(storedSaves);
+  currentDraftId = newDraftId;
+  currentDraftFolderFilter = folderId || DRAFT_FOLDER_NONE;
+  const nextDefault = getUniqueDraftSaveName(getDraftDefaultName(), folderId, folders, storedSaves);
+  input.dataset.def=nextDefault;
+  input.value=nextDefault;
+  renderDraftFolderControls();
   renderDraftSavedList();
 }
 
 function renderDraftSavedList(){
   const saves=getDraftSaves();
+  const folders=getDraftFolders();
   const el=document.getElementById('draftSavedList');
   if(!saves.length){ el.innerHTML='<div class="empty-msg">保存済みドラフトがありません</div>'; return; }
-  el.innerHTML=saves.map((s,i)=>{
+  const visible=saves.map((s,i)=>({s,i})).filter(({s})=>draftMatchesFolderFilter(s, folders));
+  if(!visible.length){ el.innerHTML='<div class="empty-msg">このフォルダにドラフトがありません</div>'; return; }
+  el.innerHTML=visible.map(({s,i})=>{
     const isLoaded=s.id&&s.id===currentDraftId;
     const highlight=isLoaded?'border-color:var(--purple);background:#1e2430;':'';
     const modeText=s.ltkOn?' - LTK3モード':(isFearlessDraftSave(s)?' - フィアレスモード':' - フリーモード');
-    return `<div class="saved-item" style="${highlight}">
+    const folderText=getDraftFolderLabel(s.folderId, folders);
+    return `<div class="saved-item" draggable="true" ondragstart="onDraftSaveDragStart(event,${i})" style="${highlight}">
       <div style="flex:1;min-width:0;">
-        <div class="saved-item-name">${esc(s.name)}</div>
+        ${editingDraftSaveIndex===i
+          ? `<input class="saved-item-rename-input" id="draftRenameInput${i}" type="text" value="${esc(s.name)}" autocomplete="off" onkeydown="handleDraftRenameKey(event,${i})" onblur="commitDraftRename(${i})">`
+          : `<div class="saved-item-name-row">
+              <div class="saved-item-name">${esc(s.name)}</div>
+              <button class="saved-item-edit-btn" type="button" onclick="startDraftRename(${i})" title="名前変更">✎</button>
+            </div>`}
         <div class="saved-item-date">${esc(s.date)}${modeText}</div>
       </div>
       <button class="btn-sm" style="font-size:12px;width:72px;" onclick="loadDraft(${i})">呼び出し</button>
@@ -2630,6 +3040,373 @@ function renderDraftSavedList(){
         : `<button class="btn-sm danger" style="font-size:12px;width:64px;" onclick="deleteDraft(${i})">削除</button>`}
     </div>`;
   }).join('');
+  if(editingDraftSaveIndex>=0){
+    setTimeout(()=>{
+      const input = document.getElementById(`draftRenameInput${editingDraftSaveIndex}`);
+      input?.focus();
+      input?.select();
+    }, 0);
+  }
+}
+
+function startDraftRename(idx){
+  editingDraftSaveIndex = idx;
+  renderDraftSavedList();
+}
+function cancelDraftRename(){
+  editingDraftSaveIndex = -1;
+  renderDraftSavedList();
+}
+function commitDraftRename(idx){
+  if(editingDraftSaveIndex!==idx) return;
+  const input = document.getElementById(`draftRenameInput${idx}`);
+  const saves = getDraftSaves();
+  const save = saves[idx];
+  if(!save){
+    editingDraftSaveIndex = -1;
+    renderDraftSavedList();
+    return;
+  }
+  const rawName = (input?.value||'').trim();
+  if(!rawName){
+    editingDraftSaveIndex = -1;
+    renderDraftSavedList();
+    return;
+  }
+  const folders = getDraftFolders();
+  const folderId = getDraftFolderFilterId(save, folders);
+  saves[idx] = {
+    ...save,
+    name: getUniqueDraftSaveName(rawName, folderId===DRAFT_FOLDER_NONE?null:folderId, folders, saves, idx),
+  };
+  putDraftSaves(saves);
+  editingDraftSaveIndex = -1;
+  refreshDraftSaveDefaultName();
+  renderDraftFolderControls();
+  renderDraftSavedList();
+}
+function handleDraftRenameKey(e, idx){
+  if(e.key==='Enter'){
+    e.preventDefault();
+    commitDraftRename(idx);
+  } else if(e.key==='Escape'){
+    e.preventDefault();
+    cancelDraftRename();
+  }
+}
+function startDraftTableRename(idx){
+  editingDraftTableSaveIndex = idx;
+  renderDraftTable();
+}
+function cancelDraftTableRename(){
+  editingDraftTableSaveIndex = -1;
+  renderDraftTable();
+}
+function commitDraftTableRename(idx){
+  if(editingDraftTableSaveIndex!==idx) return;
+  const input = document.getElementById(`draftTableRenameInput${idx}`);
+  const saves = getDraftSaves();
+  const save = saves[idx];
+  if(!save){
+    editingDraftTableSaveIndex = -1;
+    renderDraftTable();
+    return;
+  }
+  const rawName = (input?.value||'').trim();
+  if(!rawName){
+    editingDraftTableSaveIndex = -1;
+    renderDraftTable();
+    return;
+  }
+  const folders = getDraftFolders();
+  const folderId = getDraftFolderFilterId(save, folders);
+  saves[idx] = {
+    ...save,
+    name: getUniqueDraftSaveName(rawName, folderId===DRAFT_FOLDER_NONE?null:folderId, folders, saves, idx),
+  };
+  putDraftSaves(saves);
+  editingDraftTableSaveIndex = -1;
+  refreshDraftSaveDefaultName();
+  renderDraftFolderControls();
+  renderDraftSavedList();
+  renderDraftTable();
+}
+function handleDraftTableRenameKey(e, idx){
+  if(e.key==='Enter'){
+    e.preventDefault();
+    commitDraftTableRename(idx);
+  } else if(e.key==='Escape'){
+    e.preventDefault();
+    cancelDraftTableRename();
+  }
+}
+
+function getDraftTableFolderId(folders=getDraftFolders()){
+  return normalizeDraftFolderId(currentDraftTableFolder, folders) || DRAFT_FOLDER_NONE;
+}
+function normalizeDraftTableSearchText(value){
+  return String(value||'')
+    .normalize('NFKC')
+    .toLocaleLowerCase('ja-JP')
+    .replace(/[\u3041-\u3096]/g,c=>String.fromCharCode(c.charCodeAt(0)+0x60))
+    .replace(/[＝=・･\-－‐‑‒–—―．.\s]/g,'')
+    .trim();
+}
+function draftTableSaveMatchesFilter(save){
+  if(!draftTableFilter) return true;
+  const group = DRAFT_TABLE_FILTER_GROUPS[draftTableFilter.key];
+  const query = normalizeDraftTableSearchText(draftTableFilter.query);
+  if(!group || !query) return true;
+  const draftState = save?.state || {};
+  return ['blue','red'].some(team=>{
+    const slots = draftState[team]?.[group.type] || [];
+    return group.indexes.some(idx=>{
+      const champ = slots[idx];
+      if(!champ) return false;
+      const haystack = normalizeDraftTableSearchText(`${champ.name||''} ${champ.id||''}`);
+      return haystack.includes(query);
+    });
+  });
+}
+function getDraftTableSaves(folders=getDraftFolders()){
+  const folderId = getDraftTableFolderId(folders);
+  currentDraftTableFolder = folderId;
+  const saves = getDraftSaves()
+    .map((save, idx)=>({save, idx}))
+    .filter(({save})=>getDraftFolderFilterId(save, folders)===folderId && draftTableSaveMatchesFilter(save));
+  if(draftTableSortMode==='name'){
+    return saves.sort((a,b)=>(a.save.name||'').localeCompare(b.save.name||'','ja') || (a.save.date||'').localeCompare(b.save.date||'','ja'));
+  }
+  return saves;
+}
+function renderDraftTableControls(){
+  const folders = getDraftFolders();
+  currentDraftTableFolder = getDraftTableFolderId(folders);
+  const select = document.getElementById('draftTableFolderSelect');
+  if(select){
+    select.innerHTML = [
+      `<option value="${DRAFT_FOLDER_NONE}">未分類</option>`,
+      ...folders.map(f=>`<option value="${esc(f.id)}">${esc(f.name)}</option>`)
+    ].join('');
+    select.value = currentDraftTableFolder;
+  }
+  const sortBtn = document.getElementById('draftTableSortBtn');
+  if(sortBtn) sortBtn.textContent = draftTableSortMode==='name' ? '並び: 名前順' : '並び: 保存順';
+  document.querySelectorAll('.draft-table-view-btn').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.view===draftTableViewMode);
+  });
+  const filterStatus = document.getElementById('draftTableFilterStatus');
+  if(filterStatus){
+    filterStatus.classList.remove('show');
+    filterStatus.innerHTML = '';
+  }
+}
+function renderDraftTableKind(row){
+  const hasFilter = draftTableFilter?.key===row.filterKey;
+  return `<div class="draft-table-kind-main">${esc(row.kind)}</div>
+    ${hasFilter
+      ? `<div class="draft-table-cell-filter" title="${esc(draftTableFilter.query)}" onclick="event.stopPropagation()">
+          <span class="draft-table-cell-filter-name">${esc(draftTableFilter.query)}</span>
+          <button class="draft-table-cell-filter-clear" type="button" onclick="event.stopPropagation();clearDraftTableFilter()" title="絞り込み解除">×</button>
+        </div>`
+      : ''}`;
+}
+function renderDraftTableNo(row){
+  const hasFilter = draftTableFilter?.key===row.noFilterKey;
+  return `<div class="draft-table-num-main">${row.no}</div>
+    ${hasFilter
+      ? `<div class="draft-table-cell-filter" title="${esc(draftTableFilter.query)}" onclick="event.stopPropagation()">
+          <span class="draft-table-cell-filter-name">${esc(draftTableFilter.query)}</span>
+          <button class="draft-table-cell-filter-clear" type="button" onclick="event.stopPropagation();clearDraftTableFilter()" title="絞り込み解除">×</button>
+        </div>`
+      : ''}`;
+}
+function renderDraftTableChamp(champ, team, isBan=false){
+  const teamLabel = team==='blue'?'青':'赤';
+  if(!champ){
+    return `<div class="draft-table-champ ${team}"><div class="draft-table-empty">-</div><span>${teamLabel}</span></div>`;
+  }
+  const name = champ.name || champ.id || '';
+  return `<div class="draft-table-champ ${team}${isBan?' ban':''}" title="${teamLabel}: ${esc(name)}">
+    <img src="${img(champ.id)}" alt="${esc(name)}">
+    <span>${esc(name)}</span>
+  </div>`;
+}
+function renderDraftTableCell(entry, row){
+  const draftState = entry?.save?.state || {};
+  const blue = draftState.blue?.[row.type]?.[row.idx] || null;
+  const red = draftState.red?.[row.type]?.[row.idx] || null;
+  return `<td class="save-col">
+    <div class="draft-table-pair">
+      ${renderDraftTableChamp(blue, 'blue', row.type==='bans')}
+      ${renderDraftTableChamp(red, 'red', row.type==='bans')}
+    </div>
+  </td>`;
+}
+function renderDraftTable(){
+  renderDraftTableControls();
+  const folders = getDraftFolders();
+  const entries = getDraftTableSaves(folders);
+  const count = document.getElementById('draftTableCount');
+  const folderLabel = getDraftFolderLabel(currentDraftTableFolder, folders);
+  if(count) count.textContent = `${folderLabel}: ${entries.length}件`;
+  const scroll = document.getElementById('draftTableScroll');
+  if(!scroll) return;
+
+  const head = entries.map(({save, idx})=>`
+    <th class="save-col" title="${esc(save.name||'名称なし')}">
+      ${editingDraftTableSaveIndex===idx
+        ? `<input class="draft-table-rename-input" id="draftTableRenameInput${idx}" type="text" value="${esc(save.name||'')}" autocomplete="off" onkeydown="handleDraftTableRenameKey(event,${idx})" onblur="commitDraftTableRename(${idx})">`
+        : `<div class="draft-table-save-head">
+            <div class="draft-table-save-name">${esc(save.name||'名称なし')}</div>
+            <button class="draft-table-save-edit-btn" type="button" onclick="event.stopPropagation();startDraftTableRename(${idx})" title="名前変更">✎</button>
+          </div>`}
+      <div class="draft-table-save-date">${esc(save.date||'')}</div>
+    </th>`).join('') || '<th class="save-col placeholder-col"></th>';
+  const body = DRAFT_TABLE_ROWS.map(row=>`
+    <tr class="row-${row.type==='bans'?'ban':'pick'}">
+      ${row.kind?`<th class="sticky-cell col-kind draft-table-kind filterable" rowspan="${row.kindRows}" onclick="openDraftTableSearch(event,'${row.filterKey}')" title="チャンプ名で絞り込み">${renderDraftTableKind(row)}</th>`:''}
+      <th class="sticky-cell col-num draft-table-num filterable" onclick="openDraftTableSearch(event,'${row.noFilterKey}')" title="このNo.をチャンプ名で絞り込み">${renderDraftTableNo(row)}</th>
+      ${entries.map(entry=>renderDraftTableCell(entry,row)).join('') || '<td class="save-col placeholder-col"><div class="draft-table-pair"><div class="draft-table-champ"><div class="draft-table-empty">-</div><span>-</span></div><div class="draft-table-champ"><div class="draft-table-empty">-</div><span>-</span></div></div></td>'}
+    </tr>`).join('');
+
+  scroll.innerHTML = `
+    <table class="draft-table view-${esc(draftTableViewMode)}">
+      <thead>
+        <tr>
+          <th class="sticky-cell col-kind">区分</th>
+          <th class="sticky-cell col-num">No.</th>
+          ${head}
+        </tr>
+      </thead>
+      <tbody>${body}</tbody>
+    </table>`;
+  if(editingDraftTableSaveIndex>=0){
+    setTimeout(()=>{
+      const input = document.getElementById(`draftTableRenameInput${editingDraftTableSaveIndex}`);
+      input?.focus();
+      input?.select();
+    }, 0);
+  }
+}
+function openDraftTableModal(){
+  const folders = getDraftFolders();
+  currentDraftTableFolder = currentDraftFolderFilter===DRAFT_FOLDER_NONE || folders.some(f=>f.id===currentDraftFolderFilter)
+    ? currentDraftFolderFilter
+    : DRAFT_FOLDER_NONE;
+  renderDraftTable();
+  document.getElementById('draftTableModal').classList.add('show');
+}
+function closeDraftTableModal(){
+  closeDraftTableSearch();
+  editingDraftTableSaveIndex = -1;
+  document.getElementById('draftTableModal').classList.remove('show');
+}
+function setDraftTableFolder(folderId){
+  const folders = getDraftFolders();
+  currentDraftTableFolder = folderId===DRAFT_FOLDER_NONE || folders.some(f=>f.id===folderId) ? folderId : DRAFT_FOLDER_NONE;
+  editingDraftTableSaveIndex = -1;
+  renderDraftTable();
+}
+function toggleDraftTableSort(){
+  draftTableSortMode = draftTableSortMode==='saved' ? 'name' : 'saved';
+  editingDraftTableSaveIndex = -1;
+  renderDraftTable();
+}
+function setDraftTableView(mode){
+  draftTableViewMode = ['icon','both','text'].includes(mode) ? mode : 'both';
+  renderDraftTable();
+}
+function getDraftTableChampSuggestions(query){
+  const q = normalizeDraftTableSearchText(query);
+  if(!q) return [];
+  const source = (allChamps&&allChamps.length ? allChamps : CHAMP_DATA) || [];
+  return source.filter(c=>{
+    const name = normalizeDraftTableSearchText(c.name);
+    const id = normalizeDraftTableSearchText(c.id);
+    return name.startsWith(q) || id.startsWith(q);
+  }).slice(0,14);
+}
+function renderDraftTableSearchSuggestions(){
+  const list = document.getElementById('draftTableSearchSuggestions');
+  const input = document.getElementById('draftTableSearchInput');
+  if(!list || !input) return;
+  const query = input.value;
+  const suggestions = getDraftTableChampSuggestions(query);
+  const hasQuery = !!normalizeDraftTableSearchText(query);
+  list.classList.toggle('show', hasQuery);
+  if(!hasQuery){
+    list.innerHTML = '';
+    return;
+  }
+  list.innerHTML = suggestions.length
+    ? suggestions.map(c=>`<button class="draft-table-search-suggestion" type="button" onclick="selectDraftTableSearchSuggestion('${esc(c.name)}')">${esc(c.name)}</button>`).join('')
+    : '<div class="draft-table-search-suggestion-empty">候補がありません</div>';
+  positionDraftTableSearch();
+}
+function positionDraftTableSearch(e){
+  const layer = document.getElementById('draftTableSearchLayer');
+  const box = layer?.querySelector('.draft-table-search-modal');
+  const modal = document.querySelector('.draft-table-modal');
+  if(!layer || !box || !modal) return;
+  if(e) draftTableSearchAnchor = {clientX:e.clientX, clientY:e.clientY};
+  const rect = modal.getBoundingClientRect();
+  const clickX = draftTableSearchAnchor?.clientX ?? (rect.left + 24);
+  const clickY = draftTableSearchAnchor?.clientY ?? (rect.top + 94);
+  requestAnimationFrame(()=>{
+    const gap = 10;
+    const maxX = Math.max(12, rect.width - box.offsetWidth - 12);
+    const maxY = Math.max(12, rect.height - box.offsetHeight - 12);
+    const x = Math.min(Math.max(12, clickX - rect.left + gap), maxX);
+    const y = Math.min(Math.max(56, clickY - rect.top + gap), maxY);
+    box.style.left = `${x}px`;
+    box.style.top = `${y}px`;
+  });
+}
+function openDraftTableSearch(e, filterKey){
+  const group = DRAFT_TABLE_FILTER_GROUPS[filterKey];
+  if(!group) return;
+  e?.stopPropagation?.();
+  draftTableSearchTarget = filterKey;
+  draftTableSearchAnchor = e ? {clientX:e.clientX, clientY:e.clientY} : null;
+  const title = document.getElementById('draftTableSearchTitle');
+  const input = document.getElementById('draftTableSearchInput');
+  if(title) title.textContent = `${group.label} チャンプ名検索`;
+  if(input){
+    input.value = draftTableFilter?.key===filterKey ? draftTableFilter.query : '';
+  }
+  document.getElementById('draftTableSearchLayer')?.classList.add('show');
+  renderDraftTableSearchSuggestions();
+  positionDraftTableSearch(e);
+  setTimeout(()=>{ input?.focus(); input?.select(); }, 0);
+}
+function closeDraftTableSearch(){
+  draftTableSearchAnchor = null;
+  document.getElementById('draftTableSearchLayer')?.classList.remove('show');
+}
+function selectDraftTableSearchSuggestion(name){
+  const input = document.getElementById('draftTableSearchInput');
+  if(input) input.value = name;
+  applyDraftTableSearch();
+}
+function applyDraftTableSearch(){
+  const query = document.getElementById('draftTableSearchInput')?.value.trim() || '';
+  if(query && draftTableSearchTarget){
+    draftTableFilter = {key:draftTableSearchTarget, query};
+  } else {
+    draftTableFilter = null;
+  }
+  closeDraftTableSearch();
+  renderDraftTable();
+}
+function clearDraftTableFilter(){
+  draftTableFilter = null;
+  closeDraftTableSearch();
+  renderDraftTable();
+}
+function handleDraftTableSearchKey(e){
+  if(e.key==='Enter') applyDraftTableSearch();
+  if(e.key==='Escape') closeDraftTableSearch();
 }
 
 let currentDraftId = null;
@@ -2686,18 +3463,21 @@ function overwriteDraft(){
     return;
   }
   showConfirm(`「${saves[idx].name}」に上書きしますか？`, ()=>{
+    const folderId = getSelectedDraftFolderId();
     saves[idx] = {
       ...saves[idx],
       date: new Date().toLocaleDateString('ja-JP', {year:'numeric',month:'2-digit',day:'2-digit'}),
       state: JSON.parse(JSON.stringify(state)),
       blueTitle: document.getElementById('bluePoolTitle')?.value||'青チーム',
       redTitle:  document.getElementById('redPoolTitle')?.value||'赤チーム',
+      folderId,
       memo: localStorage.getItem('draftTool_memo')||'',
       fearlessOn: isFearlessOn(),
       ltkOn: isLtkOn(),
       ltkRank: getLtkRank(),
     };
     putDraftSaves(saves);
+    renderDraftFolderControls();
     renderDraftSavedList();
     closeDraftModal();
   }, null, '上書きする');
@@ -2710,6 +3490,7 @@ function deleteDraft(idx){
     saves.splice(idx,1);
     if(deletedId && deletedId === currentDraftId) currentDraftId = null;
     putDraftSaves(saves);
+    renderDraftFolderControls();
     renderDraftSavedList();
   }, null, '削除する');
 }
@@ -2746,6 +3527,25 @@ function normalizePlayerNameEntries(playerNames, displayNames){
     return normalizeStoredPlayerName(playerNames?.[i], displayName);
   });
 }
+function normalizeLoadedPlayerSaveIds(ids){
+  return Array.from({length:5}, (_,i)=>typeof ids?.[i]==='string' && ids[i] ? ids[i] : null);
+}
+function getPlayerLoadedSaveIds(team, targetState=state){
+  const key = team==='blue' ? 'blueLoadedPlayerSaveIds' : 'redLoadedPlayerSaveIds';
+  targetState[key] = normalizeLoadedPlayerSaveIds(targetState[key]);
+  return targetState[key];
+}
+function setPlayerLoadedSaveId(team, idx, id){
+  getPlayerLoadedSaveIds(team)[idx] = id || null;
+}
+function getCurrentPlayerLoadedSaveId(){
+  if(playerModalTeam==null || playerModalIdx==null) return null;
+  return getPlayerLoadedSaveIds(playerModalTeam)[playerModalIdx] || null;
+}
+function setCurrentPlayerLoadedSaveId(id){
+  if(playerModalTeam==null || playerModalIdx==null) return;
+  setPlayerLoadedSaveId(playerModalTeam, playerModalIdx, id);
+}
 function normalizeTeamPools(pools){
   return Array.from({length:5}, (_,i)=>Array.isArray(pools?.[i]) ? pools[i] : []);
 }
@@ -2768,6 +3568,8 @@ function normalizeLoadedState(targetState){
   targetState.redNames=normalizePoolNames(targetState.redNames);
   targetState.bluePlayerNames=normalizePlayerNameEntries(targetState.bluePlayerNames, targetState.blueNames);
   targetState.redPlayerNames=normalizePlayerNameEntries(targetState.redPlayerNames, targetState.redNames);
+  targetState.blueLoadedPlayerSaveIds=normalizeLoadedPlayerSaveIds(targetState.blueLoadedPlayerSaveIds);
+  targetState.redLoadedPlayerSaveIds=normalizeLoadedPlayerSaveIds(targetState.redLoadedPlayerSaveIds);
   targetState.fearlessBlue=Array.isArray(targetState.fearlessBlue) ? targetState.fearlessBlue : [];
   targetState.fearlessRed=Array.isArray(targetState.fearlessRed) ? targetState.fearlessRed : [];
   targetState.fearlessHistory=Array.isArray(targetState.fearlessHistory) ? targetState.fearlessHistory : [];
@@ -2900,11 +3702,13 @@ function clearTeamPool(){
       state.bluePools=[[],[],[],[],[]];
       state.blueProtect=[];
       state.blueNewbieProtect=[];
+      state.blueLoadedPlayerSaveIds=Array(5).fill(null);
       state.blueLoadedSaveId=null;
     } else {
       state.redPools=[[],[],[],[],[]];
       state.redProtect=[];
       state.redNewbieProtect=[];
+      state.redLoadedPlayerSaveIds=Array(5).fill(null);
       state.redLoadedSaveId=null;
     }
     applySnapshot(modalTeam, {
@@ -2925,6 +3729,7 @@ function clearTeamAll(){
       state.bluePlayerNames=['','','','',''];
       state.blueProtect=[];
       state.blueNewbieProtect=[];
+      state.blueLoadedPlayerSaveIds=Array(5).fill(null);
       state.blueLoadedSaveId=null;
     } else {
       state.redPools=[[],[],[],[],[]];
@@ -2932,6 +3737,7 @@ function clearTeamAll(){
       state.redPlayerNames=['','','','',''];
       state.redProtect=[];
       state.redNewbieProtect=[];
+      state.redLoadedPlayerSaveIds=Array(5).fill(null);
       state.redLoadedSaveId=null;
     }
     applySnapshot(modalTeam, {pools:modalTeam==='blue'?state.bluePools:state.redPools, names:[], playerNames:[], protect:[], newbieProtect:[]}, modalTeam==='blue'?'青チーム':'赤チーム');
@@ -3033,6 +3839,7 @@ function loadSave(listIdx, targetTeam){
   const saves=getSaves();
   if(!saves[listIdx])return;
   applySnapshot(targetTeam, saves[listIdx].data, saves[listIdx].name);
+  state[targetTeam+'LoadedPlayerSaveIds']=Array(5).fill(null);
   state[targetTeam+'LoadedSaveId']=saves[listIdx].id||null;
   _updateCurrentModeSnapshot();
   closeModal();
@@ -3091,7 +3898,9 @@ function clearPlayerPool(){
       state.redNames[playerModalIdx]='';
       state.redPlayerNames[playerModalIdx]='';
     }
+    setCurrentPlayerLoadedSaveId(null);
     syncPoolLabelInput(playerModalTeam, playerModalIdx);
+    _updateCurrentModeSnapshot();
     renderPools(playerModalTeam);
     renderChampGrid();
     closePlayerModal();
@@ -3118,6 +3927,29 @@ function getSavedPlayerIdentity(save){
     playerName
   };
 }
+function ensurePlayerSaveId(saves, idx){
+  if(!saves[idx]) return null;
+  if(!saves[idx].id){
+    saves[idx].id = crypto.randomUUID();
+    putPlayerSaves(saves);
+  }
+  return saves[idx].id;
+}
+function playerSnapshotFromInputs(){
+  const displayInput = document.getElementById('playerDisplayNameInput');
+  const playerInput = document.getElementById('playerNameInput');
+  const nextDisplayName = displayInput.value.trim();
+  const nextPlayerName = playerInput.value.trim();
+  const finalDisplayName = nextDisplayName || nextPlayerName;
+  if(!finalDisplayName) return null;
+  const pool = (playerModalTeam==='blue'?state.bluePools:state.redPools)[playerModalIdx] || [];
+  return {
+    pool,
+    name: finalDisplayName,
+    displayName: finalDisplayName,
+    playerName: nextPlayerName
+  };
+}
 
 function savePlayerData(){
   const displayInput = document.getElementById('playerDisplayNameInput');
@@ -3139,6 +3971,7 @@ function savePlayerData(){
     data: snapshot
   });
   putPlayerSaves(saves.slice(0, 50));
+  setCurrentPlayerLoadedSaveId(id);
   displayInput.value = snapshot.displayName || '';
   playerInput.value = snapshot.playerName || '';
   syncPoolLabelInput(playerModalTeam, playerModalIdx);
@@ -3149,20 +3982,68 @@ function savePlayerData(){
   renderPlayerSavedList();
 }
 
+function overwritePlayerData(){
+  const loadedId = getCurrentPlayerLoadedSaveId();
+  if(!loadedId) return;
+  const displayInput = document.getElementById('playerDisplayNameInput');
+  const playerInput = document.getElementById('playerNameInput');
+  const snapshot = playerSnapshotFromInputs();
+  if(!snapshot){ displayInput.focus(); return; }
+  const saves = getPlayerSaves();
+  const idx = saves.findIndex(s=>s.id===loadedId);
+  if(idx===-1){
+    setCurrentPlayerLoadedSaveId(null);
+    _updateCurrentModeSnapshot();
+    renderPlayerSavedList();
+    alert('上書き先の保存データが見つかりません。新規保存してください。');
+    return;
+  }
+  showConfirm(`「${saves[idx].name || snapshot.displayName}」に上書きしますか？`, ()=>{
+    const newId = crypto.randomUUID();
+    setPlayerIdentity(playerModalTeam, playerModalIdx, snapshot.displayName, snapshot.playerName);
+    saves[idx] = {
+      ...saves[idx],
+      id: newId,
+      name: snapshot.displayName,
+      displayName: snapshot.displayName,
+      playerName: snapshot.playerName,
+      date: new Date().toLocaleString('ja-JP'),
+      data: snapshot
+    };
+    putPlayerSaves(saves);
+    setCurrentPlayerLoadedSaveId(newId);
+    displayInput.value = snapshot.displayName || '';
+    playerInput.value = snapshot.playerName || '';
+    syncPoolLabelInput(playerModalTeam, playerModalIdx);
+    _updateCurrentModeSnapshot();
+    renderPools(playerModalTeam);
+    renderChampGrid();
+    document.getElementById('playerModalTitle').textContent = `${snapshot.displayName || getPlayerDefaultName(playerModalTeam, playerModalIdx)} — 保存/呼び出し`;
+    renderPlayerSavedList();
+  }, null, '上書きする');
+}
+
 function renderPlayerSavedList(){
   const saves = getPlayerSaves();
   const el = document.getElementById('playerSavedList');
   if(!saves.length){ el.innerHTML='<div class="empty-msg">保存済みデータがありません</div>'; return; }
+  const loadedId = getCurrentPlayerLoadedSaveId();
+  const targetColor = playerModalTeam==='blue' ? 'var(--blue)' : 'var(--red)';
   el.innerHTML = saves.map((s,i)=>{
     const saved = getSavedPlayerIdentity(s);
+    const isLoaded = s.id && s.id===loadedId;
+    const highlight = isLoaded ? 'border-color:var(--purple);background:#1e2430;' : '';
+    const actionBtn = isLoaded
+      ? `<button class="btn-sm" style="font-size:12px;color:var(--purple);border-color:var(--purple-mid);width:64px;" onclick="overwritePlayerData()">上書き</button>`
+      : `<button class="btn-sm danger" style="font-size:12px;width:64px;" onclick="deletePlayerSave(${i})">削除</button>`;
     return `
-      <div class="saved-item">
+      <div class="saved-item" style="${highlight}">
         <div style="flex:1;min-width:0;">
           <div class="saved-item-name">${esc(saved.displayName || '（名称なし）')}</div>
           <div class="saved-item-date">${esc(s.date)}</div>
         </div>
-        <button class="btn-sm" style="font-size:12px;" onclick="loadPlayerSave(${i})">呼び出し</button>
-        <button class="btn-sm danger" style="font-size:12px;" onclick="deletePlayerSave(${i})">削除</button>
+        <button class="btn-sm" style="font-size:12px;color:${targetColor};" onclick="loadPlayerSave(${i})">呼び出し</button>
+        ${actionBtn}
       </div>`;
   }).join('');
 }
@@ -3170,6 +4051,7 @@ function renderPlayerSavedList(){
 function loadPlayerSave(listIdx){
   const saves = getPlayerSaves();
   if(!saves[listIdx]) return;
+  const saveId = ensurePlayerSaveId(saves, listIdx);
   const snap = saves[listIdx].data || {};
   const saved = getSavedPlayerIdentity(saves[listIdx]);
   if(playerModalTeam==='blue'){
@@ -3179,6 +4061,7 @@ function loadPlayerSave(listIdx){
     state.redPools[playerModalIdx] = Array.isArray(snap.pool) ? snap.pool : [];
     setPlayerIdentity('red', playerModalIdx, saved.displayName, saved.playerName);
   }
+  setCurrentPlayerLoadedSaveId(saveId);
   syncPoolLabelInput(playerModalTeam, playerModalIdx);
   _updateCurrentModeSnapshot();
   renderPools(playerModalTeam);
@@ -3189,7 +4072,12 @@ function loadPlayerSave(listIdx){
 function deletePlayerSave(listIdx){
   showConfirm('この保存データを削除しますか？', ()=>{
     const saves = getPlayerSaves();
+    const deletedId = saves[listIdx]?.id || null;
     saves.splice(listIdx, 1);
+    if(deletedId && deletedId===getCurrentPlayerLoadedSaveId()){
+      setCurrentPlayerLoadedSaveId(null);
+      _updateCurrentModeSnapshot();
+    }
     putPlayerSaves(saves);
     renderPlayerSavedList();
   }, null, '削除する');
@@ -3463,6 +4351,8 @@ function _snapshotPools(){
     redNames:           [...state.redNames],
     bluePlayerNames:    [...state.bluePlayerNames],
     redPlayerNames:     [...state.redPlayerNames],
+    blueLoadedPlayerSaveIds:[...getPlayerLoadedSaveIds('blue')],
+    redLoadedPlayerSaveIds: [...getPlayerLoadedSaveIds('red')],
     blueLoadedSaveId:   state.blueLoadedSaveId,
     redLoadedSaveId:    state.redLoadedSaveId,
     blueTitle:          document.getElementById('bluePoolTitle')?.value || '青チーム',
@@ -3480,6 +4370,8 @@ function _restorePools(snap){
   state.redNames           = snap ? snap.redNames          : ['','','','',''];
   state.bluePlayerNames    = snap ? snap.bluePlayerNames   : ['','','','',''];
   state.redPlayerNames     = snap ? snap.redPlayerNames    : ['','','','',''];
+  state.blueLoadedPlayerSaveIds = snap ? normalizeLoadedPlayerSaveIds(snap.blueLoadedPlayerSaveIds) : Array(5).fill(null);
+  state.redLoadedPlayerSaveIds  = snap ? normalizeLoadedPlayerSaveIds(snap.redLoadedPlayerSaveIds)  : Array(5).fill(null);
   state.blueLoadedSaveId   = snap ? snap.blueLoadedSaveId  : null;
   state.redLoadedSaveId    = snap ? snap.redLoadedSaveId   : null;
   state.blueProtect        = snap ? JSON.parse(JSON.stringify(snap.blueProtect       || [])) : [];
@@ -3770,7 +4662,7 @@ document.querySelectorAll('.pool-label-input').forEach(el=>autoWidth(el));
     <a href="#" onclick="document.getElementById('tosModal').classList.add('show');return false;" style="color:#5a7a9a;text-decoration:underline;margin:0 8px;">利用規約</a>
     <a href="#" onclick="document.getElementById('privacyModal').classList.add('show');return false;" style="color:#5a7a9a;text-decoration:underline;margin:0 8px;">プライバシーポリシー</a>
   </div>
-  <div style="margin-top:4px;">v1.0.1  |  更新日: 2026-05-10</div>
+  <div style="margin-top:4px;">v1.0.2  |  更新日: 2026-05-15</div>
 </div>
 
 <!-- 利用規約モーダル -->
