@@ -318,10 +318,46 @@
   .save-row{display:flex;gap:8px;margin-bottom:10px;}
   .save-input{flex:1;height:34px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:0 10px;font-size:14px;color:var(--text);font-family:inherit;outline:none;}
   .save-input:focus{border-color:var(--purple);}
-  .draft-save-modal{max-width:840px;width:min(92vw,840px);max-height:min(92vh,760px);}
+  .draft-current-save{margin-bottom:12px;}
+  .draft-current-save-card{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2);overflow:hidden;}
+  .draft-current-save-card.is-empty{border-style:dashed;background:rgba(255,255,255,.025);}
+  .draft-current-save-info{min-width:0;display:grid;gap:2px;}
+  .draft-current-save-badge{width:max-content;max-width:100%;padding:2px 7px;border:1px solid var(--purple-mid);border-radius:999px;background:var(--purple-light);color:var(--purple);font-size:10px;font-weight:800;letter-spacing:.04em;line-height:1.2;}
+  .draft-current-save-card.is-empty .draft-current-save-badge{border-color:var(--border);background:transparent;color:var(--text3);}
+  .draft-current-save-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text);font-size:14px;font-weight:800;}
+  .draft-current-save-card.is-empty .draft-current-save-name{color:var(--text2);}
+  .draft-current-save-meta{color:var(--text3);font-size:11px;line-height:1.4;}
+  .draft-overwrite-btn{height:32px;min-width:88px;padding:0 12px;flex:0 0 auto;}
+  .draft-current-save-card.is-empty{  justify-content:center;  text-align:center;  border-style:dashed;  background:rgba(255,255,255,.018);
+}
+
+.draft-current-save-card.is-empty .draft-current-save-info{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.draft-current-save-card.is-empty .draft-current-save-badge,
+.draft-current-save-card.is-empty .draft-current-save-meta,
+.draft-current-save-card.is-empty .draft-overwrite-btn{
+  display:none;
+}
+
+.draft-current-save-card.is-empty .draft-current-save-name{
+  color:var(--text3);
+  font-size:13px;
+  font-weight:400;
+  opacity:.75;
+}
+  @media (max-width:520px){
+    .draft-current-save-card{align-items:stretch;flex-direction:column;}
+    .draft-overwrite-btn{width:100%;}
+  }
+  .draft-save-modal{box-sizing:border-box;max-width:840px;width:min(92vw,840px);height:min(92vh,760px);max-height:min(92vh,760px);display:flex;flex-direction:column;}
   .draft-save-top{margin-bottom:12px;}
   .draft-save-top .save-row{margin-bottom:0;}
-  .draft-browser{display:grid;grid-template-columns:260px minmax(0,1fr);gap:12px;border-top:1px solid var(--border);padding-top:12px;height:min(58vh,520px);min-height:360px;}
+  .draft-browser{display:grid;grid-template-columns:260px minmax(0,1fr);gap:12px;border-top:1px solid var(--border);padding-top:12px;flex:1;min-height:0;}
   .draft-folder-pane,.draft-list-pane{min-height:0;}
   .draft-folder-pane{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:var(--radius-sm);background:rgba(255,255,255,.02);padding:8px;}
   .draft-list-pane{display:flex;flex-direction:column;}
@@ -727,10 +763,20 @@ League of Legendsの大会・練習向けドラフトツール
       <button class="modal-close" onclick="closeDraftModal()">✕</button>
     </div>
     <div class="draft-save-top">
-      <div class="modal-section">名前をつけて保存</div>
+      <div class="draft-current-save" id="draftCurrentSavePanel">
+        <div class="modal-section">現在のドラフト</div>
+        <div class="draft-current-save-card" id="draftCurrentSaveCard">
+          <div class="draft-current-save-info">
+            <div class="draft-current-save-name" id="draftCurrentSaveName"></div>
+            <div class="draft-current-save-meta" id="draftCurrentSaveMeta"></div>
+          </div>
+          <button class="btn-sm draft-overwrite-btn" id="draftOverwriteButton" type="button" onclick="overwriteDraft()">上書き保存</button>
+        </div>
+      </div>
+      <div class="modal-section" id="draftSaveSectionTitle">名前をつけて保存</div>
       <div class="save-row">
-        <input class="save-input" id="draftSaveNameInput" type="text" placeholder="ドラフトプラン" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onblur="draftSaveNameBlur(this)">
-        <button class="btn-sm" onclick="saveDraft()">保存</button>
+        <input class="save-input" id="draftSaveNameInput" type="text" placeholder="例: 大会A 第1試合" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onblur="draftSaveNameBlur(this)">
+        <button class="btn-sm" id="draftSaveButton" onclick="saveDraft()">保存</button>
       </div>
     </div>
     <div class="draft-browser">
@@ -2761,7 +2807,7 @@ function syncProtectCfg(){
 // ─── DRAFT SAVE / LOAD ────────────────────────────────────────
 const DRAFT_FOLDER_STORAGE_KEY = 'draftTool_draftFolders';
 const DRAFT_FOLDER_NONE = '__none__';
-const DRAFT_SAVE_BASE_NAME = 'ドラフトプラン';
+const DRAFT_SAVE_BASE_NAME = '無題のドラフト';
 let currentDraftFolderFilter = DRAFT_FOLDER_NONE;
 let draftFolderCreateOpen = false;
 let currentDraftTableFolder = DRAFT_FOLDER_NONE;
@@ -3041,10 +3087,9 @@ function openDraftModal(){
   } else if(currentDraftFolderFilter!==DRAFT_FOLDER_NONE && !folders.some(f=>f.id===currentDraftFolderFilter)){
     currentDraftFolderFilter = DRAFT_FOLDER_NONE;
   }
-  const folderId = getSelectedDraftFolderId(folders);
-  const initialName = currentSave?.name || getUniqueDraftSaveName(getDraftDefaultName(), folderId, folders);
-  input.dataset.def=initialName;
-  input.value=initialName;
+  input.dataset.def=getDraftDefaultName();
+  input.value='';
+  updateDraftCurrentSavePanel();
   renderDraftFolderControls();
   renderDraftSavedList();
   document.getElementById('draftSaveModal').classList.add('show');
@@ -3071,29 +3116,66 @@ function getDraftFolderDefaultName(){
 function getDraftDefaultName(){
   return DRAFT_SAVE_BASE_NAME;
 }
+function updateDraftCurrentSavePanel(){
+  const panel = document.getElementById('draftCurrentSavePanel');
+  if(!panel) return;
+  const save = getCurrentDraftSave();
+  const sectionTitle = document.getElementById('draftSaveSectionTitle');
+  const saveButton = document.getElementById('draftSaveButton');
+  const overwriteButton = document.getElementById('draftOverwriteButton');
+  const card = document.getElementById('draftCurrentSaveCard');
+  const input = document.getElementById('draftSaveNameInput');
+  const nameEl = document.getElementById('draftCurrentSaveName');
+  const metaEl = document.getElementById('draftCurrentSaveMeta');
+
+  card?.classList.toggle('is-empty', !save);
+  if(sectionTitle) sectionTitle.textContent = save ? '別名で保存' : '名前をつけて保存';
+  if(saveButton) saveButton.textContent = save ? '別名保存' : '保存';
+  if(overwriteButton){
+    overwriteButton.disabled = !save;
+    overwriteButton.textContent = save ? '上書き保存' : '上書き不可';
+  }
+  if(input) input.placeholder = save ? '例: 大会A 第2試合' : '例: 大会A 第1試合';
+
+  if(nameEl) nameEl.textContent = save ? (save.name || getDraftDefaultName()) : '呼び出しているドラフトデータがある場合はここに表示されます';
+  if(metaEl) metaEl.textContent = save ? `${save.date || ''} - ${getDraftModeLabel(save)}` : '';
+}
+function parseDraftSaveNumberedName(name){
+  const normalized = (name||DRAFT_SAVE_BASE_NAME).trim() || DRAFT_SAVE_BASE_NAME;
+  const match = normalized.match(/^(.*?)[\s　]*[\(（]([1-9]\d*)[\)）]\s*$/);
+  if(match && match[1].trim()){
+    return {base:match[1].trim(), number:Number(match[2]), hasNumber:true, name:normalized};
+  }
+  return {base:normalized, number:1, hasNumber:false, name:normalized};
+}
 function getUniqueDraftSaveName(baseName, folderId, folders=getDraftFolders(), saves=getDraftSaves(), ignoreIdx=-1){
-  const base = (baseName||DRAFT_SAVE_BASE_NAME).trim() || DRAFT_SAVE_BASE_NAME;
+  const requested = (baseName||DRAFT_SAVE_BASE_NAME).trim() || DRAFT_SAVE_BASE_NAME;
+  const requestedParts = parseDraftSaveNumberedName(requested);
   const folderKey = folderId || DRAFT_FOLDER_NONE;
-  const used = new Set(
-    saves
-      .filter((s,i)=>i!==ignoreIdx && getDraftFolderFilterId(s, folders)===folderKey)
-      .map(s=>(s.name||'').trim())
-      .filter(Boolean)
-  );
-  if(!used.has(base)) return base;
-  let num = 2;
-  while(used.has(`${base}(${num})`)) num++;
-  return `${base}(${num})`;
+  const usedNumbers = new Set();
+  let requestedTaken = false;
+  let maxNumber = 0;
+  saves
+    .filter((s,i)=>i!==ignoreIdx && getDraftFolderFilterId(s, folders)===folderKey)
+    .forEach(s=>{
+      const existingName = (s.name||'').trim();
+      if(!existingName) return;
+      if(existingName===requested) requestedTaken = true;
+      const existingParts = parseDraftSaveNumberedName(existingName);
+      if(existingParts.base!==requestedParts.base) return;
+      usedNumbers.add(existingParts.number);
+      maxNumber = Math.max(maxNumber, existingParts.number);
+    });
+  if(requestedParts.hasNumber && !requestedTaken && !usedNumbers.has(requestedParts.number)) return requested;
+  if(!requestedParts.hasNumber && !usedNumbers.has(1)) return requestedParts.base;
+  return `${requestedParts.base}(${Math.max(2, maxNumber + 1)})`;
 }
 function refreshDraftSaveDefaultName(force=false){
   const input = document.getElementById('draftSaveNameInput');
   if(!input) return;
-  const folders = getDraftFolders();
-  const folderId = getSelectedDraftFolderId(folders);
-  const nextDefault = getUniqueDraftSaveName(getDraftDefaultName(), folderId, folders);
-  const shouldReplace = force || !input.value.trim() || input.value===input.dataset.def;
+  const nextDefault = getDraftDefaultName();
   input.dataset.def = nextDefault;
-  if(shouldReplace) input.value = nextDefault;
+  if(force) input.value = '';
 }
 function getCurrentDraftSave(){
   if(!currentDraftId) return null;
@@ -3133,7 +3215,7 @@ function getDraftStateForSave(mode){
   return sanitizeDraftStateForMode(state, mode);
 }
 function draftSaveNameBlur(el){
-  if(!el.value.trim()) refreshDraftSaveDefaultName(true);
+  if(!el.value.trim()) refreshDraftSaveDefaultName();
 }
 
 function saveDraft(){
@@ -3163,9 +3245,9 @@ function saveDraft(){
   putDraftSaves(storedSaves);
   currentDraftId = newDraftId;
   currentDraftFolderFilter = folderId || DRAFT_FOLDER_NONE;
-  const nextDefault = getUniqueDraftSaveName(getDraftDefaultName(), folderId, folders, storedSaves);
+  const nextDefault = getDraftDefaultName();
   input.dataset.def=nextDefault;
-  input.value=nextDefault;
+  input.value='';
   renderDraftFolderControls();
   renderDraftSavedList();
 }
@@ -3174,6 +3256,7 @@ function renderDraftSavedList(){
   const saves=getDraftSaves();
   const folders=getDraftFolders();
   const el=document.getElementById('draftSavedList');
+  updateDraftCurrentSavePanel();
   if(!saves.length){ el.innerHTML='<div class="empty-msg">保存済みドラフトがありません</div>'; return; }
   const visible=saves.map((s,i)=>({s,i})).filter(({s})=>draftMatchesFolderFilter(s, folders));
   if(!visible.length){ el.innerHTML='<div class="empty-msg">このフォルダにドラフトがありません</div>'; return; }
@@ -3194,7 +3277,7 @@ function renderDraftSavedList(){
       </div>
       <button class="btn-sm" style="font-size:12px;width:72px;" onclick="loadDraft(${i})">呼び出し</button>
       ${isLoaded
-        ? `<button class="btn-sm" style="font-size:12px;color:var(--purple);border-color:var(--purple-mid);width:64px;" onclick="overwriteDraft()">上書き</button>`
+        ? `<button class="btn-sm" style="font-size:12px;width:64px;" disabled>現在</button>`
         : `<button class="btn-sm danger" style="font-size:12px;width:64px;" onclick="deleteDraft(${i})">削除</button>`}
     </div>`;
   }).join('');
