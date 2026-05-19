@@ -152,6 +152,11 @@
   .champ-mini:hover{border-color:var(--purple);}
   .champ-mini.used{opacity:.3;filter:grayscale(1);cursor:not-allowed;}
   .opgg-wrap{position:relative;display:inline-flex;flex-shrink:0;}
+  .pool-mark{position:absolute;top:1px;right:1px;z-index:11;box-sizing:border-box;width:17px;height:17px;border:1px solid rgba(248,249,251,.78);border-radius:999px;background:#111722;color:#ffd866;display:block;overflow:hidden;font-size:10px;font-weight:900;line-height:1;text-align:center;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.5);}
+  .pool-mark-icon{position:absolute;left:3px;top:3px;width:9px;height:9px;display:block;background:currentColor;clip-path:polygon(50% 0,61% 35%,98% 35%,68% 56%,79% 91%,50% 70%,21% 91%,32% 56%,2% 35%,39% 35%);transform:none;}
+  .pool-mark-glyph{position:absolute;left:50%;top:50%;display:block;line-height:1;transform:translate(-50%,-50%);}
+  .pool-mark.bang{background:#2b1720;color:#ff7b7b;font-size:12px;}
+  .pool-mark.muscle{background:#17251d;color:#5edba0;font-size:10px;}
   .opgg-overlay{position:absolute;inset:0;border-radius:7px;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .15s;z-index:10;}
   .opgg-overlay.show{opacity:1;}
   .opgg-overlay span{color:#f8f9fb;font-size:11px;font-weight:700;letter-spacing:.04em;line-height:1;pointer-events:none;}
@@ -265,6 +270,51 @@
   .modal-close{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;line-height:1;padding:0;}
   .modal-close:hover{color:var(--text);}
   .modal-section{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin:12px 0 6px;}
+  #legacyMigrationModal{z-index:4900;background:rgba(4,7,12,.82);}
+  .legacy-migration-modal{width:min(92vw,680px);max-width:600px;padding:24px;border-color:#3b4354;box-shadow:0 24px 70px rgba(0,0,0,.62);}
+  .legacy-migration-modal .modal-title{font-size:21px;line-height:1.35;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+  .legacy-migration-body{display:flex;flex-direction:column;gap:12px;color:var(--text2);font-size:14px;line-height:1.8;}
+  .legacy-migration-body p{margin:0;}
+  .legacy-migration-body p:first-child{color:var(--text);font-weight:700;}
+  .legacy-migration-link{height:42px;min-width:0;width:156px;padding:0 14px;border:1.5px solid #394356;background:transparent;color:var(--text2);font-family:inherit;font-size:14px;font-weight:800;line-height:1;flex:0 0 auto;text-decoration:none;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);}
+  .legacy-migration-link:hover{background:#151c27;border-color:#5c6880;color:#fff;}
+  .legacy-migration-link.is-disabled{opacity:.48;cursor:default;pointer-events:none;}
+  .legacy-migration-url-row{display:inline-flex;align-items:center;gap:8px;max-width:100%;margin-top:8px;line-height:1.4;}
+  .legacy-migration-url-label{color:var(--text2);font-weight:400;white-space:nowrap;}
+  .legacy-migration-url{min-width:0;color:var(--text);font-size:14px;font-weight:700;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere;}
+  .legacy-migration-url:hover{color:#fff;}
+  .legacy-migration-export-btn{height:42px;width:172px;flex:0 0 auto;font-weight:900;display:flex;align-items:center;justify-content:center;border-color:#6f7f99;background:#2a3445;color:#f8f9fb;box-shadow:0 0 0 1px rgba(255,255,255,.04) inset;}
+  .legacy-migration-export-btn:hover{background:#344157;border-color:#91a3c0;color:#fff;}
+  .legacy-migration-continue-btn{height:42px;width:156px;flex:0 0 auto;font-weight:800;display:flex;align-items:center;justify-content:center;border-color:#394356;background:transparent;color:var(--text2);}
+  .legacy-migration-continue-btn:hover{background:#151c27;border-color:#5c6880;color:#fff;}
+  .legacy-migration-body .legacy-settings-sample{
+    box-sizing:border-box!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    height:24px!important;
+    min-width:0!important;
+    padding:3px 10px!important;
+    margin:0 4px!important;
+    vertical-align:middle!important;
+    border:1.5px solid rgba(255,255,255,.2)!important;
+    border-radius:var(--radius-sm)!important;
+    background:rgba(255,255,255,.1)!important;
+    color:var(--text)!important;
+    font-family:inherit!important;
+    font-size:12px!important;
+    line-height:1!important;
+    font-weight:400!important;
+    white-space:nowrap!important;
+    pointer-events:none!important;
+    cursor:default!important;
+  }
+  .legacy-migration-actions{display:flex;align-items:stretch;gap:10px;border-top:1px solid var(--border);padding-top:16px;margin-top:4px;}
+  .legacy-migration-actions-spacer{flex:1 1 auto;min-width:18px;}
+  @media (max-width:560px){
+    .legacy-migration-actions{align-items:stretch;flex-direction:column;}
+    .legacy-migration-actions .btn,.legacy-migration-actions .btn-sm{width:100%;}
+  }
   .settings-modal{max-width:520px;}
   .settings-group{border-top:1px solid var(--border);padding-top:12px;margin-top:12px;}
   .settings-group:first-of-type{border-top:none;padding-top:0;margin-top:0;}
@@ -277,7 +327,7 @@
   .settings-pool-width{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:224px;}
   .settings-pool-width .btn-sm{height:32px;padding:0 10px;font-size:13px;}
   .settings-pool-width .btn-sm.active{background:var(--surface2);border-color:var(--purple);color:var(--purple);font-weight:700;}
-  .settings-action-row{display:flex;justify-content:flex-end;margin-top:10px;}
+  .settings-action-row{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:10px;}
   .tour-overlay{display:none;position:fixed;inset:0;z-index:4500;background:transparent;pointer-events:auto;}
   .tour-overlay.show{display:block;}
   .tour-mask{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;}
@@ -320,36 +370,27 @@
   .save-input:focus{border-color:var(--purple);}
   .draft-current-save{margin-bottom:12px;}
   .draft-current-save-card{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2);overflow:hidden;}
-  .draft-current-save-card.is-empty{border-style:dashed;background:rgba(255,255,255,.025);}
+  .draft-current-save-card.is-empty{justify-content:center;text-align:center;border-style:dashed;background:rgba(255,255,255,.018);}
   .draft-current-save-info{min-width:0;display:grid;gap:2px;}
-  .draft-current-save-badge{width:max-content;max-width:100%;padding:2px 7px;border:1px solid var(--purple-mid);border-radius:999px;background:var(--purple-light);color:var(--purple);font-size:10px;font-weight:800;letter-spacing:.04em;line-height:1.2;}
-  .draft-current-save-card.is-empty .draft-current-save-badge{border-color:var(--border);background:transparent;color:var(--text3);}
   .draft-current-save-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text);font-size:14px;font-weight:800;}
-  .draft-current-save-card.is-empty .draft-current-save-name{color:var(--text2);}
   .draft-current-save-meta{color:var(--text3);font-size:11px;line-height:1.4;}
   .draft-overwrite-btn{height:32px;min-width:88px;padding:0 12px;flex:0 0 auto;}
-  .draft-current-save-card.is-empty{  justify-content:center;  text-align:center;  border-style:dashed;  background:rgba(255,255,255,.018);
-}
-
-.draft-current-save-card.is-empty .draft-current-save-info{
-  width:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.draft-current-save-card.is-empty .draft-current-save-badge,
-.draft-current-save-card.is-empty .draft-current-save-meta,
-.draft-current-save-card.is-empty .draft-overwrite-btn{
-  display:none;
-}
-
-.draft-current-save-card.is-empty .draft-current-save-name{
-  color:var(--text3);
-  font-size:13px;
-  font-weight:400;
-  opacity:.75;
-}
+  .draft-current-save-card.is-empty .draft-current-save-info{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .draft-current-save-card.is-empty .draft-current-save-meta,
+  .draft-current-save-card.is-empty .draft-overwrite-btn{
+    display:none;
+  }
+  .draft-current-save-card.is-empty .draft-current-save-name{
+    color:var(--text3);
+    font-size:13px;
+    font-weight:400;
+    opacity:.75;
+  }
   @media (max-width:520px){
     .draft-current-save-card{align-items:stretch;flex-direction:column;}
     .draft-overwrite-btn{width:100%;}
@@ -418,7 +459,7 @@
   .draft-table .col-kind{left:0;width:112px;min-width:112px;}
   .draft-table .col-num{left:112px;width:112px;min-width:112px;}
   .draft-table .save-col{width:148px;min-width:148px;max-width:148px;}
-  .draft-table thead .save-col{vertical-align:bottom;padding-bottom:6px;}
+  .draft-table thead .save-col{vertical-align:top;padding:0;}
   .draft-table .placeholder-col{width:148px;min-width:148px;max-width:148px;visibility:hidden;pointer-events:none;}
   .draft-table-kind{box-sizing:border-box;position:relative;vertical-align:top;white-space:normal;line-height:1.35;font-size:11px;letter-spacing:.04em;padding:9px 8px;max-width:112px;}
   .draft-table-kind.filterable{cursor:pointer;}
@@ -433,13 +474,14 @@
   .draft-table-cell-filter-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .draft-table-cell-filter-clear{width:16px;height:16px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;padding:0;border:1px solid var(--border);border-radius:999px;background:transparent;color:var(--text3);font-family:inherit;font-size:13px;line-height:1;cursor:pointer;}
   .draft-table-cell-filter-clear:hover{border-color:var(--purple-mid);background:var(--surface2);color:var(--text);}
+  .draft-table-save-cell{box-sizing:border-box;height:72px;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:4px;padding:6px 5px;}
   .draft-table-save-name{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.25;word-break:break-word;}
-  .draft-table-save-head{position:relative;min-width:0;padding:0 26px;}
+  .draft-table-save-head{position:relative;width:100%;min-width:0;min-height:36px;padding:0 26px 0 6px;box-sizing:border-box;display:flex;align-items:flex-start;justify-content:center;}
   .draft-table-save-head .draft-table-save-name{min-width:0;text-align:center;}
   .draft-table-save-edit-btn{position:absolute;right:3px;top:0;width:20px;height:20px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--text3);font-family:inherit;font-size:11px;line-height:1;cursor:pointer;}
   .draft-table-save-edit-btn:hover{border-color:var(--purple-mid);background:var(--surface2);color:var(--text2);}
   .draft-table-rename-input{width:126px;height:26px;box-sizing:border-box;background:var(--surface);border:1px solid var(--purple-mid);border-radius:6px;color:var(--text);font-family:inherit;font-size:12px;padding:0 7px;outline:none;}
-  .btn-sm.draft-table-load-btn{height:22px;margin-top:5px;padding:0 8px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--text3);font-size:11px;line-height:1;opacity:1;}
+  .btn-sm.draft-table-load-btn{height:22px;margin-top:0;padding:0 8px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--text3);font-size:11px;line-height:1;opacity:1;}
   .btn-sm.draft-table-load-btn:hover{background:var(--surface2);border-color:var(--purple-mid);color:var(--text2);}
   .draft-table-pair{display:grid;grid-template-columns:1fr 1fr;gap:7px;justify-items:center;align-items:center;padding:0 7px;}
   .draft-table-champ{width:50px;min-width:50px;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--text3);position:relative;}
@@ -485,6 +527,14 @@
   .btn-sm.danger:hover{background:var(--red-light);border-color:var(--red-mid);color:var(--red);}
   .btn-sm:disabled{opacity:.55;cursor:default;border-style:dashed;color:var(--text3);}
   .btn-sm:disabled:hover{background:transparent;border-color:var(--border);color:var(--text3);}
+  .legacy-migration-actions .legacy-migration-export-btn{background:#1d2636!important;border-color:#424c60!important;color:#eef2f8!important;font-weight:900!important;box-shadow:none!important;}
+  .legacy-migration-actions .legacy-migration-export-btn:hover{background:#253044!important;border-color:#525d72!important;color:#fff!important;}
+  .legacy-migration-actions .legacy-migration-link{background:transparent!important;border-color:#394356!important;color:var(--text2)!important;}
+  .legacy-migration-actions .legacy-migration-link:hover{background:#151c27!important;border-color:#5c6880!important;color:#fff!important;}
+  .legacy-migration-actions .legacy-migration-continue-btn,
+  .legacy-migration-actions .legacy-migration-link{height:42px!important;width:156px!important;padding:0 14px!important;border:1.5px solid #394356!important;border-radius:var(--radius-sm)!important;background:transparent!important;color:var(--text2)!important;font-family:inherit!important;font-size:14px!important;font-weight:800!important;line-height:1!important;display:flex!important;align-items:center!important;justify-content:center!important;text-decoration:none!important;box-sizing:border-box!important;}
+  .legacy-migration-actions .legacy-migration-continue-btn:hover,
+  .legacy-migration-actions .legacy-migration-link:hover{background:#151c27!important;border-color:#5c6880!important;color:#fff!important;}
   .btn-opgg{border-color:#2b5f86;color:#9ad9ff;background:rgba(40,96,138,.12);white-space:normal;line-height:1;font-size:7px;}
   .btn-opgg:hover{background:#12304a;border-color:#5aabff;color:#d9f1ff;}
   .btn-opgg:disabled{cursor:default;}
@@ -537,6 +587,24 @@
 <p style="display:none;">
 League of Legendsの大会・練習向けドラフトツール
 </p>
+<div class="modal-overlay" id="legacyMigrationModal" aria-hidden="true">
+  <div class="modal legacy-migration-modal">
+    <div class="modal-title">
+      <span>K Draft Planner は新URLへ移行します</span>
+    </div>
+    <div class="legacy-migration-body">
+      <p>多くのご利用、本当にありがとうございます。<br>今後の安定運用のため、新URLへ移行いたします。<br><span class="legacy-migration-url-row"><span class="legacy-migration-url-label">URL</span><a class="legacy-migration-url" href="https://kdraftplanner.com/" target="_blank" rel="noopener noreferrer">https://kdraftplanner.com/</a></span></p>
+      <p>保存データは自動で引き継がれません。<br>引き継ぐ場合は、ここからテキストファイルを書き出し、<br>新URLの「設定」から読み込んでください。</p>
+      <p>2026年5月31日以降、この旧URLでの提供を終了予定です。</p>
+      <div class="legacy-migration-actions">
+        <button class="btn-sm legacy-migration-export-btn" type="button" onclick="confirmLegacyExport()">保存データを書き出す</button>
+        <span class="legacy-migration-actions-spacer" aria-hidden="true"></span>
+        <button class="btn-sm legacy-migration-continue-btn" type="button" onclick="closeLegacyMigrationModal()">このまま続ける</button>
+        <a class="btn legacy-migration-link" id="legacyMigrationNewUrl" target="_blank" rel="noopener noreferrer">新URLへ移動</a>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
     <div class="confirm-msg" id="confirmMsg"></div>
@@ -630,7 +698,7 @@ League of Legendsの大会・練習向けドラフトツール
         <div class="help-item">個人プール・チームデータ・ドラフトはブラウザのローカルストレージに保存</div>
         <div class="help-item">チームデータ、ドラフトデータ・プレイヤープールは上書き可能</div>
         <div class="help-item">キャッシュ・サイトデータを消すと保存データも削除される</div>
-        <div class="help-item">保存データの共有・エクスポートはセキュリティの観点から現在非対応</div>
+        <div class="help-item">旧URLからの移行用に、保存データの書き出しに対応</div>
       </div>
     </div>
     <div class="help-section">
@@ -954,6 +1022,7 @@ League of Legendsの大会・練習向けドラフトツール
     <div class="settings-group">
       <div class="modal-section">データ</div>
       <div class="settings-action-row">
+        <button class="btn-sm" type="button" onclick="confirmLegacyExport()">保存データを書き出す</button>
         <button class="btn-sm" type="button" onclick="openSettingsSaveManager()">セーブデータ一括管理</button>
       </div>
     </div>
@@ -1000,6 +1069,13 @@ League of Legendsの大会・練習向けドラフトツール
 <script>
 let allChamps=[], dragData=null;
 let currentRoleFilter='all';
+const LEGACY_MIGRATION_NEW_URL = 'https://kdraftplanner.com/';
+const LEGACY_MIGRATION_NEW_URL_FALLBACK_TEXT = '新URLへ移動';
+const SAVEDATA_APP_NAME = 'K Draft Planner';
+const SAVEDATA_FILE_TYPE = 'kdp-backup';
+const SAVEDATA_FORMAT_VERSION = 1;
+const SAVEDATA_STORAGE_PREFIX = 'draftTool_';
+const SAVEDATA_BLOCKED_KEY_PARTS = ['__proto__','constructor','prototype'];
 
 let state = {
   blue:{bans:Array(5).fill(null),picks:Array(5).fill(null)},
@@ -1612,7 +1688,7 @@ function chooseTourPopoverPosition(targetRect, popRect, viewportW, viewportH, pl
 
 // ─── OP.GG ────────────────────────────────────────────────────
 function opggUrl(id){
-  return `https://op.gg/ja/lol/champions/${id.toLowerCase()}/build?region=global&tier=gold_plus`;
+  return `https://op.gg/ja/lol/champions/${id.toLowerCase()}/build?region=global`;
 }
 function parseRiotId(value){
   const raw=(value||'').trim();
@@ -1710,20 +1786,22 @@ function opggWrap(imgHtml,id,radius='7px',delay=1500){
   return `<span class="opgg-wrap" onmouseenter="opggMouseEnter(event,${delay})" onmouseleave="opggMouseLeave(event)">${imgHtml}<span class="opgg-overlay" style="border-radius:${radius}"><span>OP.GG</span></span></span>`;
 }
 // pool champ専用: onclickをspan自体に置くことでe.currentTarget===wrap、_opggActiveを直接参照
-function poolOpggWrap(imgHtml,id,name,radius='7px',delay=1500){
-  return `<span class="opgg-wrap" onmouseenter="opggMouseEnter(event,${delay})" onmouseleave="opggMouseLeave(event)" onclick="poolSpanClick(event,'${id}','${name}')">${imgHtml}<span class="opgg-overlay" style="border-radius:${radius}"><span>OP.GG</span></span></span>`;
+function poolOpggWrap(imgHtml,id,name,team,poolIdx,itemIdx,radius='7px',delay=1500){
+  return `<span class="opgg-wrap" onmouseenter="opggMouseEnter(event,${delay})" onmouseleave="opggMouseLeave(event)" onclick="poolSpanClick(event,'${id}','${name}','${team}',${poolIdx},${itemIdx})" oncontextmenu="event.preventDefault();event.stopPropagation();removeFromPool('${team}',${poolIdx},'${id}')">${imgHtml}<span class="opgg-overlay" style="border-radius:${radius}"><span>OP.GG</span></span></span>`;
 }
-function poolSpanClick(e,id,name){
+function poolSpanClick(e,id,name,team,poolIdx,itemIdx){
   const wrap=e.currentTarget; // opgg-wrap span そのもの
+  if(banpickCollapsed){
+    togglePoolChampMark(team,poolIdx,itemIdx);
+    e.stopPropagation();
+    return;
+  }
   if(isChampOpggEnabled()&&wrap._opggActive){
     window.open(opggUrl(id),'_blank','noopener,noreferrer');
     e.stopPropagation();
     return;
   }
-  if(!banpickCollapsed){
-    onChampClick(e,id,name); // 通常モード: pick/ban
-  }
-  // pool構築モード: バブルアップ → selectPoolZoneへ
+  onChampClick(e,id,name); // 通常モード: pick/ban
 }
 
 
@@ -1924,6 +2002,7 @@ function init(){
   initModalScrollLock();
   initDraftTableWheelScroll();
   initSideColumnResize();
+  syncLegacyMigrationNotice();
   buildLayout();
   initChampGridResize();
   initChampOpggSetting();
@@ -1939,7 +2018,8 @@ function init(){
   setTimeout(()=>{
     if(document.getElementById('champGrid')&&allChamps.length>0) renderChampGrid();
   }, 200);
-  showTourIfNeeded();
+  setTimeout(()=>openLegacyMigrationModal(), 250);
+  // 旧URLでは移行のお知らせだけを初期表示するため、チュートリアルは自動表示しない。
 }
 
 function setRoleFilter(role){
@@ -2142,6 +2222,35 @@ function removeFromPool(team,poolIdx,champId){
   renderPools(team);
   if(banpickCollapsed) renderChampGrid();
 }
+function getPoolMark(champ){
+  return ['star','bang','muscle'].includes(champ?.mark) ? champ.mark : '';
+}
+function nextPoolMark(mark){
+  if(mark==='star') return 'bang';
+  if(mark==='bang') return 'muscle';
+  if(mark==='muscle') return '';
+  return 'star';
+}
+function renderPoolMark(mark){
+  if(mark==='star') return '<span class="pool-mark star"><span class="pool-mark-icon" aria-hidden="true"></span></span>';
+  if(mark==='bang') return '<span class="pool-mark bang"><span class="pool-mark-glyph">!</span></span>';
+  if(mark==='muscle') return '<span class="pool-mark muscle"><span class="pool-mark-glyph">💪</span></span>';
+  return '';
+}
+function togglePoolChampMark(team,poolIdx,itemIdx){
+  const pools=team==='blue'?state.bluePools:state.redPools;
+  const champ=pools?.[poolIdx]?.[itemIdx];
+  if(!champ) return;
+  const next=nextPoolMark(getPoolMark(champ));
+  if(next) champ.mark=next;
+  else delete champ.mark;
+  renderPools(team);
+}
+function getDraggedPoolMark(){
+  if(!dragData||dragData.src!=='pool'||dragData.itemIdx===undefined) return '';
+  const pools=dragData.zone==='bluePool'?state.bluePools:(dragData.zone==='redPool'?state.redPools:null);
+  return getPoolMark(pools?.[dragData.idx]?.[dragData.itemIdx]);
+}
 function renderBanPick(){
   ['blue','red'].forEach(team=>{
     document.getElementById(team+'Bans').innerHTML=Array.from({length:5},(_,i)=>{
@@ -2238,14 +2347,14 @@ function renderPools(team, scrollToBottom=-1){
     const prevScroll=el.scrollTop;
     el.innerHTML=pool.map((c,j)=>{
       const u=used.has(c.id);
+      const mark=renderPoolMark(getPoolMark(c));
       return poolOpggWrap(`<img class="champ-mini${u?' used':''}" src="${img(c.id)}" alt="${esc(c.name)}"
         draggable="true"
         ondragstart="startDrag(event,'pool','${c.id}','${esc(c.name)}','${team}Pool',${i},${j})"
         ondragover="onPoolItemOver(event,'${team}',${i},${j})"
         ondragleave="onPoolItemLeave(event)"
         ondrop="onPoolItemDrop(event,'${team}',${i},${j})"
-        oncontextmenu="event.preventDefault();removeFromPool('${team}',${i},'${c.id}')"
-        style="position:relative;cursor:context-menu;">`,c.id,esc(c.name));
+        style="position:relative;cursor:context-menu;">${mark}`,c.id,esc(c.name),team,i,j);
     }).join('');
     const _el=el;
     if(i==scrollToBottom){
@@ -2482,7 +2591,8 @@ function onPoolItemDrop(e,team,poolIdx,itemIdx){
     const pools=team==='blue'?state.bluePools:state.redPools;
     const pool=pools[poolIdx];
     if(pool.find(c=>c.id===id)){dragData=null;return;} // 重複防止
-    pool.push({id,name});
+    const mark=getDraggedPoolMark();
+    pool.push(mark?{id,name,mark}:{id,name});
     dragData=null;
     renderPools(team, poolIdx);
     checkDuplicates();renderStepBar();
@@ -2527,6 +2637,7 @@ function onDrop(e,tz,ti){
   e.preventDefault();e.currentTarget.classList.remove('drag-over');
   dropped=true;
   if(!dragData)return;
+  const poolMark=getDraggedPoolMark();
   const{id,name,src,zone,idx}=dragData;dragData=null;
   // チャンプグリッドからはピックバン済みをプール・プロテクト・初心者プロテクトに追加不可
   if(src==='grid'&&usedIds().has(id)){
@@ -2551,7 +2662,7 @@ function onDrop(e,tz,ti){
   if(tz==='bluePool'||tz==='redPool'){
     const arr=tz==='bluePool'?state.bluePools[ti]:state.redPools[ti];
     if(arr.find(c=>c.id===id))return; // 同じプール内の重複のみ防ぐ
-    arr.push({id,name});
+    arr.push(poolMark?{id,name,mark:poolMark}:{id,name});
     const poolTeam=tz==='bluePool'?'blue':'red';
     renderPools(poolTeam, ti);checkDuplicates();renderStepBar();
     if(banpickCollapsed) renderChampGrid();
@@ -2641,6 +2752,102 @@ function showNotice(msg, okLabel='OK'){
   confirmCancelHandler=null;
   ok.onclick=()=>{ closeConfirm(false); };
   cancel.onclick=()=>{ closeConfirm(false); };
+}
+function getLegacyMigrationNewUrl(){
+  return (LEGACY_MIGRATION_NEW_URL || '').trim();
+}
+function setupLegacyMigrationLink(linkEl, url, activeText, emptyText){
+  if(!linkEl) return;
+  if(url){
+    linkEl.href = url;
+    linkEl.textContent = activeText;
+    linkEl.classList.remove('is-disabled');
+    linkEl.removeAttribute('aria-disabled');
+    linkEl.removeAttribute('tabindex');
+  } else {
+    linkEl.removeAttribute('href');
+    linkEl.textContent = activeText;
+    linkEl.classList.add('is-disabled');
+    linkEl.setAttribute('aria-disabled', 'true');
+    linkEl.setAttribute('tabindex', '-1');
+  }
+}
+function syncLegacyMigrationNotice(){
+  const url = getLegacyMigrationNewUrl();
+  setupLegacyMigrationLink(
+    document.getElementById('legacyMigrationNewUrl'),
+    url,
+    '新URLへ移動',
+    LEGACY_MIGRATION_NEW_URL_FALLBACK_TEXT
+  );
+}
+function openLegacyMigrationModal(){
+  syncLegacyMigrationNotice();
+  const modal = document.getElementById('legacyMigrationModal');
+  if(!modal) return;
+  modal.classList.add('show');
+  modal.setAttribute('aria-hidden', 'false');
+}
+function closeLegacyMigrationModal(){
+  const modal = document.getElementById('legacyMigrationModal');
+  if(!modal) return;
+  modal.classList.remove('show');
+  modal.setAttribute('aria-hidden', 'true');
+}
+function collectLegacyMigrationStorage(){
+  const data = {};
+  for(let i=0;i<localStorage.length;i++){
+    const key = localStorage.key(i);
+    if(key && key.startsWith(SAVEDATA_STORAGE_PREFIX) && !SAVEDATA_BLOCKED_KEY_PARTS.some(part=>key.includes(part))){
+      const value = localStorage.getItem(key);
+      if(typeof value === 'string') data[key] = value;
+    }
+  }
+  return Object.keys(data).sort().reduce((sorted, key)=>{
+    sorted[key] = data[key];
+    return sorted;
+  }, {});
+}
+function buildLegacyMigrationExportPayload(){
+  return {
+    app:SAVEDATA_APP_NAME,
+    fileType:SAVEDATA_FILE_TYPE,
+    formatVersion:SAVEDATA_FORMAT_VERSION,
+    exportedAt:new Date().toISOString(),
+    storage:collectLegacyMigrationStorage()
+  };
+}
+function legacyMigrationExportFileName(){
+  const pad = n => String(n).padStart(2, '0');
+  const d = new Date();
+  const stamp = `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+  return `k-draft-planner-savedata-${stamp}.txt`;
+}
+function downloadLegacyMigrationExport(){
+  const payload = buildLegacyMigrationExportPayload();
+  if(!Object.keys(payload.storage).length){
+    showNotice('書き出す保存データがありません。');
+    return;
+  }
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = legacyMigrationExportFileName();
+  document.body.appendChild(link);
+  link.click();
+  setTimeout(()=>{
+    URL.revokeObjectURL(url);
+    link.remove();
+  }, 0);
+}
+function confirmLegacyExport(){
+  showConfirm(
+    '保存データファイルを作成してダウンロードします。\n\n配信・画面共有中の方は、保存先やファイル名が映らないようご注意ください。',
+    downloadLegacyMigrationExport,
+    null,
+    'ダウンロード'
+  );
 }
 function resetDraft(){
   showConfirm('ドラフトをリセットしますか？', ()=>{
@@ -3506,13 +3713,15 @@ function renderDraftTable(){
 
   const head = entries.map(({save, idx})=>`
     <th class="save-col" title="${esc(save.name||'名称なし')}">
-      ${editingDraftTableSaveIndex===idx
-        ? `<input class="draft-table-rename-input" id="draftTableRenameInput${idx}" type="text" value="${esc(save.name||'')}" autocomplete="off" onkeydown="handleDraftTableRenameKey(event,${idx})" onblur="commitDraftTableRename(${idx})">`
-        : `<div class="draft-table-save-head">
-            <div class="draft-table-save-name">${esc(save.name||'名称なし')}</div>
-            <button class="draft-table-save-edit-btn" type="button" onclick="event.stopPropagation();startDraftTableRename(${idx})" title="名前変更">✎</button>
-          </div>`}
-      <button class="btn-sm draft-table-load-btn" type="button" onclick="event.stopPropagation();loadDraftFromTable(${idx})">呼び出し</button>
+      <div class="draft-table-save-cell">
+        ${editingDraftTableSaveIndex===idx
+          ? `<input class="draft-table-rename-input" id="draftTableRenameInput${idx}" type="text" value="${esc(save.name||'')}" autocomplete="off" onkeydown="handleDraftTableRenameKey(event,${idx})" onblur="commitDraftTableRename(${idx})">`
+          : `<div class="draft-table-save-head">
+              <div class="draft-table-save-name">${esc(save.name||'名称なし')}</div>
+              <button class="draft-table-save-edit-btn" type="button" onclick="event.stopPropagation();startDraftTableRename(${idx})" title="名前変更">✎</button>
+            </div>`}
+        <button class="btn-sm draft-table-load-btn" type="button" onclick="event.stopPropagation();loadDraftFromTable(${idx})">呼び出し</button>
+      </div>
     </th>`).join('') || '<th class="save-col placeholder-col"></th>';
   const body = DRAFT_TABLE_ROWS.map(row=>`
     <tr class="row-${row.type==='bans'?'ban':'pick'}${row.phase==='second'?' phase-second':''}">
