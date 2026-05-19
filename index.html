@@ -401,8 +401,9 @@
   .draft-save-top{margin-bottom:12px;}
   .draft-save-top .save-row{margin-bottom:0;}
   .draft-browser{display:grid;grid-template-columns:260px minmax(0,1fr);gap:12px;border-top:1px solid var(--border);padding-top:12px;flex:1;min-height:0;}
-  .draft-folder-pane,.draft-list-pane{min-height:0;}
-  .draft-folder-pane{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:var(--radius-sm);background:rgba(255,255,255,.02);padding:8px;}
+  .draft-folder-column,.draft-folder-pane,.draft-list-pane{min-height:0;}
+  .draft-folder-column{display:flex;flex-direction:column;gap:8px;}
+  .draft-folder-pane{display:flex;flex:1;flex-direction:column;border:1px solid var(--border);border-radius:var(--radius-sm);background:rgba(255,255,255,.02);padding:8px;}
   .draft-list-pane{display:flex;flex-direction:column;}
   .draft-pane-title{font-size:11px;color:var(--text3);font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:7px;}
   .draft-folder-list{display:flex;flex:0 1 auto;flex-direction:column;gap:4px;min-height:0;max-height:calc(100% - 78px);overflow:auto;padding-right:2px;}
@@ -423,6 +424,11 @@
   .draft-folder-create-row.show{display:flex;}
   .draft-folder-create-row .save-input{height:30px;font-size:12px;padding:0 8px;}
   .draft-folder-create-row .btn-sm{height:30px;padding:0 9px;font-size:12px;}
+  .draft-folder-delete-btn{display:block;height:30px;margin-top:0;padding:0 9px;border:1px solid var(--red-mid);border-radius:7px;background:rgba(255,110,110,.06);color:var(--red-deep);font-family:inherit;font-size:12px;cursor:pointer;text-align:center;}
+  .draft-folder-delete-btn.show{display:block;}
+  .draft-folder-delete-btn:hover{background:var(--red-light);border-color:var(--red);color:var(--red);}
+  .draft-folder-delete-btn:disabled{border-color:var(--border);background:rgba(255,255,255,.02);color:var(--text3);cursor:default;opacity:.7;}
+  .draft-folder-delete-btn:disabled:hover{border-color:var(--border);background:rgba(255,255,255,.02);color:var(--text3);}
   .draft-list-pane .saved-list{flex:1;max-height:none;}
   #draftSavedList .saved-item[draggable=true]{cursor:grab;}
   #draftSavedList .saved-item[draggable=true]:active{cursor:grabbing;}
@@ -850,6 +856,7 @@ League of Legendsの大会・練習向けドラフトツール
       </div>
     </div>
     <div class="draft-browser">
+      <div class="draft-folder-column">
       <div class="draft-folder-pane">
         <div class="draft-pane-title">フォルダ</div>
         <div class="draft-folder-list" id="draftFolderTabs"></div>
@@ -858,6 +865,8 @@ League of Legendsの大会・練習向けドラフトツール
           <input class="save-input" id="draftFolderNameInput" type="text" placeholder="フォルダ名" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onkeydown="if(event.key==='Enter')createDraftFolder()">
           <button class="btn-sm" type="button" onclick="createDraftFolder()">追加</button>
         </div>
+      </div>
+      <button class="draft-folder-delete-btn" id="draftFolderDeleteBtn" type="button" onclick="deleteCurrentDraftFolder()">&#12501;&#12457;&#12523;&#12480;&#21066;&#38500;</button>
       </div>
       <div class="draft-list-pane">
         <div class="draft-pane-title">保存済みドラフト</div>
@@ -3132,9 +3141,9 @@ function renderDraftFolderControls(){
   }
 
   const saves = getDraftSaves();
+  const countFor = id => saves.filter(s=>getDraftFolderFilterId(s, folders)===id).length;
   const tabEl = document.getElementById('draftFolderTabs');
   if(tabEl){
-    const countFor = id => saves.filter(s=>getDraftFolderFilterId(s, folders)===id).length;
     const tabs = [
       {id:DRAFT_FOLDER_NONE, name:'未分類'},
       ...folders.map(f=>({id:f.id, name:f.name}))
@@ -3149,6 +3158,30 @@ function renderDraftFolderControls(){
 
   const createRow = document.getElementById('draftFolderCreateRow');
   if(createRow) createRow.classList.toggle('show', draftFolderCreateOpen);
+
+  const folderColumn = document.querySelector('.draft-folder-column');
+  let deleteBtn = document.getElementById('draftFolderDeleteBtn');
+  if(folderColumn && !deleteBtn){
+    deleteBtn = document.createElement('button');
+    deleteBtn.id = 'draftFolderDeleteBtn';
+    deleteBtn.type = 'button';
+    deleteBtn.className = 'draft-folder-delete-btn';
+    deleteBtn.onclick = deleteCurrentDraftFolder;
+    folderColumn.appendChild(deleteBtn);
+  } else if(folderColumn && deleteBtn?.parentElement!==folderColumn){
+    folderColumn.appendChild(deleteBtn);
+  }
+  const selectedFolderId = normalizeDraftFolderId(currentDraftFolderFilter, folders);
+  if(deleteBtn){
+    deleteBtn.classList.add('show');
+    deleteBtn.disabled = !selectedFolderId;
+    deleteBtn.title = selectedFolderId
+      ? '\u9078\u629e\u4e2d\u306e\u30d5\u30a9\u30eb\u30c0\u3068\u4e2d\u306e\u30c9\u30e9\u30d5\u30c8\u3092\u524a\u9664'
+      : '\u672a\u5206\u985e\u30d5\u30a9\u30eb\u30c0\u306f\u524a\u9664\u4e0d\u53ef';
+    deleteBtn.textContent = selectedFolderId
+      ? '\u30d5\u30a9\u30eb\u30c0\u524a\u9664'
+      : '\u672a\u5206\u985e\u30d5\u30a9\u30eb\u30c0\u306f\u524a\u9664\u4e0d\u53ef';
+  }
 }
 function createDraftFolder(){
   const input = document.getElementById('draftFolderNameInput');
@@ -3171,6 +3204,52 @@ function createDraftFolder(){
   if(input) input.value = '';
   renderDraftFolderControls();
   renderDraftSavedList();
+}
+
+function deleteCurrentDraftFolder(){
+  const folders = getDraftFolders();
+  const folderId = normalizeDraftFolderId(currentDraftFolderFilter, folders);
+  if(!folderId) return;
+
+  const folder = folders.find(f=>f.id===folderId);
+  if(!folder) return;
+  const saves = getDraftSaves();
+  const deleteCount = saves.filter(s=>getDraftFolderFilterId(s, folders)===folderId).length;
+  const msg = `\u300c${folder.name}\u300d\u30d5\u30a9\u30eb\u30c0\u3092\u524a\u9664\u3057\u307e\u3059\u304b\uff1f\n\u3053\u306e\u30d5\u30a9\u30eb\u30c0\u5185\u306e\u30c9\u30e9\u30d5\u30c8${deleteCount}\u4ef6\u3082\u524a\u9664\u3055\u308c\u307e\u3059\u3002`;
+
+  showConfirm(msg, ()=>{
+    const latestFolders = getDraftFolders();
+    const targetFolderId = normalizeDraftFolderId(folderId, latestFolders);
+    if(!targetFolderId){
+      currentDraftFolderFilter = DRAFT_FOLDER_NONE;
+      refreshDraftSaveDefaultName();
+      renderDraftFolderControls();
+      renderDraftSavedList();
+      return;
+    }
+
+    const latestSaves = getDraftSaves();
+    const deletedIds = new Set();
+    const nextSaves = latestSaves.filter(save=>{
+      const shouldDelete = getDraftFolderFilterId(save, latestFolders)===targetFolderId;
+      if(shouldDelete && save?.id) deletedIds.add(save.id);
+      return !shouldDelete;
+    });
+
+    putDraftFolders(latestFolders.filter(f=>f.id!==targetFolderId));
+    putDraftSaves(nextSaves);
+    if(currentDraftId && deletedIds.has(currentDraftId)) currentDraftId = null;
+    currentDraftFolderFilter = DRAFT_FOLDER_NONE;
+    if(currentDraftTableFolder===targetFolderId) currentDraftTableFolder = DRAFT_FOLDER_NONE;
+    editingDraftSaveIndex = -1;
+    editingDraftTableSaveIndex = -1;
+    draftFolderCreateOpen = false;
+
+    refreshDraftSaveDefaultName();
+    renderDraftFolderControls();
+    renderDraftSavedList();
+    if(document.getElementById('draftTableModal')?.classList.contains('show')) renderDraftTable();
+  }, null, '\u524a\u9664\u3059\u308b');
 }
 
 function onDraftSaveDragStart(e, idx){
