@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="google-site-verification" content="nRdKSKCQFLReykSp65vy7F9vocUHWq85bdQnkaMxUao" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://kdraftplanner.com/">
 <title>K Draft Planner - League of Legends ドラフトシミュレーションツール</title>
 <meta name="description" content="League of Legends（LoL）のドラフトを管理できるツール。BAN・PICK・チャンピオンプール・フィアレスドラフトに対応。また、LTK3のルールにも対応。">
 
@@ -539,7 +541,7 @@
   .btn-opgg:hover{background:#12304a;border-color:#5aabff;color:#d9f1ff;}
   .btn-opgg:disabled{cursor:default;}
   .opgg-btn-label{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:.82;}
-  .saved-list{display:flex;flex-direction:column;gap:5px;max-height:200px;overflow-y:auto;padding-right:4px;}
+  .saved-list{display:flex;flex-direction:column;gap:5px;max-height:350px;overflow-y:auto;padding-right:4px;}
   .saved-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);}
   .saved-item-name{flex:1;font-size:14px;color:var(--text);}
   .saved-item-name-row{display:flex;align-items:center;gap:6px;min-width:0;}
@@ -925,7 +927,7 @@ League of Legendsの大会・練習向けドラフトツール
     <div class="player-modal-form">
       <div class="player-modal-row">
         <label class="player-modal-inline-label" for="playerDisplayNameInput">表示名</label>
-        <input class="save-input player-modal-input" id="playerDisplayNameInput" type="text" placeholder="表示名" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onfocus="playerDisplayNameFocus(this)" onblur="playerDisplayNameBlur(this)">
+        <input class="save-input player-modal-input" id="playerDisplayNameInput" type="text" placeholder="表示名" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onfocus="playerDisplayNameFocus(this)" oninput="markPlayerDisplayNameDirty()" onblur="playerDisplayNameBlur(this)">
         <button class="btn-sm player-modal-action" type="button" onclick="savePlayerData()">保存</button>
       </div>
       <div class="player-modal-row">
@@ -2689,7 +2691,6 @@ function onDrop(e,tz,ti){
 // ─── HELPERS ──────────────────────────────────────────────────
 function setName(team,idx,val){
   getPlayerDisplayList(team)[idx]=val;
-  getPlayerNameList(team)[idx]=parseRiotId(val) ? val.trim() : '';
   const lbl=document.getElementById(team+'PoolLabel'+idx);
   if(lbl&&lbl!==document.activeElement)lbl.value=val;
 }
@@ -4338,6 +4339,7 @@ function deleteSave(listIdx){
 // ─── 個人プール保存 ───────────────────────────────────────────
 let playerModalTeam = null;
 let playerModalIdx  = null;
+let playerDisplayNameDirty = false;
 
 function getPlayerSaves(){
   try{ return JSON.parse(localStorage.getItem('draftTool_playerSaves')||'[]'); }catch(e){return[];}
@@ -4356,7 +4358,9 @@ function openPlayerModal(team, idx){
   document.getElementById('playerModalTitle').textContent = `${displayName} — 保存/呼び出し`;
   const displayInput = document.getElementById('playerDisplayNameInput');
   displayInput.dataset.def = defaultDisplayName;
+  displayInput.dataset.storedDisplay = String(getPlayerDisplayList(team)[idx]||'');
   displayInput.value = displayName;
+  playerDisplayNameDirty = false;
   document.getElementById('playerNameInput').value = player.playerName;
   renderPlayerSavedList();
   document.getElementById('playerSaveModal').classList.add('show');
@@ -4366,6 +4370,44 @@ function playerDisplayNameFocus(el){
 }
 function playerDisplayNameBlur(el){
   if(!el.value.trim()) el.value=el.dataset.def||'';
+}
+function markPlayerDisplayNameDirty(){
+  playerDisplayNameDirty = true;
+}
+function syncPlayerModalInputsFromState(){
+  if(playerModalTeam==null || playerModalIdx==null) return;
+  const player=getPlayerIdentity(playerModalTeam, playerModalIdx);
+  const defaultDisplayName=getPlayerDefaultName(playerModalTeam, playerModalIdx);
+  const displayName=player.displayName || defaultDisplayName;
+  const displayInput=document.getElementById('playerDisplayNameInput');
+  if(displayInput){
+    displayInput.dataset.def = defaultDisplayName;
+    displayInput.dataset.storedDisplay = String(getPlayerDisplayList(playerModalTeam)[playerModalIdx]||'');
+    displayInput.value = displayName;
+  }
+  const playerInput=document.getElementById('playerNameInput');
+  if(playerInput) playerInput.value = player.playerName;
+  const title=document.getElementById('playerModalTitle');
+  if(title) title.textContent = `${displayName} — 保存/呼び出し`;
+  playerDisplayNameDirty = false;
+  syncPoolLabelInput(playerModalTeam, playerModalIdx);
+}
+function commitPlayerDisplayNameInput(){
+  if(playerModalTeam==null || playerModalIdx==null) return;
+  if(!playerDisplayNameDirty){
+    syncPoolLabelInput(playerModalTeam, playerModalIdx);
+    return;
+  }
+  const input=document.getElementById('playerDisplayNameInput');
+  if(!input) return;
+  let nextDisplay=input.value.trim();
+  const defaultDisplay=input.dataset.def || '';
+  const storedDisplay=input.dataset.storedDisplay || '';
+  if(!storedDisplay && nextDisplay===defaultDisplay) nextDisplay='';
+  getPlayerDisplayList(playerModalTeam)[playerModalIdx]=nextDisplay;
+  playerDisplayNameDirty = false;
+  syncPoolLabelInput(playerModalTeam, playerModalIdx);
+  _updateCurrentModeSnapshot();
 }
 function clearPlayerPool(){
   showConfirm('プレイヤープール・表示名・プレイヤー名をクリアしますか？', ()=>{
@@ -4379,7 +4421,7 @@ function clearPlayerPool(){
       state.redPlayerNames[playerModalIdx]='';
     }
     setCurrentPlayerLoadedSaveId(null);
-    syncPoolLabelInput(playerModalTeam, playerModalIdx);
+    syncPlayerModalInputsFromState();
     _updateCurrentModeSnapshot();
     renderPools(playerModalTeam);
     renderChampGrid();
@@ -4387,6 +4429,8 @@ function clearPlayerPool(){
   }, null, 'クリアする');
 }
 function closePlayerModal(){
+  commitPlayerDisplayNameInput();
+  playerDisplayNameDirty = false;
   document.getElementById('playerSaveModal').classList.remove('show');
 }
 bindOverlayClose(document.getElementById('playerSaveModal'), closePlayerModal);
@@ -4452,9 +4496,7 @@ function savePlayerData(){
   });
   putPlayerSaves(saves.slice(0, 50));
   setCurrentPlayerLoadedSaveId(id);
-  displayInput.value = snapshot.displayName || '';
-  playerInput.value = snapshot.playerName || '';
-  syncPoolLabelInput(playerModalTeam, playerModalIdx);
+  syncPlayerModalInputsFromState();
   _updateCurrentModeSnapshot();
   renderPools(playerModalTeam);
   renderChampGrid();
@@ -4492,9 +4534,7 @@ function overwritePlayerData(){
     };
     putPlayerSaves(saves);
     setCurrentPlayerLoadedSaveId(newId);
-    displayInput.value = snapshot.displayName || '';
-    playerInput.value = snapshot.playerName || '';
-    syncPoolLabelInput(playerModalTeam, playerModalIdx);
+    syncPlayerModalInputsFromState();
     _updateCurrentModeSnapshot();
     renderPools(playerModalTeam);
     renderChampGrid();
@@ -4542,7 +4582,7 @@ function loadPlayerSave(listIdx){
     setPlayerIdentity('red', playerModalIdx, saved.displayName, saved.playerName);
   }
   setCurrentPlayerLoadedSaveId(saveId);
-  syncPoolLabelInput(playerModalTeam, playerModalIdx);
+  syncPlayerModalInputsFromState();
   _updateCurrentModeSnapshot();
   renderPools(playerModalTeam);
   renderChampGrid();
