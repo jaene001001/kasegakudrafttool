@@ -96,40 +96,6 @@
       <button class="btn" id="confirmCancel">キャンセル</button>
     </div>
   </div>
-  <div class="tour-editor-panel" id="tourEditorPanel" aria-hidden="true">
-    <div class="tour-editor-head">
-      <div class="tour-editor-title">ツアー位置調整</div>
-      <div class="tour-editor-step" id="tourEditorStep"></div>
-    </div>
-    <div class="tour-editor-grid" id="tourEditorPlacementControls">
-      <button class="btn-sm" type="button" data-tour-placement="top" onclick="setTourEditorPlacement('top')">上</button>
-      <button class="btn-sm" type="button" data-tour-placement="center" onclick="setTourEditorPlacement('center')">中央</button>
-      <button class="btn-sm" type="button" data-tour-placement="bottom" onclick="setTourEditorPlacement('bottom')">下</button>
-      <button class="btn-sm" type="button" data-tour-placement="left-center" onclick="setTourEditorPlacement('left-center')">左中</button>
-      <button class="btn-sm" type="button" data-tour-placement="left" onclick="setTourEditorPlacement('left')">左</button>
-      <button class="btn-sm" type="button" data-tour-placement="right-center" onclick="setTourEditorPlacement('right-center')">右中</button>
-      <button class="btn-sm" type="button" data-tour-placement="right" onclick="setTourEditorPlacement('right')">右</button>
-    </div>
-    <div class="tour-editor-nudge">
-      <span></span>
-      <button class="btn-sm" type="button" onclick="nudgeTourPopover(0,-10)">↑</button>
-      <span></span>
-      <button class="btn-sm" type="button" onclick="nudgeTourPopover(-10,0)">←</button>
-      <button class="btn-sm" type="button" onclick="resetTourStepPosition()">0</button>
-      <button class="btn-sm" type="button" onclick="nudgeTourPopover(10,0)">→</button>
-      <span></span>
-      <button class="btn-sm" type="button" onclick="nudgeTourPopover(0,10)">↓</button>
-      <span></span>
-    </div>
-    <div class="tour-editor-meta">
-      <span id="tourEditorOffset">x 0 / y 0</span>
-      <span>ドラッグ可</span>
-    </div>
-    <textarea class="tour-editor-output" id="tourEditorOutput" readonly></textarea>
-    <div class="tour-editor-actions">
-      <button class="btn-sm" type="button" onclick="clearTourEditorPositions()">全リセット</button>
-    </div>
-  </div>
 </div>
 
 
