@@ -1,375 +1,109 @@
-﻿<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, follow">
 <link rel="canonical" href="https://kdraftplanner.com/">
-<title>新URLにてご利用ください</title>
-<meta name="description" content="">
-
+<title>K Draft Planner は新URLへ移行しました</title>
 <style>
-  :root {
-    --red:#ff6e6e; --red-light:#2e1a1a; --red-mid:#5a2a2a; --red-deep:#ffaaaa;
-    --purple:#f8f9fb; --purple-light:#1a1e26; --purple-mid:#2e3440;
-    --bg:#0e1117; --surface:#161b24; --surface2:#1e2430;
-    --border:#2a3040; --text:#e8edf6; --text2:#cccccc; --text3:#96a6be;
-    --radius:12px; --radius-sm:8px;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:16px;}
-  .topbar-title{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:600;color:#e8edf6;letter-spacing:.05em;flex:none;}
-  .topbar{background:var(--surface);border-bottom:1.5px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:0 2px 20px rgba(0,0,0,.4);}
-
-  .btn{padding:8px 18px;border-radius:var(--radius-sm);background:transparent;border:1.5px solid var(--border);color:var(--text2);font-family:inherit;font-size:15px;cursor:pointer;transition:all .15s;}
-  .btn:hover{background:var(--surface2);color:var(--purple);}
-  .btn-reset-all{padding:8px 18px;border-radius:var(--radius-sm);background:var(--red-light);border:1.5px solid var(--red-mid);color:var(--red-deep);font-family:inherit;font-size:15px;cursor:pointer;transition:all .15s;}
-  .btn-sm{padding:6px 14px;border-radius:var(--radius-sm);background:transparent;border:1.5px solid var(--border);color:var(--text2);font-family:inherit;font-size:14px;cursor:pointer;transition:all .15s;white-space:nowrap;}
-  .btn-sm:hover{background:var(--purple-light);border-color:var(--purple-mid);color:var(--purple);}
-  .btn-sm:disabled{opacity:.55;cursor:default;border-style:dashed;color:var(--text3);}
-  .btn-sm:disabled:hover{background:transparent;border-color:var(--border);color:var(--text3);}
-
-  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:4000;align-items:center;justify-content:center;overscroll-behavior:contain;}
-  .modal-overlay.show{display:flex;}
-  .modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;min-width:320px;max-width:420px;width:90%;overscroll-behavior:contain;}
-  .modal-box{width:90%;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 12px 36px rgba(0,0,0,.55);overscroll-behavior:contain;}
-  .modal-box .modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 0;}
-  .modal-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
-  .modal-close{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;line-height:1;padding:0;}
-  .modal-close:hover{color:var(--text);}
-
-  #legacyMigrationModal{display:flex;align-items:center;justify-content:center;padding:40px 24px;flex:1;}
-  body{display:flex;flex-direction:column;}
-  .legacy-migration-modal{width:min(92vw,680px);max-width:600px;padding:24px;border:1px solid #3b4354;border-radius:var(--radius);background:var(--surface);box-shadow:0 24px 70px rgba(0,0,0,.62);}
-  .legacy-migration-modal .modal-title{font-size:21px;line-height:1.35;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}
-  .legacy-migration-body{display:flex;flex-direction:column;gap:12px;color:var(--text2);font-size:14px;line-height:1.8;}
-  .legacy-migration-body p{margin:0;}
-  .legacy-migration-body p:first-child{color:var(--text);font-weight:700;}
-  .legacy-migration-link{height:42px;min-width:0;width:156px;padding:0 14px;border:1.5px solid #394356;background:transparent;color:var(--text2);font-family:inherit;font-size:14px;font-weight:800;line-height:1;flex:0 0 auto;text-decoration:none;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);}
-  .legacy-migration-link:hover{background:#151c27;border-color:#5c6880;color:#fff;}
-  .legacy-migration-link.is-disabled{opacity:.48;cursor:default;pointer-events:none;}
-  .legacy-migration-url-row{display:inline-flex;align-items:center;gap:8px;max-width:100%;margin-top:8px;line-height:1.4;}
-  .legacy-migration-url-label{color:var(--text2);font-weight:400;white-space:nowrap;}
-  .legacy-migration-url{min-width:0;color:var(--text);font-size:14px;font-weight:700;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere;}
-  .legacy-migration-url:hover{color:#fff;}
-  .legacy-migration-export-btn{height:42px;width:172px;flex:0 0 auto;font-weight:900;display:flex;align-items:center;justify-content:center;border-color:#6f7f99;background:#2a3445;color:#f8f9fb;box-shadow:0 0 0 1px rgba(255,255,255,.04) inset;}
-  .legacy-migration-export-btn:hover{background:#344157;border-color:#91a3c0;color:#fff;}
-  .legacy-migration-continue-btn{height:42px;width:156px;flex:0 0 auto;font-weight:800;display:flex;align-items:center;justify-content:center;border-color:#394356;background:transparent;color:var(--text2);}
-  .legacy-migration-actions{display:flex;align-items:stretch;gap:10px;border-top:1px solid var(--border);padding-top:16px;margin-top:4px;}
-  .legacy-migration-actions-spacer{flex:1 1 auto;min-width:18px;}
-  @media (max-width:560px){
-    .legacy-migration-actions{align-items:stretch;flex-direction:column;}
-    .legacy-migration-actions .btn,.legacy-migration-actions .btn-sm{width:100%;}
-  }
-
-  .confirm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:5000;align-items:center;justify-content:center;overscroll-behavior:contain;}
-  .confirm-overlay.show{display:flex;}
-  .confirm-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px 24px;min-width:300px;text-align:center;}
-  .confirm-msg{font-size:16px;color:var(--text);margin-bottom:22px;line-height:1.6;white-space:pre-line;}
-  .confirm-btns{display:flex;gap:10px;justify-content:center;}
-  .confirm-btns .btn{min-width:110px;justify-content:center;}
-
-  .help-modal{max-width:710px;max-height:80vh;overflow-y:auto;}
-  .help-modal::-webkit-scrollbar{width:6px;}
-  .help-modal::-webkit-scrollbar-thumb{background:#4a5570;border-radius:3px;}
-  .help-section{margin-bottom:14px;}
-  .help-section-title{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
-  .help-list{display:flex;flex-direction:column;gap:4px;}
-  .help-item{font-size:13px;color:var(--text2);line-height:1.6;padding-left:12px;position:relative;}
-  .help-item::before{content:'·';position:absolute;left:0;color:var(--purple);}
-  .help-update{border-top:1px solid var(--border);padding-top:10px;margin-top:4px;}
-  .help-update+.help-update{border-top:none;}
-  .help-update-title{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:5px;}
-  .help-update-item{font-size:12px;color:var(--text3);padding-left:12px;position:relative;line-height:1.7;}
-  .help-update-item::before{content:'·';position:absolute;left:0;}
+:root{
+  color-scheme:dark;
+  --bg:#0e1117;--panel:#161b24;--line:#2a3040;--text:#e8edf6;--sub:#b9c2d0;--muted:#7f8ba0;--accent:#f8f9fb;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;display:grid;grid-template-rows:auto 1fr auto;
+  font-family:"Helvetica Neue",Arial,"Hiragino Kaku Gothic ProN","Hiragino Sans","Meiryo",sans-serif;
+  background:var(--bg);color:var(--text);
+}
+header,footer{padding:14px 20px;background:var(--panel);border-color:var(--line)}
+header{border-bottom:1px solid var(--line);font-weight:700;letter-spacing:.04em}
+footer{border-top:1px solid var(--line);color:var(--muted);font-size:12px;line-height:1.6;text-align:center}
+main{display:grid;place-items:center;padding:32px 18px}
+.notice{
+  width:min(100%,620px);padding:26px 24px;border:1px solid #3b4354;border-radius:12px;
+  background:var(--panel);box-shadow:0 24px 70px rgba(0,0,0,.55);
+}
+h1{margin:0 0 16px;font-size:22px;line-height:1.35}
+p{margin:0 0 13px;color:var(--sub);font-size:14px;line-height:1.8}
+.url{display:inline-flex;gap:8px;max-width:100%;margin-top:8px;color:var(--text);font-weight:700}
+.url a{color:inherit;overflow-wrap:anywhere;text-underline-offset:3px}
+.actions{display:flex;gap:10px;align-items:stretch;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+button,a.button{
+  min-height:42px;display:inline-flex;align-items:center;justify-content:center;padding:0 16px;
+  border:1.5px solid #394356;border-radius:8px;background:transparent;color:var(--sub);
+  font:800 14px/1 inherit;text-decoration:none;cursor:pointer;white-space:nowrap;
+}
+button{border-color:#6f7f99;background:#2a3445;color:var(--accent)}
+button:hover{background:#344157;border-color:#91a3c0;color:#fff}
+a.button:hover{background:#151c27;border-color:#5c6880;color:#fff}
+a.button{margin-left:auto}
+@media (max-width:560px){
+  .notice{padding:22px 18px}
+  .actions{flex-direction:column}
+  a.button{margin-left:0}
+  button,a.button{width:100%}
+}
 </style>
 </head>
 <body>
-<h1 style="display:none;">新URLにてご利用ください</h1>
-<p style="display:none;">
-</p>
-<div class="confirm-overlay" id="confirmOverlay">
-  <div class="confirm-box">
-    <div class="confirm-msg" id="confirmMsg"></div>
-    <div class="confirm-btns">
-      <button class="btn btn-reset-all" id="confirmOk" style="color:#f8f9fb;">はい</button>
-      <button class="btn" id="confirmCancel">キャンセル</button>
+<header>K Draft Planner</header>
+<main>
+  <section class="notice" aria-labelledby="title">
+    <h1 id="title">K Draft Planner は新URLへ移行しました</h1>
+    <p>
+      多くのご利用、誠にありがとうございます。<br>今後の安定運用のため、K Draft Planner は下記の新URLへ移行いたしました。
+      <span class="url"><span>新URL</span><a href="https://kdraftplanner.com/" target="_blank" rel="noopener noreferrer">https://kdraftplanner.com/</a></span>
+    </p>
+    <p>保存データは自動では引き継がれません。引き継ぐ場合はテキストファイルを書き出し、新URLの「設定」から読み込んでください。</p>
+    <p>2026年6月1日をもちまして、この旧URLでの提供を終了いたしました。<br>旧URLでは保存データの書き出しのみ利用できます。</p>
+    <p>今後は新URLをご利用ください。</p>
+    <div class="actions">
+      <button id="exportBtn" type="button">保存データを書き出す</button>
+      <a class="button" href="https://kdraftplanner.com/" target="_blank" rel="noopener noreferrer">新URLへ移動</a>
     </div>
-  </div>
-</div>
-
-
-<div class="modal-overlay" id="helpModal">
-  <div class="modal help-modal">
-    <div class="modal-title">
-      <span>お問い合わせ先</span>
-      <button class="modal-close" onclick="closeHelpModal()">✕</button>
-    </div>
-    <div class="help-section">
-      <div class="help-section-title">バグ報告・要望・お問い合わせなど</div>
-      <div class="help-list">
-        <div class="help-item">開発者：じーん（まーきん）</div>
-        <div class="help-item">X：@DraftPlanner</div>
-        <div class="help-item">gmail：<span id="contactEmail"></span></div>
-      </div>
-    </div>
-    
-    <div class="help-update">
-    </div>
-  </div>
-</div>
-<div class="topbar">
-  <div class="topbar-title">K DraftPlanner</div>
-  <button class="btn-sm" style="font-size:12px;padding:3px 10px;flex-shrink:0;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:var(--text);" onclick="openHelpModal()">お問い合わせ先</button>
-
-  <div class="mode-seg" style="display:none;">
-    <button class="mode-seg-btn active" id="modeFree"     onclick="setMode('free')">フリー</button>
-    <button class="mode-seg-btn"        id="modeFearless" onclick="setMode('fearless')">フィアレス</button>
-    <button class="mode-seg-btn"        id="modeLtk"      onclick="setMode('ltk')">LTK3</button>
-  </div>
-  <button class="btn-sm" id="settingsBtn" onclick="openSettingsModal()" style="display:none;">⚙ 設定</button>
-  <div id="ltkRankWrap" style="display:none;align-items:center;gap:4px;">
-    <select id="ltkRankSelect">
-      <option value="next">NEXT</option>
-      <option value="core">CORE</option>
-    </select>
-  </div>
-
-  <div class="topbar-btns" style="display:none;">
-    <button class="btn" id="ltkNavBtn" onclick="ltkNavAction()" style="display:none;"></button>
-    <button class="btn" id="prevGameBtn" onclick="previousGame()" style="display:none;">前のゲームへ</button>
-    <button class="btn" id="nextGameBtn" onclick="nextGame()" style="display:none;">次のゲームへ</button>
-    <button class="btn" id="draftTableOpenBtn" onclick="openDraftTableModal()">テーブル（β）</button>
-    <button class="btn" id="draftSaveOpenBtn" onclick="openDraftModal()">ドラフト保存/呼出</button>
-    <button class="btn btn-reset" onclick="resetDraft()">ドラフトリセット</button>
-    <button class="btn btn-reset-all" onclick="resetAll()">オールリセット</button>
-  </div>
-</div>
-
-
-<div id="legacyMigrationModal">
-  <div class="legacy-migration-modal">
-    <div class="modal-title">
-      <span>K Draft Planner は新URLへ移行しました</span>
-    </div>
-    <div class="legacy-migration-body">
-      <p>多くのご利用、誠にありがとうございます。<br>今後の安定運用のため、K Draft Planner は下記の新URLへ移行いたしました。<br><span class="legacy-migration-url-row"><span class="legacy-migration-url-label">新URL</span><a class="legacy-migration-url" href="https://kdraftplanner.com/" target="_blank" rel="noopener noreferrer">https://kdraftplanner.com/</a></span></p>
-      <p>保存データは自動では引き継がれません。<br>引き継ぐ場合は、以下のボタンからテキストファイルを書き出し、<br>新URLの「設定」から読み込んでください。</p>
-      <p>2026年6月1日をもちまして、この旧URLでの提供を終了いたしました。<br>今後は新URLをご利用ください。<br><br>今後とも、K Draft Plannerをよろしくお願いいたします。</p>
-      <div class="legacy-migration-actions">
-        <button class="btn-sm legacy-migration-export-btn" type="button" onclick="confirmLegacyExport()">保存データを書き出す</button>
-        <span class="legacy-migration-actions-spacer" aria-hidden="true"></span>
-        <button class="btn-sm legacy-migration-continue-btn" type="button" disabled style="opacity:0.35;cursor:not-allowed;">このまま続ける</button>
-        <a class="btn legacy-migration-link" id="legacyMigrationNewUrl" target="_blank" rel="noopener noreferrer">新URLへ移動</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-
+  </section>
+</main>
+<footer>
+  K Draft Planner isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties.<br>
+  Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.
+</footer>
 <script>
-const LEGACY_MIGRATION_NEW_URL = 'https://kdraftplanner.com/';
-const SAVEDATA_APP_NAME = 'K Draft Planner';
-const SAVEDATA_FILE_TYPE = 'kdp-backup';
-const SAVEDATA_FORMAT_VERSION = 1;
-const SAVEDATA_STORAGE_PREFIX = 'draftTool_';
-const SAVEDATA_BLOCKED_KEY_PARTS = ['__proto__','constructor','prototype'];
+const CONFIG={
+  app:"K Draft Planner",
+  fileType:"kdp-backup",
+  formatVersion:1,
+  storagePrefix:"draftTool_",
+  blockedKeyParts:["__proto__","constructor","prototype"]
+};
 
-function openHelpModal(){ document.getElementById('helpModal')?.classList.add('show'); }
-function closeHelpModal(){ document.getElementById('helpModal')?.classList.remove('show'); }
-
-let confirmCancelHandler = null;
-function closeConfirm(runCancel=false){
-  const overlay=document.getElementById('confirmOverlay');
-  const ok=document.getElementById('confirmOk');
-  const cancel=document.getElementById('confirmCancel');
-  const cancelHandler=confirmCancelHandler;
-  overlay.classList.remove('show');
-  ok.onclick=null; cancel.onclick=null; confirmCancelHandler=null;
-  if(runCancel && cancelHandler) cancelHandler();
-}
-function showConfirm(msg, callback, cancelCallback, okLabel){
-  document.getElementById('confirmMsg').textContent=msg||'';
-  document.getElementById('confirmOk').textContent=okLabel||'はい';
-  const overlay=document.getElementById('confirmOverlay');
-  overlay.classList.add('show');
-  const ok=document.getElementById('confirmOk');
-  const cancel=document.getElementById('confirmCancel');
-  cancel.style.display='';
-  confirmCancelHandler=cancelCallback||null;
-  ok.onclick=()=>{ closeConfirm(false); callback(); };
-  cancel.onclick=()=>{ closeConfirm(true); };
-}
-function showNotice(msg, okLabel='OK'){
-  document.getElementById('confirmMsg').textContent=msg||'';
-  document.getElementById('confirmOk').textContent=okLabel;
-  const overlay=document.getElementById('confirmOverlay');
-  overlay.classList.add('show');
-  const ok=document.getElementById('confirmOk');
-  const cancel=document.getElementById('confirmCancel');
-  cancel.style.display='none';
-  confirmCancelHandler=null;
-  ok.onclick=()=>{ closeConfirm(false); };
-  cancel.onclick=()=>{ closeConfirm(false); };
-}
-
-function bindOverlayClose(overlayEl, onClose){
-  let pointerDownOnOverlay = false;
-  overlayEl.addEventListener('pointerdown', e=>{ pointerDownOnOverlay = e.target === e.currentTarget; });
-  overlayEl.addEventListener('click', e=>{ if(pointerDownOnOverlay && e.target===e.currentTarget) onClose(); pointerDownOnOverlay=false; });
-}
-bindOverlayClose(document.getElementById('confirmOverlay'), ()=>{ closeConfirm(true); });
-
-function getLegacyMigrationNewUrl(){ return (LEGACY_MIGRATION_NEW_URL || '').trim(); }
-function setupLegacyMigrationLink(linkEl, url, activeText){
-  if(!linkEl) return;
-  if(url){
-    linkEl.href=url; linkEl.textContent=activeText;
-    linkEl.classList.remove('is-disabled');
-    linkEl.removeAttribute('aria-disabled'); linkEl.removeAttribute('tabindex');
-  } else {
-    linkEl.removeAttribute('href'); linkEl.textContent=activeText;
-    linkEl.classList.add('is-disabled');
-    linkEl.setAttribute('aria-disabled','true'); linkEl.setAttribute('tabindex','-1');
-  }
-}
-function syncLegacyMigrationNotice(){
-  setupLegacyMigrationLink(document.getElementById('legacyMigrationNewUrl'), getLegacyMigrationNewUrl(), '新URLへ移動');
-}
-
-function collectLegacyMigrationStorage(){
-  const data={};
+function collectStorage(){
+  const storage={};
   for(let i=0;i<localStorage.length;i++){
     const key=localStorage.key(i);
-    if(key && key.startsWith(SAVEDATA_STORAGE_PREFIX) && !SAVEDATA_BLOCKED_KEY_PARTS.some(p=>key.includes(p))){
-      const value=localStorage.getItem(key);
-      if(typeof value==='string') data[key]=value;
-    }
+    if(!key || !key.startsWith(CONFIG.storagePrefix) || CONFIG.blockedKeyParts.some(part=>key.includes(part))) continue;
+    const value=localStorage.getItem(key);
+    if(typeof value==="string") storage[key]=value;
   }
-  return Object.keys(data).sort().reduce((s,k)=>{ s[k]=data[k]; return s; },{});
+  return Object.fromEntries(Object.keys(storage).sort().map(key=>[key,storage[key]]));
 }
-function buildLegacyMigrationExportPayload(){
-  return { app:SAVEDATA_APP_NAME, fileType:SAVEDATA_FILE_TYPE, formatVersion:SAVEDATA_FORMAT_VERSION, exportedAt:new Date().toISOString(), storage:collectLegacyMigrationStorage() };
-}
-function legacyMigrationExportFileName(){
-  const pad=n=>String(n).padStart(2,'0');
+
+function exportSavedata(){
+  if(!confirm("保存データファイルを作成してダウンロードします。\n\n配信・画面共有中の方は、保存先やファイル名が映らないようご注意ください。")) return;
+  const payload={app:CONFIG.app,fileType:CONFIG.fileType,formatVersion:CONFIG.formatVersion,exportedAt:new Date().toISOString(),storage:collectStorage()};
+  if(!Object.keys(payload.storage).length){ alert("書き出す保存データがありません。"); return; }
+  const pad=n=>String(n).padStart(2,"0");
   const d=new Date();
-  return `k-draft-planner-savedata-${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}.txt`;
-}
-function downloadLegacyMigrationExport(){
-  const payload=buildLegacyMigrationExportPayload();
-  if(!Object.keys(payload.storage).length){ showNotice('書き出す保存データがありません。'); return; }
-  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'text/plain;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  const link=document.createElement('a');
-  link.href=url; link.download=legacyMigrationExportFileName();
-  document.body.appendChild(link); link.click();
-  setTimeout(()=>{ URL.revokeObjectURL(url); link.remove(); },0);
-}
-function confirmLegacyExport(){
-  showConfirm('保存データファイルを作成してダウンロードします。\n\n配信・画面共有中の方は、保存先やファイル名が映らないようご注意ください。', downloadLegacyMigrationExport, null, 'ダウンロード');
+  const stamp=`${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+  const url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:"text/plain;charset=utf-8"}));
+  const link=Object.assign(document.createElement("a"),{href:url,download:`k-draft-planner-savedata-${stamp}.txt`});
+  document.body.append(link);
+  link.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);link.remove();},0);
 }
 
-function closeTosModal(){ document.getElementById('tosModal').classList.remove('show'); }
-function closePrivacyModal(){ document.getElementById('privacyModal').classList.remove('show'); }
-
-syncLegacyMigrationNotice();
-</script>
-
-<div style="text-align:center;padding:16px;font-size:12px;color:#4a5468;border-top:1px solid #1e2430;margin-top:10px;">
-  <div>K Draft Planner isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties.</div>
-  <div style="margin-top:4px;">Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc.</div>
-  <div style="margin-top:8px;">
-    <a href="#" onclick="document.getElementById('tosModal').classList.add('show');return false;" style="color:#5a7a9a;text-decoration:underline;margin:0 8px;">利用規約</a>
-    <a href="#" onclick="document.getElementById('privacyModal').classList.add('show');return false;" style="color:#5a7a9a;text-decoration:underline;margin:0 8px;">プライバシーポリシー</a>
-  </div>
-  <div style="margin-top:4px;">v0.0.0  |  更新日: 2026-06-01</div>
-</div>
-
-<!-- 利用規約モーダル -->
-<div id="tosModal" class="modal-overlay" style="z-index:2000;">
-  <div class="modal-box" style="max-width:600px;max-height:80vh;overflow-y:auto;">
-    <div class="modal-header">
-      <span class="modal-title">利用規約</span>
-      <button class="modal-close" onclick="closeTosModal()">✕</button>
-    </div>
-    <div style="padding:16px;font-size:13px;color:var(--text2);line-height:1.8;">
-      <p style="margin-bottom:12px;">本ツール（K Draft Planner）をご利用いただく前に、以下の利用規約をお読みください。ご利用をもって本規約に同意したものとみなします。</p>
-
-      <h3 style="color:var(--text);font-size:14px;margin:16px 0 6px;">1. サービスの概要</h3>
-      <p>本ツールは、League of Legends の大会・チーム練習向けドラフトプランナーです。Riot Games の公式製品ではなく、独立した開発者が提供する非公式ツールです。</p>
-
-      <h3 style="color:var(--text);font-size:14px;margin:16px 0 6px;">2. 利用条件</h3>
-      <p>本ツールは個人・チームの練習・大会準備目的での利用に限ります。商業目的での再配布・販売は禁止します。本ツールを利用して生じた損害について、開発者は故意または重過失を除き責任を負いません。</p>
-
-      <h3 style="color:var(--text);font-size:14px;margin:16px 0 6px;">3. 本ツールの内容</h3>
-      <p>本ツールでは、ドラフト編集、プール管理、メモ、ブラウザ内保存、およびチャンピオン画像の表示機能を提供します。入力や編集は、すべてユーザー自身の手動操作によって行われます。</p>
-
-      <h3 style="color:var(--text);font-size:14px;margin:16px 0 6px;">4. 免責事項</h3>
-      <p>本ツールはRiot Gamesの承認を受けておらず、Riot Gamesまたはリーグ・オブ・レジェンドの制作・運営に公式に関与している人物の見解や意見を反映するものではありません。League of LegendsおよびRiot GamesはRiot Games, Inc.の商標または登録商標です。</p>
-      <p style="margin-top:8px;">本ツールで表示するチャンピオン画像その他のRiot Games関連静的アセットは、Riot Gamesが公開するData Dragonのアセットをもとに表示用として使用しています。これらの知的財産権はRiot Gamesに帰属します。</p>
-      <p style="margin-top:8px;">本ツールに表示される内容は、ユーザー自身が手動で設定・保存した情報に基づきます。これらにより生じた損害について、開発者は故意または重過失を除き責任を負いません。</p>
-
-      <h3 style="color:var(--text);font-size:14px;margin:16px 0 6px;">5. サービスの変更・終了</h3>
-      <p>開発者は予告なく本ツールの内容変更・提供終了を行う場合があります。</p>
-
-      <p style="margin-top:16px;color:var(--text3);font-size:12px;">最終更新：2026年4月19日</p>
-    </div>
-  </div>
-</div>
-
-<!-- プライバシーポリシーモーダル -->
-<div id="privacyModal" class="modal-overlay" style="z-index:2000;">
-  <div class="modal-box" style="max-width:600px;max-height:80vh;overflow-y:auto;">
-    <div class="modal-header">
-      <span class="modal-title">プライバシーポリシー</span>
-      <button class="modal-close" onclick="closePrivacyModal()">✕</button>
-    </div>
-    <div style="padding:16px;font-size:13px;color:var(--text2);line-height:1.8;">
-      <p style="margin-bottom:12px;">K Draft Planner（以下「本ツール」）における個人情報・データの取り扱いについて説明します。</p>
-
-      <h3 style="color:var(--text);font-size:14px;margin:16px 0 6px;">1. 入力するデータ</h3>
-      <p>本ツールでは、チーム名、プール名、プレイヤー名、メモなど、ユーザーが画面上で入力したドラフト管理用の情報を扱います。</p>
-
-      <h3 style="color:var(--text);font-size:14px;margin:16px 0 6px;">2. データの利用目的</h3>
-      <p>入力された情報は、ドラフト画面の表示、保存データの管理、メモ機能など、本ツールのローカル機能を提供する目的にのみ使用します。</p>
-
-      <h3 style="color:var(--text);font-size:14px;margin:16px 0 6px;">3. データの保存</h3>
-      <p>入力内容は開発者のサーバーに送信・保存されません。ドラフト設定・メモ等はお使いのブラウザのlocalStorage（ユーザーの端末内）にのみ保存され、外部サーバーには送信されません。</p>
-      <p>共有端末や第三者が利用する可能性のある端末では、入力したチーム名、プレイヤー名、Riot ID、メモ等がブラウザ内に残る場合があります。必要に応じて、利用後に保存データの削除、またはブラウザのサイトデータ削除を行ってください。</p>
-      
-      <h3 style="color:var(--text);font-size:14px;margin:16px 0 6px;">4. 外部サイトへの接続</h3>
-      <p>本ツールは、ユーザーが入力した情報を自動的に第三者へ送信しません。通常の利用では、チャンピオン画像もサイト内のローカルファイルを表示します。ただし、以下の操作を行った場合に限り、外部サイトへ接続することがあります：</p>
-      <ul style="margin:8px 0 8px 16px;">
-        <li><strong>OP.GG</strong>：ユーザーが明示的に操作した場合に限り、チャンピオン情報ページを新しいタブで開くことがあります。</li>
-        <li><strong>外部リンク</strong>：利用規約や関連ポリシーへの外部リンクをユーザーがクリックした場合、そのリンク先サイトへ接続します。</li>
-      </ul>
-      <p>上記はいずれもユーザーの明示的な操作によるものです。本ツールがバックグラウンドでユーザーデータを送信することはありません。</p>
-
-      <h3 style="color:var(--text);font-size:14px;margin:16px 0 6px;">5. ホスティングについて</h3>
-      <p>本ツールはGitHub Pages等の静的ホスティングでの公開を想定しています。HTML・CSS・JavaScript・画像ファイルの配信およびアクセスログ等の取り扱いは、利用するホスティング事業者の仕様およびポリシーに従います。</p>
-
-      <h3 style="color:var(--text);font-size:14px;margin:16px 0 6px;">6. お問い合わせ先</h3>
-      <p>本ポリシーに関するお問い合わせは、<span id="contactEmail2"></span> までご連絡ください。</p>
-
-      <p style="margin-top:16px;color:var(--text3);font-size:12px;">最終更新：2026年4月19日</p>
-    </div>
-  </div>
-</div>
-<script>
-bindOverlayClose(document.getElementById('tosModal'), closeTosModal);
-bindOverlayClose(document.getElementById('privacyModal'), closePrivacyModal);
-</script>
-
-<script>
-(function(){
-  const u='jaene001001',d='gmail.com';
-  const addr=u+'@'+d;
-  ['contactEmail','contactEmail2'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el) el.textContent=addr;
-  });
-})();
+document.getElementById("exportBtn").addEventListener("click",exportSavedata);
 </script>
 </body>
 </html>
